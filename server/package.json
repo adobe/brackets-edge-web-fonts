@@ -1,0 +1,11 @@
+{
+  "name": "webfont-proxy",
+  "version": "0.0.1",
+  "description": "proxy requests to webfont api",
+  "author": "Joel Brandt <joelrbrandt@gmail.com>",
+  "dependencies": {
+    "connect": ">2.0.0"
+  },
+  "main": "server",
+  "engines": { "node": ">= 0.6.0" }
+}
