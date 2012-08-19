@@ -42,7 +42,8 @@
     
     var app = connect()
         .use(connect.logger('dev'))
-        .use(connect.theStatic('../browser/'))
+        .use(connect.favicon())
+        .use(connect.theStatic('../'))
         .use(function (req, res) {
             if (req.url.indexOf('/proxy/') === 0) {
                 var path = api_path_prefix + req.url.substr('/proxy/'.length);

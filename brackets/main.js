@@ -28,16 +28,13 @@
 define(function (require, exports, module) {
     "use strict";
     
-    var webfont      = require("webfont"),
-        MainViewHTML = require("text!htmlContent/main-view.html"),
-        Strings      = require("strings");
-
-    // webfont.setApiUrlPrefix("/proxy/");
-
-    console.log("[webfont]", Mustache.render(MainViewHTML, Strings));
-
-    webfont.getFamilies(function (families) {
-        console.log("[webfont]", families);
+    var webfont = require("core/webfont");
+    
+    brackets.ready(function () {
+        webfont.init().done(function () {
+            console.log(2 + 2);
+            $('body').append("<div style='display: none' id='edge-web-fonts' class='edge-web-fonts'></div>");
+            webfont.renderPicker($("#edge-web-fonts")[0]);
+        });
     });
-        
 });

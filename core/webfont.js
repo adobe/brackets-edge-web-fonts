@@ -54,7 +54,9 @@ define(function (require, exports, module) {
     
     function init(apiUrlPrefix) {
         var d = $.Deferred();
-        _apiUrlPrefix = apiUrlPrefix;
+        if (apiUrlPrefix) {
+            _apiUrlPrefix = apiUrlPrefix;
+        }
 
         refreshFamilies().done(function () { d.resolve(); });
         return d.promise();

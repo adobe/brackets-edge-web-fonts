@@ -46,7 +46,7 @@ define(function (require, exports, module) {
         // Localize browserWrapperHtml and inject into <body> tag
         $('body').html(Mustache.render(browserWrapperHtml, Strings));
 
-        webfont.init("/proxy/").done(function () {
+        webfont.init("/proxy-static/").done(function () {
             webfont.renderPicker($('.edge-web-fonts')[0]);
         });
                 
