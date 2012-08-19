@@ -21,35 +21,9 @@
  * 
  */
 
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
+/*global define */
 
-/*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global require, define, Mustache, $ */
-
-require.config({
-    paths: {
-        "text" : "lib/text",
-        "i18n" : "lib/i18n"
-    },
-    locale: navigator.language
-});
-
-define(function (require, exports, module) {
-    "use strict";
-    
-    var webfont            = require("webfont"),
-        browserWrapperHtml = require("text!htmlContent/browser-wrapper.html"),
-        Strings            = require("strings");
-    
-    $(function () {
-        // Localize page title
-        $('title').text(Strings.PRODUCT_NAME);
-        // Localize browserWrapperHtml and inject into <body> tag
-        $('body').html(Mustache.render(browserWrapperHtml, Strings));
-
-        webfont.init("/proxy/").done(function () {
-            webfont.renderPicker($('.edge-web-fonts')[0]);
-        });
-                
-    });
-
+define({
+    "PRODUCT_NAME"      : "Adobe Edge Web Fonts"
 });

@@ -21,35 +21,23 @@
  * 
  */
 
-
-/*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global require, define, Mustache, $ */
-
-require.config({
-    paths: {
-        "text" : "lib/text",
-        "i18n" : "lib/i18n"
-    },
-    locale: navigator.language
-});
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
+/*global define */
 
 define(function (require, exports, module) {
-    "use strict";
     
-    var webfont            = require("webfont"),
-        browserWrapperHtml = require("text!htmlContent/browser-wrapper.html"),
-        Strings            = require("strings");
+    'use strict';
     
-    $(function () {
-        // Localize page title
-        $('title').text(Strings.PRODUCT_NAME);
-        // Localize browserWrapperHtml and inject into <body> tag
-        $('body').html(Mustache.render(browserWrapperHtml, Strings));
-
-        webfont.init("/proxy/").done(function () {
-            webfont.renderPicker($('.edge-web-fonts')[0]);
-        });
-                
-    });
-
+    // Code that needs to display user strings should call require("strings") to load
+    // strings.js. This file will dynamically load strings.js for the specified by bracketes.locale.
+    // 
+    // Translations for other locales should be placed in nls/<locale<optional country code>>/strings.js
+    // Localization is provided via the i18n plugin.
+    // All other bundles for languages need to add a prefix to the exports below so i18n can find them.
+    // TODO: dynamically populate the local prefix list below?
+    module.exports = {
+        root: true,
+        "de": true,
+        "fr": true
+    };
 });

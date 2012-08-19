@@ -22,34 +22,22 @@
  */
 
 
-/*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global require, define, Mustache, $ */
-
-require.config({
-    paths: {
-        "text" : "lib/text",
-        "i18n" : "lib/i18n"
-    },
-    locale: navigator.language
-});
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
+/*global define, brackets, $, window, Mustache */
 
 define(function (require, exports, module) {
     "use strict";
     
-    var webfont            = require("webfont"),
-        browserWrapperHtml = require("text!htmlContent/browser-wrapper.html"),
-        Strings            = require("strings");
-    
-    $(function () {
-        // Localize page title
-        $('title').text(Strings.PRODUCT_NAME);
-        // Localize browserWrapperHtml and inject into <body> tag
-        $('body').html(Mustache.render(browserWrapperHtml, Strings));
+    var webfont      = require("webfont"),
+        MainViewHTML = require("text!htmlContent/main-view.html"),
+        Strings      = require("strings");
 
-        webfont.init("/proxy/").done(function () {
-            webfont.renderPicker($('.edge-web-fonts')[0]);
-        });
-                
+    // webfont.setApiUrlPrefix("/proxy/");
+
+    console.log("[webfont]", Mustache.render(MainViewHTML, Strings));
+
+    webfont.getFamilies(function (families) {
+        console.log("[webfont]", families);
     });
-
+        
 });
