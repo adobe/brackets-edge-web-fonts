@@ -21,35 +21,18 @@
  * 
  */
 
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
+/*global define */
 
-/*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global require, define, Mustache, $ */
-
-require.config({
-    paths: {
-        "text" : "lib/text",
-        "i18n" : "lib/i18n"
-    },
-    locale: navigator.language
-});
-
+/**
+ * This file provides the interface to user visible strings in Brackets. Code that needs
+ * to display strings should should load this module by calling var Strings = require("strings").
+ * The i18n plugin will dynamically load the strings for the right locale and populate
+ * the exports variable. See src\nls\strings.js for the master file of English strings.
+ */
 define(function (require, exports, module) {
     "use strict";
-    
-    var webfont            = require("webfont"),
-        browserWrapperHtml = require("text!htmlContent/browser-wrapper.html"),
-        Strings            = require("strings");
-    
-    $(function () {
-        // Localize page title
-        $('title').text(Strings.PRODUCT_NAME);
-        // Localize browserWrapperHtml and inject into <body> tag
-        $('body').html(Mustache.render(browserWrapperHtml, Strings));
 
-        webfont.init("/proxy/").done(function () {
-            webfont.renderPicker($('.edge-web-fonts')[0]);
-        });
-                
-    });
+    module.exports = require("i18n!core/nls/strings");
 
 });

@@ -22,46 +22,34 @@
  */
 
 
-/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
+/*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
 /*global require, define, Mustache, $ */
 
+require.config({
+    paths: {
+        "text" : "lib/text",
+        "i18n" : "lib/i18n"
+    },
+    locale: navigator.language
+});
 
 define(function (require, exports, module) {
     "use strict";
     
-    var _apiUrlPrefix = "https://api.typekit.com/muse_v1/";
-    var _fontFamilies = {};
-
-    var pickerHtml = require("text!htmlContent/ewf-picker.html"),
-        Strings    = require("strings");
+    var webfont            = require("core/webfont"),
+        browserWrapperHtml = require("text!core/htmlContent/browser-wrapper.html"),
+        Strings            = require("core/strings");
     
-    function refreshFamilies() {
-        var d = $.Deferred();
-        
-        // TODO: Add error handling
-        $.getJSON(_apiUrlPrefix + "families", function (data) {
-            _fontFamilies = data.families;
-            console.log("Refreshed families", _fontFamilies);
-            d.resolve();
+    $(function () {
+        // Localize page title
+        $('title').text(Strings.PRODUCT_NAME);
+        // Localize browserWrapperHtml and inject into <body> tag
+        $('body').html(Mustache.render(browserWrapperHtml, Strings));
+
+        webfont.init("/proxy/").done(function () {
+            webfont.renderPicker($('.edge-web-fonts')[0]);
         });
-        
-        return d.promise();
-    }
+                
+    });
 
-    function renderPicker(domElement) {
-        $(domElement).html(Mustache.render(pickerHtml, {families: _fontFamilies.slice(0, 10), Strings: Strings}));
-    }
-    
-    function init(apiUrlPrefix) {
-        var d = $.Deferred();
-        _apiUrlPrefix = apiUrlPrefix;
-
-        refreshFamilies().done(function () { d.resolve(); });
-        return d.promise();
-    }
-    
-    exports.refreshFamilies = refreshFamilies;
-    exports.renderPicker = renderPicker;
-    exports.init = init;
-    
 });

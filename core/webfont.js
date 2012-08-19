@@ -21,18 +21,47 @@
  * 
  */
 
-/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define */
 
-/**
- * This file provides the interface to user visible strings in Brackets. Code that needs
- * to display strings should should load this module by calling var Strings = require("strings").
- * The i18n plugin will dynamically load the strings for the right locale and populate
- * the exports variable. See src\nls\strings.js for the master file of English strings.
- */
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
+/*global require, define, Mustache, $ */
+
+
 define(function (require, exports, module) {
     "use strict";
+    
+    var _apiUrlPrefix = "https://api.typekit.com/muse_v1/";
+    var _fontFamilies = {};
 
-    module.exports = require("i18n!nls/strings");
+    var pickerHtml = require("text!core/htmlContent/ewf-picker.html"),
+        Strings    = require("core/strings");
+    
+    function refreshFamilies() {
+        var d = $.Deferred();
+        
+        // TODO: Add error handling
+        $.getJSON(_apiUrlPrefix + "families", function (data) {
+            _fontFamilies = data.families;
+            console.log("Refreshed families", _fontFamilies);
+            d.resolve();
+        });
+        
+        return d.promise();
+    }
 
+    function renderPicker(domElement) {
+        $(domElement).html(Mustache.render(pickerHtml, {families: _fontFamilies.slice(0, 10), Strings: Strings}));
+    }
+    
+    function init(apiUrlPrefix) {
+        var d = $.Deferred();
+        _apiUrlPrefix = apiUrlPrefix;
+
+        refreshFamilies().done(function () { d.resolve(); });
+        return d.promise();
+    }
+    
+    exports.refreshFamilies = refreshFamilies;
+    exports.renderPicker = renderPicker;
+    exports.init = init;
+    
 });
