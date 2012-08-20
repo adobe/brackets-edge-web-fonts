@@ -29,40 +29,120 @@
 define(function (require, exports, module) {
     "use strict";
     
-    var _apiUrlPrefix = "https://api.typekit.com/muse_v1/";
-    var _fontFamilies = {};
+    var apiUrlPrefix = "https://api.typekit.com/muse_v1/";
 
-    var pickerHtml = require("text!core/htmlContent/ewf-picker.html"),
-        Strings    = require("core/strings");
+    var fontsByClass = {};
+    var fontsByName = {};
+    var fontsBySlug = {};
+    var allFonts;
     
-    function refreshFamilies() {
+    
+    var pickerHtml     = require("text!core/htmlContent/ewf-picker.html"),
+        resultsHtml = require("text!core/htmlContent/ewf-results.html"),
+        Strings        = require("core/strings");
+    
+    var $picker = null;
+    var $results = null;
+    
+    var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"];
+        
+    function _displayResults(families) {
+        function fontClickHandler(event) {
+            console.log("[ewf]", "clicked a font", $(event.target).attr("data-slug"));
+        }
+
+        if ($results) {
+            $results.empty();
+            $results.html(Mustache.render(resultsHtml, {Strings: Strings, families: families}));
+            $(".ewf-font").click(fontClickHandler);
+        }
+    }
+    
+    function renderPicker(domElement) {
+        var localizedClassifications = [];
+        var i;
+
+        function classificationClickHandler(event) {
+            var classification = $(event.target).attr("data-classification");
+            var families = fontsByClass[classification];
+        
+            // clear previously selected class
+            $('#ewf-tabs a').removeClass("selected");
+            // select this class
+            $(event.target).addClass("selected");
+            
+            console.log("[ewf]", "clicked a classification", classification);
+        
+            _displayResults(families);
+        
+            // return false because these are anchor tags
+            return false;
+        }
+        
+        // map font classifications to their localized names:
+        for (i = 0; i < fontClassifications.length; i++) {
+            localizedClassifications.push({className: fontClassifications[i], localizedName: Strings[fontClassifications[i]]});
+        }
+        
+        $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications}));
+        $(domElement).append($picker);
+
+        $('#ewf-tabs a', $picker).click(classificationClickHandler);
+        
+        $results = $("#ewf-results", $picker);
+
+        $('#ewf-tabs a:first').trigger('click');
+    }
+        
+    function init(newApiUrlPrefix) {
         var d = $.Deferred();
         
-        // TODO: Add error handling
-        $.getJSON(_apiUrlPrefix + "families", function (data) {
-            _fontFamilies = data.families;
-            console.log("Refreshed families", _fontFamilies);
-            d.resolve();
+        if (newApiUrlPrefix) {
+            apiUrlPrefix = newApiUrlPrefix;
+        }
+    
+        function organizeFamilies(families) {
+            var f = families.families;
+            var i, j;
+    
+            // we keep _allFonts in alphabetical order by name, so that all other
+            // lists will also be in order.
+            allFonts = f;
+            allFonts.sort(function (a, b) { return (a.name < b.name ? -1 : 1); });
+            
+            fontsByClass = {};
+            fontsByName = {};
+            fontsBySlug = {};
+            
+            for (i = 0; i < f.length; i++) {
+                for (j = 0; j < f[i].classifications.length; j++) {
+                    if (!fontsByClass.hasOwnProperty(f[i].classifications[j])) {
+                        fontsByClass[f[i].classifications[j]] = [];
+                    }
+                    fontsByClass[f[i].classifications[j]].push(f[i]);
+                }
+                
+                fontsByName[f[i].name] = f[i];
+                fontsBySlug[f[i].slug] = f[i];
+            }
+        }
+        
+        $.ajax({
+            url: apiUrlPrefix + "families",
+            dataType: 'json',
+            success: function (data) {
+                organizeFamilies(data);
+                d.resolve();
+            },
+            error: function () {
+                d.reject("XHR request to 'families' API failed");
+            }
         });
         
         return d.promise();
-    }
-
-    function renderPicker(domElement) {
-        $(domElement).html(Mustache.render(pickerHtml, {families: _fontFamilies.slice(0, 10), Strings: Strings}));
+                
     }
     
-    function init(apiUrlPrefix) {
-        var d = $.Deferred();
-        if (apiUrlPrefix) {
-            _apiUrlPrefix = apiUrlPrefix;
-        }
-
-        refreshFamilies().done(function () { d.resolve(); });
-        return d.promise();
-    }
-    
-    exports.refreshFamilies = refreshFamilies;
     exports.renderPicker = renderPicker;
     exports.init = init;
     

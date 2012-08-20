@@ -25,5 +25,18 @@
 /*global define */
 
 define({
-    "PRODUCT_NAME"      : "Adobe Edge Web Fonts German"
+    "PRODUCT_NAME"        : "Adobe Edge Netz Schriftarten",
+
+    "DIALOG_DONE"         : "Gemacht",
+    "MENU_BROWSE_FONTS"   : "Durchsuchen Edge Netz Schriftarten",
+    
+    // Font classifications
+    "serif"               : "Serif",
+    "sans-serif"          : "Sans-Serif",
+    "slab-serif"          : "Slab-Serif",
+    "script"              : "Script",
+    "blackletter"         : "Blackletter",
+    "monospaced"          : "Monospaced",
+    "handmade"            : "Handmande",
+    "decorative"          : "Decorative"
 });

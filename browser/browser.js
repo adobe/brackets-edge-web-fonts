@@ -37,19 +37,22 @@ define(function (require, exports, module) {
     "use strict";
     
     var webfont            = require("core/webfont"),
-        browserWrapperHtml = require("text!core/htmlContent/browser-wrapper.html"),
+        browserWrapperHtml = require("text!browser-wrapper.html"),
         Strings            = require("core/strings");
     
     $(function () {
         // Localize page title
         $('title').text(Strings.PRODUCT_NAME);
         // Localize browserWrapperHtml and inject into <body> tag
-        $('body').html(Mustache.render(browserWrapperHtml, Strings));
+        $('body').append(Mustache.render(browserWrapperHtml, Strings));
 
-        webfont.init("/proxy-static/").done(function () {
-            webfont.renderPicker($('.edge-web-fonts')[0]);
-        });
-                
+        webfont.init("/proxy-static/")
+            .done(function () {
+                webfont.renderPicker($('.edge-web-fonts')[0]);
+            })
+            .fail(function (err) {
+                console.log("[edge-web-font extension] failed to initialize: " + err);
+            });
     });
 
 });

@@ -25,5 +25,18 @@
 /*global define */
 
 define({
-    "PRODUCT_NAME"      : "Adobe Edge Web Fonts"
+    "PRODUCT_NAME"        : "Adobe Edge Web Fonts",
+
+    "DIALOG_DONE"         : "Done",
+    "MENU_BROWSE_FONTS"   : "Browse Edge Web Fonts",
+    
+    // Font classifications
+    "serif"               : "Serif",
+    "sans-serif"          : "Sans-Serif",
+    "slab-serif"          : "Slab-Serif",
+    "script"              : "Script",
+    "blackletter"         : "Blackletter",
+    "monospaced"          : "Monospaced",
+    "handmade"            : "Handmande",
+    "decorative"          : "Decorative"
 });
