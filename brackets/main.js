@@ -33,7 +33,8 @@ define(function (require, exports, module) {
         Strings        = require("core/strings");
     
     
-    var CommandManager = brackets.getModule("command/CommandManager"),
+    var AppInit        = brackets.getModule("utils/AppInit"),
+        CommandManager = brackets.getModule("command/CommandManager"),
         Commands       = brackets.getModule("command/Commands"),
         Dialogs        = brackets.getModule("widgets/Dialogs"),
         Menus          = brackets.getModule("command/Menus");
@@ -85,7 +86,7 @@ define(function (require, exports, module) {
     }
 
     // load everything when brackets is done loading
-    brackets.ready(function () {
+    AppInit.appReady(function () {
         webfont.init()
             .done(function () {
                 var d = $(Mustache.render(ewfDialogHtml, Strings));
