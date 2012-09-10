@@ -46,7 +46,43 @@ define(function (require, exports, module) {
         $results = null;
     
     var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"];
+    
+    /**
+     * Returns a sorted array of all fonts that contain a case-insensitive version
+     * of the needle.
+     *
+     * The results are sorted as follows:
+     *   1. All fonts with a name that starts with the needle
+     *   2. All fonts with a word that starts with the needle
+     *   3. All fonts that contain the needle
+     * Within each category, fonts are sorted alphabetically
+     * 
+     * @param {!string} needle - the search term
+     * @return {Array.<Object> Array of font objects that contain the search term.
+     */
+    function searchByName(needle) {
+        var beginning = [], beginningOfWord = [], contains = [];
+        var i, index;
         
+        var lowerCaseNeedle = needle.toLocaleLowerCase();
+        
+        for (i = 0; i < allFonts.length; i++) {
+            index = allFonts[i].lowerCaseName.indexOf(lowerCaseNeedle);
+            if (index === 0) {
+                beginning.push(allFonts[i]);
+            } else if (index > 0) {
+                var previousChar = allFonts[i].lowerCaseName[index - 1];
+                if (!previousChar.isAlpha() && !previousChar.isDigit()) {
+                    beginningOfWord.push(allFonts[i]);
+                } else {
+                    contains.push(allFonts[i]);
+                }
+            }
+        }
+        
+        return beginning.concat(beginningOfWord).concat(contains);
+    }
+    
     function _displayResults(families) {
         function fontClickHandler(event) {
             var d = event.target;
@@ -130,28 +166,32 @@ define(function (require, exports, module) {
         }
     
         function organizeFamilies(families) {
-            var f = families.families;
+            allFonts = families.families;
             var i, j;
     
-            // we keep _allFonts in alphabetical order by name, so that all other
+            // we keep allFonts in alphabetical order by name, so that all other
             // lists will also be in order.
-            allFonts = f;
             allFonts.sort(function (a, b) { return (a.name < b.name ? -1 : 1); });
+            
+            // give all fonts a locale lowercase name
+            for (i = 0; i < allFonts.length; i++) {
+                allFonts[i].lowerCaseName = allFonts[i].name.toLocaleLowerCase();
+            }
             
             fontsByClass = {};
             fontsByName = {};
             fontsBySlug = {};
             
-            for (i = 0; i < f.length; i++) {
-                for (j = 0; j < f[i].classifications.length; j++) {
-                    if (!fontsByClass.hasOwnProperty(f[i].classifications[j])) {
-                        fontsByClass[f[i].classifications[j]] = [];
+            for (i = 0; i < allFonts.length; i++) {
+                for (j = 0; j < allFonts[i].classifications.length; j++) {
+                    if (!fontsByClass.hasOwnProperty(allFonts[i].classifications[j])) {
+                        fontsByClass[allFonts[i].classifications[j]] = [];
                     }
-                    fontsByClass[f[i].classifications[j]].push(f[i]);
+                    fontsByClass[allFonts[i].classifications[j]].push(allFonts[i]);
                 }
                 
-                fontsByName[f[i].name] = f[i];
-                fontsBySlug[f[i].slug] = f[i];
+                fontsByName[allFonts[i].name] = allFonts[i];
+                fontsBySlug[allFonts[i].slug] = allFonts[i];
             }
         }
         
@@ -171,6 +211,7 @@ define(function (require, exports, module) {
                 
     }
     
+    exports.searchByName = searchByName;
     exports.renderPicker = renderPicker;
     exports.createInclude = createInclude;
     exports.init = init;
