@@ -34,12 +34,15 @@ define(function (require, exports, module) {
         Strings        = require("core/strings");
     
     
-    var AppInit        = brackets.getModule("utils/AppInit"),
-        CommandManager = brackets.getModule("command/CommandManager"),
-        Commands       = brackets.getModule("command/Commands"),
-        Dialogs        = brackets.getModule("widgets/Dialogs"),
-        Menus          = brackets.getModule("command/Menus");
+    var AppInit         = brackets.getModule("utils/AppInit"),
+        DocumentManager = brackets.getModule("document/DocumentManager"),
+        EditorUtils     = brackets.getModule("editor/EditorUtils"),
+        CommandManager  = brackets.getModule("command/CommandManager"),
+        Commands        = brackets.getModule("command/Commands"),
+        Dialogs         = brackets.getModule("widgets/Dialogs"),
+        Menus           = brackets.getModule("command/Menus");
 
+    var $toolbarIcon = null;
     
     // commands
     var COMMAND_BROWSE_FONTS = "edgewebfonts.browsefonts";
@@ -68,16 +71,31 @@ define(function (require, exports, module) {
             });
         }
 
-        function handleBrowseFonts() {
+        function _handleBrowseFonts() {
             Dialogs.showModalDialog("edge-web-fonts-dialog");
             webfont.renderPicker($('.instance #edge-web-fonts-dialog-body')[0]);
         }
-
+        
+        function _handleDocumentChange() {
+            var doc = DocumentManager.getCurrentDocument();
+            var mode = null;
+            if (doc) { // will be null if there's no document (user closed only open doc)
+                mode = EditorUtils.getModeFromFileExtension(doc.file.fullPath);
+            }
+            console.log("[ewf] Document mode changed", mode);
+            if (mode === "css") {
+                $toolbarIcon.addClass('active');
+            } else {
+                $toolbarIcon.removeClass('active');
+            }
+        }
+        
+        
         // load styles
         _loadLessFile("ewf-brackets.less", _extensionDirForBrowser());
 
         // register commands
-        CommandManager.register(Strings.MENU_BROWSE_FONTS, COMMAND_BROWSE_FONTS, handleBrowseFonts);
+        CommandManager.register(Strings.MENU_BROWSE_FONTS, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
     
         // set up menu and keybinding
         var menu = Menus.getMenu(Menus.AppMenuBar.EDIT_MENU);
@@ -85,20 +103,22 @@ define(function (require, exports, module) {
         menu.addMenuItem(Menus.DIVIDER, null, Menus.BEFORE, COMMAND_BROWSE_FONTS);
 
         // set up toolbar icon
-        var d = $(Mustache.render(ewfToolbarHtml, Strings));
-        $("#main-toolbar .buttons").append(d);
+        $toolbarIcon = $(Mustache.render(ewfToolbarHtml, Strings));
+        $("#main-toolbar .buttons").append($toolbarIcon);
         
+        // add event handler to enable/disable the webfont toolbar icon
+        $(DocumentManager).on("currentDocumentChange", _handleDocumentChange);
+        _handleDocumentChange(); // set to appropriate state for curret doc
+        
+        // add browsing dialog to dom
+        $('body').append($(Mustache.render(ewfDialogHtml, Strings)));
         
     }
 
     // load everything when brackets is done loading
     AppInit.appReady(function () {
         webfont.init()
-            .done(function () {
-                var d = $(Mustache.render(ewfDialogHtml, Strings));
-                $('body').append(d);
-                init(); // only register commands if the core loaded properly
-            })
+            .done(init) // only register commands if the core loaded properly
             .fail(function (err) {
                 // TODO: Should probably keep trying at some interval -- may have failed because not connected to net
                 console.log("[edge-web-font extension] failed to initialize: " + err);
