@@ -29,26 +29,36 @@
 define(function (require, exports, module) {
     "use strict";
     
-    var apiUrlPrefix = "https://api.typekit.com/muse_v1/";
-
-    var fontsByClass = {};
-    var fontsByName = {};
-    var fontsBySlug = {};
-    var allFonts;
+    var apiUrlPrefix      = "https://typekit.com/api/edge_internal_v1/",
+        fontIncludePrefix = "<script src=\"http://webfonts.creativecloud.com/",
+        fontIncludeSuffix = ".js\"></script>";
     
+    var fontsByClass = {},
+        fontsByName  = {},
+        fontsBySlug  = {},
+        allFonts;
     
     var pickerHtml     = require("text!core/htmlContent/ewf-picker.html"),
-        resultsHtml = require("text!core/htmlContent/ewf-results.html"),
+        resultsHtml    = require("text!core/htmlContent/ewf-results.html"),
         Strings        = require("core/strings");
     
-    var $picker = null;
-    var $results = null;
+    var $picker  = null,
+        $results = null;
     
     var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"];
         
     function _displayResults(families) {
         function fontClickHandler(event) {
-            console.log("[ewf]", "clicked a font", $(event.target).attr("data-slug"));
+            var d = event.target;
+
+            // walk up the dom until we find something with the data-slug attribute
+            while (d && !d.attributes.hasOwnProperty('data-slug')) {
+                d = d.parentElement;
+            }
+            
+            if (d) {
+                console.log("[ewf]", "clicked a font", d.attributes["data-slug"].value);
+            }
         }
 
         if ($results) {
@@ -93,7 +103,25 @@ define(function (require, exports, module) {
 
         $('#ewf-tabs a:first').trigger('click');
     }
-        
+    
+    /**
+     * Generates the script tag for including the specified fonts.
+     *
+     * @param {!Array} fonts - should be an array of objects, and each object 
+     *      should have the following properties:
+     *        slug - string specifying the unique slug of the font (e.g. "droid-sans")
+     *        fvds - array of variant strings (e.g. ["n4", "n7"])
+     *        subset - string specifying the subset desired (e.g. "default")
+     *
+     */
+    function createInclude(fonts) {
+        var i, fontStrings = [];
+        for (i = 0; i < fonts.length; i++) {
+            fontStrings.push(fonts[i].slug + ":" + fonts[i].fvds.join(",") + ":" + fonts[i].subset);
+        }
+        return fontIncludePrefix + fontStrings.join(";") + fontIncludeSuffix;
+    }
+    
     function init(newApiUrlPrefix) {
         var d = $.Deferred();
         
@@ -144,6 +172,7 @@ define(function (require, exports, module) {
     }
     
     exports.renderPicker = renderPicker;
+    exports.createInclude = createInclude;
     exports.init = init;
     
 });

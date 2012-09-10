@@ -30,6 +30,7 @@ define(function (require, exports, module) {
     
     var webfont        = require("core/webfont"),
         ewfDialogHtml  = require("text!ewf-dialog.html"),
+        ewfToolbarHtml = require("text!ewf-toolbar.html"),
         Strings        = require("core/strings");
     
     
@@ -83,6 +84,11 @@ define(function (require, exports, module) {
         menu.addMenuItem(COMMAND_BROWSE_FONTS, "Ctrl-Alt-B", Menus.AFTER, Commands.EDIT_LINE_COMMENT);
         menu.addMenuItem(Menus.DIVIDER, null, Menus.BEFORE, COMMAND_BROWSE_FONTS);
 
+        // set up toolbar icon
+        var d = $(Mustache.render(ewfToolbarHtml, Strings));
+        $("#main-toolbar .buttons").append(d);
+        
+        
     }
 
     // load everything when brackets is done loading

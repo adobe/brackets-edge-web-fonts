@@ -29,6 +29,7 @@ define({
 
     "DIALOG_DONE"         : "Done",
     "MENU_BROWSE_FONTS"   : "Browse Edge Web Fonts",
+    "TOOLBAR_TOOLTIP"     : "Generate Edge Web Fonts Include Code",
     
     // Font classifications
     "serif"               : "Serif",
