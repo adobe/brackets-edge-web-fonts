@@ -25,19 +25,20 @@
 /*global define */
 
 define({
-    "PRODUCT_NAME"        : "Adobe Edge Web Fonts",
+    "PRODUCT_NAME"             : "Adobe Edge Web Fonts",
 
-    "DIALOG_DONE"         : "Done",
-    "MENU_BROWSE_FONTS"   : "Browse Edge Web Fonts",
-    "TOOLBAR_TOOLTIP"     : "Generate Edge Web Fonts Include Code",
+    "DIALOG_DONE"              : "Done",
+    "MENU_BROWSE_FONTS"        : "Browse Edge Web Fonts",
+    "TOOLBAR_TOOLTIP"          : "Generate Edge Web Fonts Include Code",
+    "INCLUDE_INSTRUCTIONS"     : "Put this in your HTML head:",
     
     // Font classifications
-    "serif"               : "Serif",
-    "sans-serif"          : "Sans-Serif",
-    "slab-serif"          : "Slab-Serif",
-    "script"              : "Script",
-    "blackletter"         : "Blackletter",
-    "monospaced"          : "Monospaced",
-    "handmade"            : "Handmande",
-    "decorative"          : "Decorative"
+    "serif"                    : "Serif",
+    "sans-serif"               : "Sans-Serif",
+    "slab-serif"               : "Slab-Serif",
+    "script"                   : "Script",
+    "blackletter"              : "Blackletter",
+    "monospaced"               : "Monospaced",
+    "handmade"                 : "Handmande",
+    "decorative"               : "Decorative"
 });

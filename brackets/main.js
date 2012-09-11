@@ -28,13 +28,16 @@
 define(function (require, exports, module) {
     "use strict";
     
-    var webfont        = require("core/webfont"),
-        ewfDialogHtml  = require("text!ewf-dialog.html"),
-        ewfToolbarHtml = require("text!ewf-toolbar.html"),
-        Strings        = require("core/strings");
+    var webfont               = require("core/webfont"),
+        parser                = require("cssFontParser"),
+        ewfBrowseDialogHtml   = require("text!ewf-browse-dialog.html"),
+        ewfIncludeDialogHtml  = require("text!ewf-include-dialog.html"),
+        ewfToolbarHtml        = require("text!ewf-toolbar.html"),
+        Strings               = require("core/strings");
     
     
     var AppInit         = brackets.getModule("utils/AppInit"),
+        StringUtils     = brackets.getModule("utils/StringUtils"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
         EditorUtils     = brackets.getModule("editor/EditorUtils"),
         CommandManager  = brackets.getModule("command/CommandManager"),
@@ -72,10 +75,33 @@ define(function (require, exports, module) {
         }
 
         function _handleBrowseFonts() {
-            Dialogs.showModalDialog("edge-web-fonts-dialog");
-            webfont.renderPicker($('.instance #edge-web-fonts-dialog-body')[0]);
+            Dialogs.showModalDialog("edge-web-fonts-browse-dialog");
+            webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
         }
         
+        // TODO: This should be factored into a command
+        function _handleToolbarClick() {
+            var fonts = parser.parseCurrentFullEditor();
+            var fontFamilies = [];
+            var i, f;
+            var includeString = "";
+            
+            console.log("[ewf] found these fonts", fonts);
+            for (i = 0; i < fonts.length; i++) {
+                f = webfont.getFontBySlug(fonts[i]);
+                if (f) {
+                    // TODO: Actually do something with the FVDs
+                    fontFamilies.push({slug: f.slug, fvds: [f.variations[0].fvd], subset: "default"});
+                }
+            }
+            
+            Dialogs.showModalDialog("edge-web-fonts-include-dialog");
+            includeString = webfont.createInclude(fontFamilies);
+            $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
+            console.log("[ewf] the include: ", webfont.createInclude(fontFamilies));
+            
+        }
+
         function _handleDocumentChange() {
             var doc = DocumentManager.getCurrentDocument();
             var mode = null;
@@ -84,12 +110,13 @@ define(function (require, exports, module) {
             }
             console.log("[ewf] Document mode changed", mode);
             if (mode === "css") {
-                $toolbarIcon.addClass('active');
+                $toolbarIcon.addClass("active");
+                $toolbarIcon.on("click", _handleToolbarClick);
             } else {
-                $toolbarIcon.removeClass('active');
+                $toolbarIcon.removeClass("active");
+                $toolbarIcon.off("click", _handleToolbarClick);
             }
         }
-        
         
         // load styles
         _loadLessFile("ewf-brackets.less", _extensionDirForBrowser());
@@ -110,9 +137,9 @@ define(function (require, exports, module) {
         $(DocumentManager).on("currentDocumentChange", _handleDocumentChange);
         _handleDocumentChange(); // set to appropriate state for curret doc
         
-        // add browsing dialog to dom
-        $('body').append($(Mustache.render(ewfDialogHtml, Strings)));
-        
+        // add dialogs to dom
+        $('body').append($(Mustache.render(ewfBrowseDialogHtml, Strings)));
+        $('body').append($(Mustache.render(ewfIncludeDialogHtml, Strings)));
     }
 
     // load everything when brackets is done loading

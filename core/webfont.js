@@ -46,6 +46,16 @@ define(function (require, exports, module) {
         $results = null;
     
     var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"];
+
+    /**
+     * Returns font object matching specified slug or 'undefined' if not found
+     *
+     * @param {!string} slug - the slug of the desired font
+     * @return {object} font object, or undefined if not found
+     */
+    function getFontBySlug(slug) {
+        return fontsBySlug[slug.toLowerCase()];
+    }
     
     /**
      * Returns a sorted array of all fonts that contain a case-insensitive version
@@ -58,7 +68,7 @@ define(function (require, exports, module) {
      * Within each category, fonts are sorted alphabetically
      * 
      * @param {!string} needle - the search term
-     * @return {Array.<Object> Array of font objects that contain the search term.
+     * @return {Array.<Object>} Array of font objects that contain the search term.
      */
     function searchByName(needle) {
         var beginning = [], beginningOfWord = [], contains = [];
@@ -168,15 +178,18 @@ define(function (require, exports, module) {
         function organizeFamilies(families) {
             allFonts = families.families;
             var i, j;
-    
-            // we keep allFonts in alphabetical order by name, so that all other
-            // lists will also be in order.
-            allFonts.sort(function (a, b) { return (a.name < b.name ? -1 : 1); });
             
-            // give all fonts a locale lowercase name
+            // Clean up the fonts in two ways:
+            //   1. give all fonts a locale lowercase name (for searching by name)
+            //   2. make sure all slugs are lowercase (should be the case already)
             for (i = 0; i < allFonts.length; i++) {
                 allFonts[i].lowerCaseName = allFonts[i].name.toLocaleLowerCase();
+                allFonts[i].slug = allFonts[i].slug.toLowerCase();
             }
+            
+            // We keep allFonts in alphabetical order by name, so that all other
+            // lists will also be in order.
+            allFonts.sort(function (a, b) { return (a.lowerCaseName < b.lowerCaseName ? -1 : 1); });
             
             fontsByClass = {};
             fontsByName = {};
@@ -211,6 +224,7 @@ define(function (require, exports, module) {
                 
     }
     
+    exports.getFontBySlug = getFontBySlug;
     exports.searchByName = searchByName;
     exports.renderPicker = renderPicker;
     exports.createInclude = createInclude;
