@@ -93,6 +93,42 @@ define(function (require, exports, module) {
         return beginning.concat(beginningOfWord).concat(contains);
     }
     
+    /**
+     * Returns a sorted array of all font slugs that contain a case-insensitive version
+     * of the needle.
+     *
+     * The results are sorted as follows:
+     *   1. All fonts with a slug that starts with the needle
+     *   2. All fonts with a slug part (separated by hyphens) that starts with the needle
+     *   3. All fonts with a slug that contain the needle
+     * Within each category, fonts are sorted alphabetically
+     * 
+     * @param {!string} needle - the search term
+     * @return {Array.<Object>} Array of font objects that contain the search term.
+     */
+    function searchBySlug(needle) {
+        var beginning = [], beginningOfWord = [], contains = [];
+        var i, index;
+        
+        var lowerCaseNeedle = needle.toLocaleLowerCase();
+        
+        for (i = 0; i < allFonts.length; i++) {
+            index = allFonts[i].slug.indexOf(lowerCaseNeedle);
+            if (index === 0) {
+                beginning.push(allFonts[i].slug);
+            } else if (index > 0) {
+                var previousChar = allFonts[i].slug[index - 1];
+                if (!previousChar.isAlpha() && !previousChar.isDigit()) {
+                    beginningOfWord.push(allFonts[i].slug);
+                } else {
+                    contains.push(allFonts[i].slug);
+                }
+            }
+        }
+        
+        return beginning.concat(beginningOfWord).concat(contains);
+    }
+    
     function _displayResults(families) {
         function fontClickHandler(event) {
             var d = event.target;
@@ -226,6 +262,7 @@ define(function (require, exports, module) {
     
     exports.getFontBySlug = getFontBySlug;
     exports.searchByName = searchByName;
+    exports.searchBySlug = searchBySlug;
     exports.renderPicker = renderPicker;
     exports.createInclude = createInclude;
     exports.init = init;
