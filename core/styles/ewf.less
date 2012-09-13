@@ -27,7 +27,7 @@
         background-clip: border-box;
 
     }
-    #ewf-picker {
+    .ewf-picker {
         height: 600px;
         width: 780px;
         background-color: #f8f8f8;
@@ -38,7 +38,7 @@
         border: 1px solid #ccc;
     }
     
-    #ewf-tabs {
+    .ewf-tabs {
         width: 180px;
         height: 580px;
         position: absolute;
@@ -72,7 +72,7 @@
 
     }
     
-    #ewf-results {
+    .ewf-results {
         position: absolute;
         left: 200px;
         width: 580px;
@@ -99,6 +99,10 @@
         background-position: center 5px;
         
         cursor: pointer;
+        
+        &.selected {
+            border-color: #ff0000;
+        }
 
     }
     

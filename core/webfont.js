@@ -135,12 +135,14 @@ define(function (require, exports, module) {
             var d = event.target;
 
             // walk up the dom until we find something with the data-slug attribute
-            while (d && !d.attributes.hasOwnProperty('data-slug')) {
+            while (d && !d.attributes.hasOwnProperty("data-slug")) {
                 d = d.parentElement;
             }
             
             if (d) {
                 console.log("[ewf]", "clicked a font", d.attributes["data-slug"].value);
+                $(".ewf-font.selected").removeClass("selected");
+                $(d).addClass("selected");
             }
         }
 
@@ -160,7 +162,7 @@ define(function (require, exports, module) {
             var families = fontsByClass[classification];
         
             // clear previously selected class
-            $('#ewf-tabs a').removeClass("selected");
+            $('.ewf-tabs a').removeClass("selected");
             // select this class
             $(event.target).addClass("selected");
             
@@ -180,11 +182,11 @@ define(function (require, exports, module) {
         $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications}));
         $(domElement).append($picker);
 
-        $('#ewf-tabs a', $picker).click(classificationClickHandler);
+        $('.ewf-tabs a', $picker).click(classificationClickHandler);
         
-        $results = $("#ewf-results", $picker);
+        $results = $(".ewf-results", $picker);
 
-        $('#ewf-tabs a:first').trigger('click');
+        $('.ewf-tabs a:first').trigger('click');
     }
     
     /**
