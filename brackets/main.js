@@ -38,16 +38,17 @@ define(function (require, exports, module) {
         Strings                 = require("core/strings");
     
     
-    var AppInit         = brackets.getModule("utils/AppInit"),
-        StringUtils     = brackets.getModule("utils/StringUtils"),
-        DocumentManager = brackets.getModule("document/DocumentManager"),
-        EditorManager   = brackets.getModule("editor/EditorManager"),
-        EditorUtils     = brackets.getModule("editor/EditorUtils"),
-        CodeHintManager = brackets.getModule("editor/CodeHintManager"),
-        CommandManager  = brackets.getModule("command/CommandManager"),
-        Commands        = brackets.getModule("command/Commands"),
-        Dialogs         = brackets.getModule("widgets/Dialogs"),
-        Menus           = brackets.getModule("command/Menus");
+    var AppInit            = brackets.getModule("utils/AppInit"),
+        StringUtils        = brackets.getModule("utils/StringUtils"),
+        DocumentManager    = brackets.getModule("document/DocumentManager"),
+        EditorManager      = brackets.getModule("editor/EditorManager"),
+        EditorUtils        = brackets.getModule("editor/EditorUtils"),
+        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
+        CodeHintManager    = brackets.getModule("editor/CodeHintManager"),
+        CommandManager     = brackets.getModule("command/CommandManager"),
+        Commands           = brackets.getModule("command/Commands"),
+        Dialogs            = brackets.getModule("widgets/Dialogs"),
+        Menus              = brackets.getModule("command/Menus");
 
     // DOM elements and HTML
     var $toolbarIcon = null;
@@ -55,12 +56,17 @@ define(function (require, exports, module) {
     // we have a new popup. But, we only need to render the HTML once.
     var codeHintAdditionHtmlString = Mustache.render(ewfCodeHintAdditionHtml, Strings);
     
-    // Commands
+    // Commands & Prefs Strings
     var COMMAND_BROWSE_FONTS = "edgewebfonts.browsefonts";
     var COMMAND_GENERATE_INCLUDE = "edgewebfonts.generateinclude";
+    var PREFERENCES_CLIENT_ID = "com.adobe.edgewebfonts";
+    var PREFERENCES_FONT_HISTORY_KEY = "ewf-font-history";
     
     // Local variables
     var lastFontSelected = null;
+    var lastTwentyFonts = [];
+    var prefs = {};
+    var whitespaceRegExp = new RegExp("\\s");
     
     function _documentIsCSS(doc) {
 
@@ -115,15 +121,23 @@ define(function (require, exports, module) {
     function _insertFontCompletionAtCursor(completion, editor, cursor) {
         var token;
         var actualCompletion = completion;
-        var stringChar = "";
+        var stringChar = "\"";
         
         if (_documentIsCSS(editor.document)) { // on the off-chance we changed documents, don't change anything
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
+                // get the correct string character if there is already one in use
                 if (token.className === "string") {
                     stringChar = token.string.substring(0, 1);
+                }
+
+                // wrap the completion in string character if either 
+                //  a.) we're inserting into a string, or 
+                //  b.) the slug contains a space
+                if (token.className === "string" || whitespaceRegExp.test(actualCompletion)) {
                     actualCompletion = stringChar + actualCompletion + stringChar;
                 }
+
                 
                 if (token.className === "string" || token.className === "number") { // replace
                     editor.document.replaceRange(actualCompletion,
@@ -134,6 +148,17 @@ define(function (require, exports, module) {
                 }
             }
         }
+        
+        // record it in our font history
+        var i = lastTwentyFonts.indexOf(completion);
+        if (i >= 0) {
+            lastTwentyFonts.splice(i, 1);
+        }
+        lastTwentyFonts.splice(0, 0, completion); // add completion to front of array
+        if (lastTwentyFonts.length > 20) {
+            lastTwentyFonts.splice(20, lastTwentyFonts.length - 20);
+        }
+        prefs.setValue(PREFERENCES_FONT_HISTORY_KEY, lastTwentyFonts);
     }
     
     /**
@@ -148,8 +173,15 @@ define(function (require, exports, module) {
      * @return {Array.<string>}
      */
     FontHints.prototype.search = function (query) {
-        return webfont.searchBySlug(query.queryStr);
+        // return webfont.searchBySlug(query.queryStr);
         
+        var candidates = parser.parseCurrentFullEditor();
+        candidates = candidates.concat(lastTwentyFonts);
+        candidates = candidates.concat(webfont.getWebsafeFonts());
+        
+        candidates = webfont.filterAndSortSlugArray(query.queryStr, candidates);
+        
+        return candidates;
     };
 
 
@@ -332,6 +364,14 @@ define(function (require, exports, module) {
         $(webfont).on("ewfFontSelected", function (event, slug) {
             lastFontSelected = slug;
         });
+        
+        // setup preferences
+        prefs = PreferencesManager.getPreferenceStorage(PREFERENCES_CLIENT_ID);
+        lastTwentyFonts = prefs.getValue(PREFERENCES_FONT_HISTORY_KEY);
+        if (!lastTwentyFonts) {
+            lastTwentyFonts = [];
+        }
+
     }
 
     // load everything when brackets is done loading

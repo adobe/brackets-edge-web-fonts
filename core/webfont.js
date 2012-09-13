@@ -37,7 +37,8 @@ define(function (require, exports, module) {
     var fontsByClass = {},
         fontsByName  = {},
         fontsBySlug  = {},
-        allFonts;
+        allFonts     = [],
+        allSlugs     = [];
     
     var pickerHtml     = require("text!core/htmlContent/ewf-picker.html"),
         resultsHtml    = require("text!core/htmlContent/ewf-results.html"),
@@ -48,6 +49,16 @@ define(function (require, exports, module) {
     
     var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"];
 
+    var websafeFonts = ["andale mono", "arial", "arial black", "comic sans ms", "courier new", "georgia", "impact", "times new roman", "trebuchet ms", "verdana", "sans-serif", "serif"];
+    
+    function getWebsafeFonts() {
+        return websafeFonts.concat([]); // make a copy   
+    }
+    
+    function getAllSlugs() {
+        return allSlugs.concat([]); // make a copy           
+    }
+    
     /**
      * Returns font object matching specified slug or 'undefined' if not found
      *
@@ -56,6 +67,74 @@ define(function (require, exports, module) {
      */
     function getFontBySlug(slug) {
         return fontsBySlug[slug.toLowerCase()];
+    }
+    
+    /**
+     * Returns a copy of arr that is a.) all lowercase, b.) sorted lexigraphically,
+     * and c.) has all duplicates removed.
+     *
+     * @param {!Array.<string>}
+     * @return {Array.<string>}
+     */
+    function lowerSortUniqStringArray(arr) {
+        var i, last = null, lowerArr = [], result = [];
+        // fill up the lowerArr array with lowercase versions of the source array
+        for (i = 0; i < arr.length; i++) {
+            if (typeof arr[i] === "string") {
+                lowerArr.push(arr[i].toLowerCase());
+            }
+        }
+        
+        // sort lowerArr alphabetically
+        lowerArr.sort();
+        
+        // copy unique elements to result array
+        for (i = 0; i < lowerArr.length; i++) {
+            if (lowerArr[i] !== last) {
+                result.push(lowerArr[i]);
+                last = lowerArr[i];
+            }
+        }
+        
+        return result;
+    }
+
+    /**
+     * Returns a sorted array of all font slugs that contain a case-insensitive version
+     * of the needle.
+     *
+     * The results are sorted as follows:
+     *   1. All fonts with a slug that starts with the needle
+     *   2. All fonts with a slug part (separated by hyphens) that starts with the needle
+     *   3. All fonts with a slug that contain the needle
+     * Within each category, fonts are sorted alphabetically
+     * 
+     * @param {!string} needle - the search term
+     * @return {Array.<Object>} Array of font objects that contain the search term.
+     */
+    function filterAndSortSlugArray(needle, arr) {
+        var beginning = [], beginningOfWord = [], contains = [];
+        var i, index;
+        
+        arr = lowerSortUniqStringArray(arr);
+        
+        var lowerCaseNeedle = needle.toLocaleLowerCase();
+        
+        for (i = 0; i < arr.length; i++) {
+            index = arr[i].indexOf(lowerCaseNeedle);
+            if (index === 0) {
+                beginning.push(arr[i]);
+            } else if (index > 0) {
+                var previousChar = arr[i][index - 1];
+                if (!previousChar.isAlpha() && !previousChar.isDigit()) {
+                    beginningOfWord.push(arr[i]);
+                } else {
+                    contains.push(arr[i]);
+                }
+            }
+        }
+        
+        return beginning.concat(beginningOfWord).concat(contains);
     }
     
     /**
@@ -94,40 +173,10 @@ define(function (require, exports, module) {
         return beginning.concat(beginningOfWord).concat(contains);
     }
     
-    /**
-     * Returns a sorted array of all font slugs that contain a case-insensitive version
-     * of the needle.
-     *
-     * The results are sorted as follows:
-     *   1. All fonts with a slug that starts with the needle
-     *   2. All fonts with a slug part (separated by hyphens) that starts with the needle
-     *   3. All fonts with a slug that contain the needle
-     * Within each category, fonts are sorted alphabetically
-     * 
-     * @param {!string} needle - the search term
-     * @return {Array.<Object>} Array of font objects that contain the search term.
-     */
+    
+
     function searchBySlug(needle) {
-        var beginning = [], beginningOfWord = [], contains = [];
-        var i, index;
-        
-        var lowerCaseNeedle = needle.toLocaleLowerCase();
-        
-        for (i = 0; i < allFonts.length; i++) {
-            index = allFonts[i].slug.indexOf(lowerCaseNeedle);
-            if (index === 0) {
-                beginning.push(allFonts[i].slug);
-            } else if (index > 0) {
-                var previousChar = allFonts[i].slug[index - 1];
-                if (!previousChar.isAlpha() && !previousChar.isDigit()) {
-                    beginningOfWord.push(allFonts[i].slug);
-                } else {
-                    contains.push(allFonts[i].slug);
-                }
-            }
-        }
-        
-        return beginning.concat(beginningOfWord).concat(contains);
+        return filterAndSortSlugArray(needle, getAllSlugs());
     }
     
     function _displayResults(families) {
@@ -228,6 +277,11 @@ define(function (require, exports, module) {
             // lists will also be in order.
             allFonts.sort(function (a, b) { return (a.lowerCaseName < b.lowerCaseName ? -1 : 1); });
             
+            // setup the allSlugs array;
+            for (i = 0; i < allFonts.length; i++) {
+                allSlugs.push(allFonts[i].slug);
+            }
+            
             fontsByClass = {};
             fontsByName = {};
             fontsBySlug = {};
@@ -261,6 +315,10 @@ define(function (require, exports, module) {
                 
     }
     
+    exports.lowerSortUniqStringArray = lowerSortUniqStringArray;
+    exports.filterAndSortSlugArray = filterAndSortSlugArray;
+    exports.getWebsafeFonts = getWebsafeFonts;
+    exports.getAllSlugs = getAllSlugs;
     exports.getFontBySlug = getFontBySlug;
     exports.searchByName = searchByName;
     exports.searchBySlug = searchBySlug;

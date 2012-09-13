@@ -29,34 +29,7 @@ define(function (require, exports, module) {
     "use strict";
     
     var EditorManager = brackets.getModule("editor/EditorManager");
-        
-    /**
-     * Returns a copy of arr that is a.) all lowercase, b.) sorted lexigraphically,
-     * and c.) has all duplicates removed.
-     *
-     * @param {!Array.<string>}
-     * @return {Array.<string>}
-     */
-    function _lowerSortUniqStringArray(arr) {
-        var i, last = null, lowerArr = [], result = [];
-        // fill up the lowerArr array with lowercase versions of the source array
-        for (i = 0; i < arr.length; i++) {
-            lowerArr.push(arr[i].toLowerCase());
-        }
-        
-        // sort lowerArr alphabetically
-        lowerArr.sort();
-        
-        // copy unique elements to result array
-        for (i = 0; i < lowerArr.length; i++) {
-            if (lowerArr[i] !== last) {
-                result.push(lowerArr[i]);
-                last = lowerArr[i];
-            }
-        }
-        
-        return result;
-    }
+    var webfont = require("core/webfont");
     
     function parseCurrentFullEditor() {
         var cm = EditorManager.getCurrentFullEditor()._codeMirror;
@@ -93,7 +66,7 @@ define(function (require, exports, module) {
             }
         }
         
-        return _lowerSortUniqStringArray(fonts);
+        return webfont.lowerSortUniqStringArray(fonts);
     }
     
     function getFontTokenAtCursor(editor, cursor) {
