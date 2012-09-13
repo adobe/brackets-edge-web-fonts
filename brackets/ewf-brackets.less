@@ -59,3 +59,30 @@
         .sprite-swap(0,48px);
     }
 }
+
+.dropdown.codehint-menu .ewf-codehint-addition {
+    // NOTE: This is **required** because PopUpManager checks whether a popup is
+    // hidden by checking if it has any visible children. PopUps don't always get
+    // removed from the DOM right when they're hidden. If we don't have this rule
+    // we get infinite recursion in PopUpManager.
+    display: none;
+}
+
+.dropdown.codehint-menu.open {
+    .dropdown-menu {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;        
+    }
+    
+    .ewf-codehint-addition {
+        display: block;
+        border: 1px solid #C8C8C8;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        background-color: white;
+        p {
+            padding: 5px 10px;
+            margin: 0px;
+        }
+    }
+}

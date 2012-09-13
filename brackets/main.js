@@ -23,17 +23,18 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, window, Mustache, less */
+/*global define, brackets, $, window, Mustache, less, setTimeout */
 
 define(function (require, exports, module) {
     "use strict";
     
-    var webfont               = require("core/webfont"),
-        parser                = require("cssFontParser"),
-        ewfBrowseDialogHtml   = require("text!ewf-browse-dialog.html"),
-        ewfIncludeDialogHtml  = require("text!ewf-include-dialog.html"),
-        ewfToolbarHtml        = require("text!ewf-toolbar.html"),
-        Strings               = require("core/strings");
+    var webfont                 = require("core/webfont"),
+        parser                  = require("cssFontParser"),
+        ewfBrowseDialogHtml     = require("text!ewf-browse-dialog.html"),
+        ewfIncludeDialogHtml    = require("text!ewf-include-dialog.html"),
+        ewfToolbarHtml          = require("text!ewf-toolbar.html"),
+        ewfCodeHintAdditionHtml = require("text!ewf-codehint-addition.html"),
+        Strings                 = require("core/strings");
     
     
     var AppInit         = brackets.getModule("utils/AppInit"),
@@ -47,15 +48,57 @@ define(function (require, exports, module) {
         Menus           = brackets.getModule("command/Menus");
 
     var $toolbarIcon = null;
+
+    // Because of the way pop ups wor, we need to create a new code hint addition every time 
+    // we have a new popup. But, we only need to render the HTML once.
+    var codeHintAdditionHtmlString = Mustache.render(ewfCodeHintAdditionHtml, Strings);
     
     // commands
     var COMMAND_BROWSE_FONTS = "edgewebfonts.browsefonts";
+    var COMMAND_GENERATE_INCLUDE = "edgewebfonts.generateinclude";
         
     function _documentIsCSS(doc) {
 
         return ((doc !== null) &&
                 (doc !== undefined) &&
                 (EditorUtils.getModeFromFileExtension(doc.file.fullPath) === "css"));
+    }
+    
+    /** Adds an option to browse EWF to the bottom of the code hint list
+     *
+     *  TODO: Add an API to either CodeHintManager or PopUpManager so that we
+     *  can add UI in a much cleaner way. Once we do that, clean up the
+     *  LESS so that we aren't overriding core brackets LESS (e.g. to change
+     *  the code hint border).
+     */
+    function _augmentCodeHintUI() {
+        var $menu = $(".dropdown.codehint-menu.open");
+        if ($menu.length > 0) {
+            var $menuList = $menu.find(".dropdown-menu");
+            if ($menuList.length > 0) { // we're actually displaying a code hint
+                var $codeHintAddition = $menu.find(".ewf-codehint-addition");
+                
+                // If this is a new popup, we won't have a code hint addition yet (new popup), 
+                // so create it first
+                if ($codeHintAddition.length === 0) {
+                    $codeHintAddition = $(codeHintAdditionHtmlString);
+                    $menuList.after($codeHintAddition);
+                    $codeHintAddition.find('a').on('click', function () {
+                        CommandManager.execute(COMMAND_BROWSE_FONTS);
+                        return false; // don't actually follow link
+                    });
+                }
+
+                // This method only gets called when the pop up has changed in some way
+                // (e.g. a new search). So, the popup has always moved. We need to reposition.
+                var menuListPosition = $menuList.position();
+                $codeHintAddition.css("position", "absolute");
+                $codeHintAddition.css("top", menuListPosition.top + $menuList.height());
+                $codeHintAddition.css("left", menuListPosition.left);
+                $codeHintAddition.css("width", $menuList.width());
+                $codeHintAddition.css("max-width", $menuList.width());
+            }
+        }
     }
     
     /**
@@ -110,6 +153,11 @@ define(function (require, exports, module) {
                     console.log("[ewf] not in string or number, decided on '" + queryInfo.queryStr + "'");
                 }
             }
+        }
+        
+        // we're going to handle this query, so we need to add our UI
+        if (queryInfo.queryStr !== null) {
+            setTimeout(_augmentCodeHintUI, 1);
         }
         
         return queryInfo;
@@ -185,8 +233,7 @@ define(function (require, exports, module) {
             webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
         }
         
-        // TODO: This should be factored into a command
-        function _handleToolbarClick() {
+        function _handleGenerateInclude() {
             var fonts = parser.parseCurrentFullEditor();
             var fontFamilies = [];
             var i, f;
@@ -208,6 +255,10 @@ define(function (require, exports, module) {
             
         }
 
+        function _handleToolbarClick() {
+            CommandManager.execute(COMMAND_GENERATE_INCLUDE);
+        }
+        
         function _handleDocumentChange() {
             var doc = DocumentManager.getCurrentDocument();
             // doc will be null if there's no active document (user closed all docs)
@@ -228,12 +279,15 @@ define(function (require, exports, module) {
         _loadLessFile("ewf-brackets.less", _extensionDirForBrowser());
         
         // register commands
-        CommandManager.register(Strings.MENU_BROWSE_FONTS, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
-    
+        CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
+        CommandManager.register(Strings.GENERATE_INCLUDE_COMMAND_NAME, COMMAND_GENERATE_INCLUDE, _handleGenerateInclude);
+        
         // set up menu and keybinding
+        /* NOTE: Decided not to have menu items for now. Leaving this code in case we want to add them back
         var menu = Menus.getMenu(Menus.AppMenuBar.EDIT_MENU);
         menu.addMenuItem(COMMAND_BROWSE_FONTS, "Ctrl-Alt-B", Menus.AFTER, Commands.EDIT_LINE_COMMENT);
         menu.addMenuItem(Menus.DIVIDER, null, Menus.BEFORE, COMMAND_BROWSE_FONTS);
+        */
 
         // set up toolbar icon
         $toolbarIcon = $(Mustache.render(ewfToolbarHtml, Strings));

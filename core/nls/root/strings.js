@@ -25,12 +25,14 @@
 /*global define */
 
 define({
-    "PRODUCT_NAME"             : "Adobe Edge Web Fonts",
+    "PRODUCT_NAME"                   : "Adobe Edge Web Fonts",
 
-    "DIALOG_DONE"              : "Done",
-    "MENU_BROWSE_FONTS"        : "Browse Edge Web Fonts",
-    "TOOLBAR_TOOLTIP"          : "Generate Edge Web Fonts Include Code",
-    "INCLUDE_INSTRUCTIONS"     : "Put this in your HTML head:",
+    "DIALOG_DONE"                    : "Done",
+    "BROWSE_FONTS_COMMAND_NAME"      : "Browse Edge Web Fonts",
+    "CODEHINT_BROWSE"                : "Browse EWF...", // Needs to be short to fit in popup, but not sure about acronym
+    "GENERATE_INCLUDE_COMMAND_NAME"  : "Generate Edge Web Fonts Include Code",
+    "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Include Code",
+    "INCLUDE_INSTRUCTIONS"           : "Put this in your HTML head:",
     
     // Font classifications
     "serif"                    : "Serif",
