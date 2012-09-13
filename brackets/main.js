@@ -233,26 +233,35 @@ define(function (require, exports, module) {
             webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
         }
         
+        /** Determins what font slugs are in the CSS file and generates the appropriate
+         *  data to build the include string. Then, displays the string in a dialog
+         *  The actual generation of the string is handled by a core API function
+         *
+         *  TODO: Right now, we just generate the maximal include string using all
+         *  FVDs for a font and the "all" character subset. Long term, we should have a
+         *  configurator UI that lets users specify which variants and subsets they want
+         */
         function _handleGenerateInclude() {
             var fonts = parser.parseCurrentFullEditor();
-            var fontFamilies = [];
-            var i, f;
+            var fontFamilies = [], allFvds = [];
+            var i, j, f;
             var includeString = "";
             
             console.log("[ewf] found these fonts", fonts);
             for (i = 0; i < fonts.length; i++) {
                 f = webfont.getFontBySlug(fonts[i]);
                 if (f) {
-                    // TODO: Actually do something with the FVDs
-                    fontFamilies.push({slug: f.slug, fvds: [f.variations[0].fvd], subset: "default"});
+                    allFvds = [];
+                    for (j = 0; j < f.variations.length; j++) {
+                        allFvds.push(f.variations[j].fvd);
+                    }
+                    fontFamilies.push({slug: f.slug, fvds: allFvds, subset: "all"});
                 }
             }
             
-            Dialogs.showModalDialog("edge-web-fonts-include-dialog");
             includeString = webfont.createInclude(fontFamilies);
+            Dialogs.showModalDialog("edge-web-fonts-include-dialog");
             $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
-            console.log("[ewf] the include: ", webfont.createInclude(fontFamilies));
-            
         }
 
         function _handleToolbarClick() {

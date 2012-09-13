@@ -1,17 +1,17 @@
 /* the best heading */
 h1 {
-    font-family: "Droid-Sans", monospace;
+    font-family: "droid-sans-mono", monospace;
     font-weight: bold;
 }
 h2 {
-    font-family: "droid-sans", /* comment */ "adamina", monospace;
+    font-family: "droid-sans", /* comment */ "advent-pro", monospace;
     font-weight: normal;
 }
 h3 {
-    font-family: Abril-fatFace, stupid, monospace;
+    font-family: Abril-fatFace, verdana, monospace;
     font-style: normal;
 }
 p {
-    font-family: droid-sans, monospace;
+    font-family: adamina, monospace;
     font-style: normal;
 }

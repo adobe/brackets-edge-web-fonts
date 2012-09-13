@@ -32,7 +32,8 @@ define({
     "CODEHINT_BROWSE"                : "Browse EWF...", // Needs to be short to fit in popup, but not sure about acronym
     "GENERATE_INCLUDE_COMMAND_NAME"  : "Generate Edge Web Fonts Include Code",
     "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Include Code",
-    "INCLUDE_INSTRUCTIONS"           : "Put this in your HTML head:",
+    "INCLUDE_INSTRUCTIONS_1"         : "Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.",
+    "INCLUDE_INSTRUCTIONS_2"         : "Add the following script tag to all HTML files that reference this CSS file:",
     
     // Font classifications
     "serif"                    : "Serif",
