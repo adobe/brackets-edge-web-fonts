@@ -70,6 +70,12 @@ define(function (require, exports, module) {
      *  can add UI in a much cleaner way. Once we do that, clean up the
      *  LESS so that we aren't overriding core brackets LESS (e.g. to change
      *  the code hint border).
+     *
+     *  NOTE: It is **required** that we have a CSS rule that causes the DOM elements
+     *  here to be hidden when the menu does *not* have the "open" class applied.
+     *  This is because PopUpManager checks whether a popup is closed by checking if 
+     *  it has any visible children. PopUps don't always get removed from the DOM right 
+     *  when they're closed. If we don't have this rule we get infinite recursion in PopUpManager.
      */
     function _augmentCodeHintUI() {
         var $menu = $(".dropdown.codehint-menu.open");
