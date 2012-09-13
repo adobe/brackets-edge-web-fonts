@@ -25,19 +25,25 @@
 /*global define */
 
 define({
-    "PRODUCT_NAME"        : "Adobe Edge Web Fonts",
+	"PRODUCT_NAME": "Adobe Edge Web Fonts",
 
-    "DIALOG_DONE"         : "Done",
-    "MENU_BROWSE_FONTS"   : "Browse Edge Web Fonts",
-    "TOOLBAR_TOOLTIP"     : "Generate Edge Web Fonts Include Code",
+	"DIALOG_DONE": "Terminer",
+	"BROWSE_FONTS_COMMAND_NAME": "[Ck] !é=Browse Edge Web Fonts=!",
+	"CODEHINT_BROWSE": "[Cl] !é=Browse EWF...=!",
+	"GENERATE_INCLUDE_COMMAND_NAME": "[Cn] !é=Generate Edge Web Fonts Include Code=!",
+	"GENERATE_INCLUDE_TOOLTIP": "[Co] !é=Generate Edge Web Fonts Include Code=!",
+	"INCLUDE_INSTRUCTIONS_1": "[Cp] !é=Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.=!",
+	"INCLUDE_INSTRUCTIONS_2": "[Cq] !é=Add the following script tag to all HTML files that reference this CSS file:=!",
     
     // Font classifications
-    "serif"               : "Serif",
-    "sans-serif"          : "Sans-Serif",
-    "slab-serif"          : "Slab-Serif",
-    "script"              : "Script",
-    "blackletter"         : "Blackletter",
-    "monospaced"          : "Monospaced",
-    "handmade"            : "Handmande",
-    "decorative"          : "Decorative"
+	"serif": "[C0] !é=Serif=!",
+	"sans-serif": "[Cy] !é=Sans-Serif=!",
+	"slab-serif": "[C1] !é=Slab-Serif=!",
+	"script": "Script",
+	"blackletter": "[Cs] !é=Blackletter=!",
+	"monospaced": "[Cw] !é=Monospaced=!",
+	"handmade": "[Cu] !é=Handmande=!",
+	"decorative": "[Ct] !é=Decorative=!",
+	"headings": "[Cv] !é=Headings=!",
+	"paragraphs": "[Cx] !é=Paragraphs=!"
 });
