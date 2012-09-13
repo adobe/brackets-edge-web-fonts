@@ -1,12 +1,35 @@
 <div class="ewf-picker">
     <div class="ewf-tabs">
-        <input type="text" placeholder="{{Strings.SEARCH_PLACEHOLDER}}" class="span3" />
-        <ul>
-        {{#localizedClassifications}}
-        <li><a href="#" data-classification={{className}}>{{localizedName}}</a></li>
-        {{/localizedClassifications}}
-        </ul>
+        <label class="ewf-title">{{Strings.PRODUCT_NAME}}</label>
+        <input type="text" placeholder="search for font..." class="search_fonts">
+        <div class="ewf-side-bar">
+            <ul class="recommended-uses">
+              <li>
+                <button class="ewf-headlines-button">
+                    <div class="ewf-icon headlines-font"></div>
+                </button>
+              </li>
+              <li>
+                <button class="ewf-paragraphs_button">
+                    <div class="ewf-icon paragraphs-font"></div>
+                </button>
+              </li>
+            </ul>
+            <ul class="font-classifications">
+                {{#localizedClassifications}}
+                    <li>
+                        <button data-classification="{{className}}" class="ewf-classification-button">
+                            <div class="ewf-icon {{className}}"></div>
+                        </button>
+                    </li>
+                {{/localizedClassifications}}
+            </ul>
+             <button class="ewf-button ewf-chosen-button">
+                <div class="ewf-icon chosen-fonts-icon"></div>
+            </button>
+        </div>
     </div>
-    <div class="ewf-results">
-    </div>
+    <div class="divider divider-left"></div>
+    <div class="divider divider-right"></div>
+    <div class="ewf-results"></div>
 </div>

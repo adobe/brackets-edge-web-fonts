@@ -37,9 +37,9 @@ define(function (require, exports, module) {
         ewfToolbarHtml          = require("text!ewf-toolbar.html"),
         ewfCodeHintAdditionHtml = require("text!ewf-codehint-addition.html"),
         Strings                 = require("core/strings");
-    
-    
+
     var AppInit            = brackets.getModule("utils/AppInit"),
+        ExtensionUtils     = brackets.getModule("utils/ExtensionUtils"),
         StringUtils        = brackets.getModule("utils/StringUtils"),
         DocumentManager    = brackets.getModule("document/DocumentManager"),
         EditorManager      = brackets.getModule("editor/EditorManager"),
@@ -355,6 +355,9 @@ define(function (require, exports, module) {
         
         // load styles
         _loadLessFile("ewf-brackets.less", _extensionDirForBrowser());
+        ExtensionUtils.loadStyleSheet(module, "core/styles/popover.css");
+        ExtensionUtils.loadStyleSheet(module, "core/styles/fontchooser.css");
+        
         
         // register commands
         CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
