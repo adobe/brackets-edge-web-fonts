@@ -23,7 +23,7 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global require, define, Mustache, $ */
+/*global require, define, Mustache, $, setTimeout, clearTimeout */
 
 
 define(function (require, exports, module) {
@@ -50,6 +50,10 @@ define(function (require, exports, module) {
     var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative", "headings", "paragraphs"];
 
     var websafeFonts = ["andale mono", "arial", "arial black", "comic sans ms", "courier new", "georgia", "impact", "times new roman", "trebuchet ms", "verdana", "sans-serif", "serif"];
+    
+    var SEARCH_HYSTERESIS = 500; // milliseconds
+    var lastSearchTimer = null;
+    
     
     function getWebsafeFonts() {
         return websafeFonts.concat([]); // make a copy   
@@ -205,7 +209,7 @@ define(function (require, exports, module) {
     function renderPicker(domElement) {
         var localizedClassifications = [];
         var i;
-
+                
         function classificationClickHandler(event) {
             var classification = $(event.target).attr("data-classification");
             var families = fontsByClass[classification];
@@ -221,6 +225,25 @@ define(function (require, exports, module) {
             return false;
         }
         
+        function searchExecutor(query) {
+            console.log("[ewf] searching for:", query);
+            var fonts = searchByName(query);
+            // clear any previously selected class
+            $('.ewf-tabs a').removeClass("selected");
+            _displayResults(fonts);
+        }
+        
+        function searchHandler(event) {
+            var query = $(event.target).val();
+            console.log("[ewf] typed:", query);
+            if (lastSearchTimer) {
+                clearTimeout(lastSearchTimer);
+            }
+            lastSearchTimer = setTimeout(function () { searchExecutor(query); }, SEARCH_HYSTERESIS);
+            
+            
+        }
+        
         // map font classifications to their localized names:
         for (i = 0; i < fontClassifications.length; i++) {
             localizedClassifications.push({className: fontClassifications[i], localizedName: Strings[fontClassifications[i]]});
@@ -230,6 +253,8 @@ define(function (require, exports, module) {
         $(domElement).append($picker);
 
         $('.ewf-tabs a', $picker).click(classificationClickHandler);
+        $('.ewf-tabs input', $picker).on("keyup", searchHandler);
+        
         
         $results = $(".ewf-results", $picker);
 
