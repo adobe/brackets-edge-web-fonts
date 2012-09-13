@@ -158,20 +158,23 @@ define(function (require, exports, module) {
         var i;
 
         function classificationClickHandler(event) {
-            var classification = $(event.target).attr("data-classification");
-            var families = fontsByClass[classification];
-        
-            // clear previously selected class
-            $('.ewf-tabs a').removeClass("selected");
-            // select this class
-            $(event.target).addClass("selected");
+            var $targetButton = $(event.target);
+            while ($targetButton.length > 0 && !$targetButton.attr("data-classification")) {
+                $targetButton = $targetButton.parent();
+            }
+            if ($targetButton.length > 0) {
+                var classification = $targetButton.attr("data-classification");
+                var families = fontsByClass[classification];
             
-            console.log("[ewf]", "clicked a classification", classification);
-        
-            _displayResults(families);
-        
-            // return false because these are anchor tags
-            return false;
+                // clear previously selected class
+                $('.font-classifications button').removeClass("selected");
+                // select this class
+                $targetButton.addClass("selected");
+                
+                console.log("[ewf]", "clicked a classification", classification);
+            
+                _displayResults(families);
+            }
         }
         
         // map font classifications to their localized names:
@@ -182,11 +185,11 @@ define(function (require, exports, module) {
         $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications}));
         $(domElement).append($picker);
 
-        $('.ewf-tabs a', $picker).click(classificationClickHandler);
+        $(".font-classifications button", $picker).click(classificationClickHandler);
         
         $results = $(".ewf-results", $picker);
 
-        $('.ewf-tabs a:first').trigger('click');
+        $('.font-classifications button:first').trigger('click');
     }
     
     /**

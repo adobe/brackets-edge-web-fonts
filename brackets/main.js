@@ -38,6 +38,7 @@ define(function (require, exports, module) {
     
     
     var AppInit         = brackets.getModule("utils/AppInit"),
+        ExtensionUtils  = brackets.getModule("utils/ExtensionUtils"),
         StringUtils     = brackets.getModule("utils/StringUtils"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
         EditorUtils     = brackets.getModule("editor/EditorUtils"),
@@ -292,6 +293,9 @@ define(function (require, exports, module) {
         
         // load styles
         _loadLessFile("ewf-brackets.less", _extensionDirForBrowser());
+        ExtensionUtils.loadStyleSheet(module, "core/styles/popover.css");
+        ExtensionUtils.loadStyleSheet(module, "core/styles/fontchooser.css");
+        
         
         // register commands
         CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
