@@ -28,6 +28,7 @@
 define(function (require, exports, module) {
     "use strict";
     
+    // Modules
     var webfont                 = require("core/webfont"),
         parser                  = require("cssFontParser"),
         ewfBrowseDialogHtml     = require("text!ewf-browse-dialog.html"),
@@ -40,6 +41,7 @@ define(function (require, exports, module) {
     var AppInit         = brackets.getModule("utils/AppInit"),
         StringUtils     = brackets.getModule("utils/StringUtils"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
+        EditorManager   = brackets.getModule("editor/EditorManager"),
         EditorUtils     = brackets.getModule("editor/EditorUtils"),
         CodeHintManager = brackets.getModule("editor/CodeHintManager"),
         CommandManager  = brackets.getModule("command/CommandManager"),
@@ -47,16 +49,19 @@ define(function (require, exports, module) {
         Dialogs         = brackets.getModule("widgets/Dialogs"),
         Menus           = brackets.getModule("command/Menus");
 
+    // DOM elements and HTML
     var $toolbarIcon = null;
-
     // Because of the way pop ups wor, we need to create a new code hint addition every time 
     // we have a new popup. But, we only need to render the HTML once.
     var codeHintAdditionHtmlString = Mustache.render(ewfCodeHintAdditionHtml, Strings);
     
-    // commands
+    // Commands
     var COMMAND_BROWSE_FONTS = "edgewebfonts.browsefonts";
     var COMMAND_GENERATE_INCLUDE = "edgewebfonts.generateinclude";
-        
+    
+    // Local variables
+    var lastFontSelected = null;
+    
     function _documentIsCSS(doc) {
 
         return ((doc !== null) &&
@@ -107,6 +112,30 @@ define(function (require, exports, module) {
         }
     }
     
+    function _insertFontCompletionAtCursor(completion, editor, cursor) {
+        var token;
+        var actualCompletion = completion;
+        var stringChar = "";
+        
+        if (_documentIsCSS(editor.document)) { // on the off-chance we changed documents, don't change anything
+            token = parser.getFontTokenAtCursor(editor, cursor);
+            if (token) {
+                if (token.className === "string") {
+                    stringChar = token.string.substring(0, 1);
+                    actualCompletion = stringChar + actualCompletion + stringChar;
+                }
+                
+                if (token.className === "string" || token.className === "number") { // replace
+                    editor.document.replaceRange(actualCompletion,
+                                                 {line: cursor.line, ch: token.start},
+                                                 {line: cursor.line, ch: token.end});
+                } else { // insert
+                    editor.document.replaceRange(actualCompletion, cursor);
+                }
+            }
+        }
+    }
+    
     /**
      * @constructor
      */
@@ -150,13 +179,10 @@ define(function (require, exports, module) {
                     } else { // not in the text
                         queryInfo.queryStr = "";
                     }
-                    console.log("[ewf] in string, decided on '" + queryInfo.queryStr + "'");
                 } else if (token.className === "number") { // is not wrapped in quotes
                     queryInfo.queryStr = token.string.substring(0, cursor.ch - token.start);
-                    console.log("[ewf] in number, decided on '" + queryInfo.queryStr + "'");
                 } else { // after a ":", a space, or a ","
                     queryInfo.queryStr = "";
-                    console.log("[ewf] not in string or number, decided on '" + queryInfo.queryStr + "'");
                 }
             }
         }
@@ -176,28 +202,7 @@ define(function (require, exports, module) {
      * @param {Cursor} current cursor location
      */
     FontHints.prototype.handleSelect = function (completion, editor, cursor) {
-        var token;
-        var actualCompletion = completion;
-        var stringChar = "";
-        
-        console.log("[ewf] completed", completion);
-        if (_documentIsCSS(editor.document)) { // on the off-chance we changed documents, don't change anything
-            token = parser.getFontTokenAtCursor(editor, cursor);
-            if (token) {
-                if (token.className === "string") {
-                    stringChar = token.string.substring(0, 1);
-                    actualCompletion = stringChar + actualCompletion + stringChar;
-                }
-                
-                if (token.className === "string" || token.className === "number") { // replace
-                    editor.document.replaceRange(actualCompletion,
-                                                 {line: cursor.line, ch: token.start},
-                                                 {line: cursor.line, ch: token.end});
-                } else { // insert
-                    editor.document.replaceRange(actualCompletion, cursor);
-                }
-            }
-        }
+        _insertFontCompletionAtCursor(completion, editor, cursor);
     };
 
     /**
@@ -235,7 +240,15 @@ define(function (require, exports, module) {
         }
 
         function _handleBrowseFonts() {
-            Dialogs.showModalDialog("edge-web-fonts-browse-dialog");
+            var editor = EditorManager.getFocusedEditor();
+            var cursor = editor._codeMirror.getCursor();
+            lastFontSelected = null;
+            Dialogs.showModalDialog("edge-web-fonts-browse-dialog").done(function (id) {
+                if (id === Dialogs.DIALOG_BTN_OK && lastFontSelected) {
+                    _insertFontCompletionAtCursor(lastFontSelected, editor, cursor);
+                }
+                editor.focus();
+            });
             webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
         }
         
@@ -253,7 +266,6 @@ define(function (require, exports, module) {
             var i, j, f;
             var includeString = "";
             
-            console.log("[ewf] found these fonts", fonts);
             for (i = 0; i < fonts.length; i++) {
                 f = webfont.getFontBySlug(fonts[i]);
                 if (f) {
@@ -315,6 +327,11 @@ define(function (require, exports, module) {
         // add dialogs to dom
         $('body').append($(Mustache.render(ewfBrowseDialogHtml, Strings)));
         $('body').append($(Mustache.render(ewfIncludeDialogHtml, Strings)));
+        
+        // add handler to listen to selection in browse dialog
+        $(webfont).on("ewfFontSelected", function (event, slug) {
+            lastFontSelected = slug;
+        });
     }
 
     // load everything when brackets is done loading

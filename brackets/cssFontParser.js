@@ -110,8 +110,6 @@ define(function (require, exports, module) {
                 currentToken.state.stack.length > 0 &&
                 currentToken.state.stack[currentToken.state.stack.length - 1] === "rule") {
             
-            console.log("[ewf] at '" + currentToken.string + "' with type", currentToken.className);
-
             // We're in a rule body. Step backwards until we find the most recent 
             // "variable" or are no longer in a rule (the latter, stepping out of the rule, 
             // shouldn't happen). This "variable" token will tell us if we're in a font-family

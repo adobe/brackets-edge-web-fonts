@@ -140,9 +140,9 @@ define(function (require, exports, module) {
             }
             
             if (d) {
-                console.log("[ewf]", "clicked a font", d.attributes["data-slug"].value);
                 $(".ewf-font.selected").removeClass("selected");
                 $(d).addClass("selected");
+                $(exports).triggerHandler("ewfFontSelected", d.attributes["data-slug"].value);
             }
         }
 
@@ -165,9 +165,7 @@ define(function (require, exports, module) {
             $('.ewf-tabs a').removeClass("selected");
             // select this class
             $(event.target).addClass("selected");
-            
-            console.log("[ewf]", "clicked a classification", classification);
-        
+                    
             _displayResults(families);
         
             // return false because these are anchor tags
