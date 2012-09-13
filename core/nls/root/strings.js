@@ -43,5 +43,7 @@ define({
     "blackletter"              : "Blackletter",
     "monospaced"               : "Monospaced",
     "handmade"                 : "Handmande",
-    "decorative"               : "Decorative"
+    "decorative"               : "Decorative",
+    "headings"                 : "Headings",
+    "paragraphs"               : "Paragraphs"
 });

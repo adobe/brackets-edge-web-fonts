@@ -47,7 +47,7 @@ define(function (require, exports, module) {
     var $picker  = null,
         $results = null;
     
-    var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"];
+    var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative", "headings", "paragraphs"];
 
     var websafeFonts = ["andale mono", "arial", "arial black", "comic sans ms", "courier new", "georgia", "impact", "times new roman", "trebuchet ms", "verdana", "sans-serif", "serif"];
     
@@ -293,6 +293,13 @@ define(function (require, exports, module) {
                     }
                     fontsByClass[allFonts[i].classifications[j]].push(allFonts[i]);
                 }
+                for (j = 0; j < allFonts[i].recommended_for.length; j++) {
+                    if (!fontsByClass.hasOwnProperty(allFonts[i].recommended_for[j])) {
+                        fontsByClass[allFonts[i].recommended_for[j]] = [];
+                    }
+                    fontsByClass[allFonts[i].recommended_for[j]].push(allFonts[i]);
+                }
+                
                 
                 fontsByName[allFonts[i].name] = allFonts[i];
                 fontsBySlug[allFonts[i].slug] = allFonts[i];
