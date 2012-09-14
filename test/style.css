@@ -1,0 +1,17 @@
+/* the best heading */
+h1 {
+    font-family: "codystar", monospace;
+    font-weight: normal;
+}
+h2 {
+    font-family: "droid-sans", /* comment */ "advent-pro", monospace;
+    font-weight: normal;
+}
+h3 {
+    font-family: Abril-fatFace, verdana, monospace;
+    font-style: normal;
+}
+p {
+    font-family: adamina, monospace;
+    font-style: normal;
+}
