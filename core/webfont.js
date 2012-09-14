@@ -30,7 +30,7 @@ define(function (require, exports, module) {
     "use strict";
     
     // TODO: These URLs are supposedly changing before launch.
-    var apiUrlPrefix      = "https://typekit.com/api/edge_internal_v1/",
+    var apiUrlPrefix      = "https://api.typekit.com/edge_internal_v1/",
         fontIncludePrefix = "<script src=\"http://use.edgefonts.net/",
         fontIncludeSuffix = ".js\"></script>";
     
