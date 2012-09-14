@@ -28,6 +28,7 @@ define({
     "PRODUCT_NAME"                   : "Adobe Edge Web Fonts",
 
     "DIALOG_DONE"                    : "Done",
+    "SEARCH_PLACEHOLDER"             : "Search",
     "BROWSE_FONTS_COMMAND_NAME"      : "Browse Edge Web Fonts",
     "CODEHINT_BROWSE"                : "Browse EWF...", // Needs to be short to fit in popup, but not sure about acronym
     "GENERATE_INCLUDE_COMMAND_NAME"  : "Generate Edge Web Fonts Include Code",
