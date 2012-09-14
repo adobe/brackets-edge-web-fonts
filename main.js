@@ -33,6 +33,7 @@ define(function (require, exports, module) {
         parser                  = require("cssFontParser"),
         ewfBrowseDialogHtml     = require("text!ewf-browse-dialog.html"),
         ewfIncludeDialogHtml    = require("text!ewf-include-dialog.html"),
+        ewfHowtoDialogHtml      = require("text!ewf-howto-dialog.html"),
         ewfToolbarHtml          = require("text!ewf-toolbar.html"),
         ewfCodeHintAdditionHtml = require("text!ewf-codehint-addition.html"),
         Strings                 = require("core/strings");
@@ -159,6 +160,10 @@ define(function (require, exports, module) {
             lastTwentyFonts.splice(20, lastTwentyFonts.length - 20);
         }
         prefs.setValue(PREFERENCES_FONT_HISTORY_KEY, lastTwentyFonts);
+    }
+    
+    function _showHowtoDialog() {
+        Dialogs.showModalDialog("edge-web-fonts-howto-dialog");
     }
     
     /**
@@ -309,13 +314,23 @@ define(function (require, exports, module) {
                 }
             }
             
-            includeString = webfont.createInclude(fontFamilies);
-            Dialogs.showModalDialog("edge-web-fonts-include-dialog");
-            $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
+            if (fontFamilies.length === 0) { // no EWF in this css file
+                _showHowtoDialog();
+            } else {
+                includeString = webfont.createInclude(fontFamilies);
+                Dialogs.showModalDialog("edge-web-fonts-include-dialog");
+                $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
+            }
         }
 
         function _handleToolbarClick() {
-            CommandManager.execute(COMMAND_GENERATE_INCLUDE);
+            var doc = DocumentManager.getCurrentDocument();
+
+            if (!doc || !_documentIsCSS(doc)) {
+                _showHowtoDialog();
+            } else {
+                CommandManager.execute(COMMAND_GENERATE_INCLUDE);
+            }
         }
         
         function _handleDocumentChange() {
@@ -323,10 +338,8 @@ define(function (require, exports, module) {
             // doc will be null if there's no active document (user closed all docs)
             if (doc && _documentIsCSS(doc)) {
                 $toolbarIcon.addClass("active");
-                $toolbarIcon.on("click", _handleToolbarClick);
             } else {
                 $toolbarIcon.removeClass("active");
-                $toolbarIcon.off("click", _handleToolbarClick);
             }
         }
         
@@ -351,6 +364,7 @@ define(function (require, exports, module) {
         // set up toolbar icon
         $toolbarIcon = $(Mustache.render(ewfToolbarHtml, Strings));
         $("#main-toolbar .buttons").append($toolbarIcon);
+        $toolbarIcon.on("click", _handleToolbarClick);
         
         // add event handler to enable/disable the webfont toolbar icon
         $(DocumentManager).on("currentDocumentChange", _handleDocumentChange);
@@ -359,6 +373,8 @@ define(function (require, exports, module) {
         // add dialogs to dom
         $('body').append($(Mustache.render(ewfBrowseDialogHtml, Strings)));
         $('body').append($(Mustache.render(ewfIncludeDialogHtml, Strings)));
+        $('body').append($(Mustache.render(ewfHowtoDialogHtml, Strings)));
+
         
         // add handler to listen to selection in browse dialog
         $(webfont).on("ewfFontSelected", function (event, slug) {

@@ -34,6 +34,11 @@ define({
     "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Include Code",
     "INCLUDE_INSTRUCTIONS_1"         : "Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.",
     "INCLUDE_INSTRUCTIONS_2"         : "Add the following script tag to all HTML files that reference this CSS file:",
+    "HOWTO_INSTRUCTIONS_1"           : "[[LINE ONE OF HOWTO]]",
+    "HOWTO_INSTRUCTIONS_2"           : "[[LINE TWO OF HOWTO]]",
+    "BROWSER_HOWTO_HEADER"           : "Next Step",
+    "BROWSER_HOWTO_INSTRUCTIONS"     : "[[WHAT TO DO NEXT]]",
+    
     
     // Font classifications
     "serif"                    : "Serif",
