@@ -1,2 +1,4 @@
-brackets-edge-web-fonts
-=======================
+edge-web-fonts
+======================
+
+Read me? How about you read yourself!
