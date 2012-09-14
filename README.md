@@ -1,2 +1,2 @@
-brackets-edge-webfonts
-======================
+brackets-edge-web-fonts
+=======================
