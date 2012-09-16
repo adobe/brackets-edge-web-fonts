@@ -163,6 +163,12 @@ define(function (require, exports, module) {
     }
     
     function _showHowtoDialog() {
+        
+        // update img.src
+        var howtoimg = module.uri.replace("main.js", "ewf-howto-dialog.png");
+        $("#ewf-howto-dialog-image").attr("src", howtoimg);
+        
+        // show dialog
         Dialogs.showModalDialog("edge-web-fonts-howto-dialog");
     }
     
