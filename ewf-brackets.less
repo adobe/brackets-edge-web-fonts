@@ -21,10 +21,12 @@
  * 
  */
 
-@dialog-width: 812px;
+@import "styles/bootstrap-mixins.less";
 
-/* Helpers for spritesheet images */
-/* Copied from brackets_mixins.less */
+/**
+ *  Mixins for spritesheet images -- Copied from brackets_mixins.less 
+ */
+
 /* Sets the background to the given offset in the spritesheet. Typically, the element you set this on requires
    a fixed size so that other parts of the spritesheet don't show. */
 .sprite(@x-offset, @y-offset, @sprite-sheet) {
@@ -47,6 +49,137 @@
     background-position: -@x-offset -@y-offset;
 }
 
+.edge-web-fonts {
+    .csl {
+        margin: 0px;
+        padding: 0px;
+        font-size: 75%;
+        
+        li {
+            display: inline;
+            line-height: normal;
+        }
+        
+        li:before {
+            content: ", "
+        }
+
+        li:first-child:before {
+            content: ""
+        }
+    }
+    
+    div {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        background-clip: border-box;
+
+    }
+    
+    .ewf-picker {
+        height: 600px;
+        width: 780px;
+        background-color: #f8f8f8;
+        position: relative;
+        
+        .border-radius(5px);
+        .box-shadow(rgba(0, 0, 0, 0.0976563) 1px 2px 5px 0px);
+        border: 1px solid #ccc;
+    
+        .ewf-tabs {
+            width: 180px;
+            height: 580px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 10px;
+            overflow-y: scroll;
+            background-color: darken(#f8f8f8, 10%);
+            .border-radius(5px 0px 0px 5px);
+            color: #333;
+    
+            a:link {
+                color: inherit;
+            }
+            
+            a.selected {
+                text-decoration: underline   
+            }
+            
+            li {
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            ul {
+                margin: 0px;
+                padding: 0px;
+                list-style-type: none;
+            }
+        }
+    
+        .ewf-results {
+            position: absolute;
+            left: 200px;
+            width: 580px;
+            max-height:600px;
+            overflow-y: scroll;
+            
+            .ewf-font {
+                position: relative;
+                width: 120px;
+                height: 120px;
+                top: 0px;
+                left: 0px;
+                float: left;
+                margin-top: 18px;
+                margin-left: 18px;
+        
+                .border-radius(5px);
+                .box-shadow(rgba(0, 0, 0, 0.0976563) 1px 2px 5px 0px);
+                border: 1px solid #ccc;
+        
+                background-color: #fff;
+                background-repeat: no-repeat;
+                background-position: center 5px;
+                
+                cursor: pointer;
+                
+                &.selected {
+                    border-color: #F18900;
+                }
+                
+                .ewf-font-details {
+                    position: absolute;
+                    top: 80px;
+                    left: 0px;
+                    width: 114px;
+                    height: 40px;
+                    padding-left: 3px;
+                    padding-right: 3px;
+            
+                    .border-radius(0px 0px 5px 5px);
+            
+                    background-color: fade(darken(#f8f8f8, 10%), 75%);
+            
+                    h1 {
+                        font-size: 100%;
+                        padding: 0px;
+                        margin: 0px;
+                        line-height:normal;
+                    }
+                } // END .ewf-font-details
+            } // END .ewf-font
+        } // END .ewf-results
+    } // END .ewf-picker
+} // END .edge-web-fonts
+
+/** 
+ *  Brackets-specific Dialog Styling
+ */
+
+@dialog-width: 812px;
 
 .edge-web-fonts-browse-dialog {
     width: @dialog-width;
@@ -63,16 +196,36 @@
     }
 }
 
-.edge-web-fonts-icon {
-    .sprite-icon(0,0,0,32px, "ewf_sprites.svg");
+.edge-web-fonts-howto-dialog {
+    ol {
+        font-size: 1.1em;
+    }
+
+    li {
+        margin-bottom: .4em;
+        list-style-position: outside;
+    }
+
+    .ewf-diagram { 
+        width:100%;
+        text-align: center;
+    }
+
+    .dialog-message { 
+        margin-bottom:0px;
+    }
 }
+
+/**
+ *  Brackets Toolbar Icon Styling
+ */
 
 #toolbar-ewf {
     position: relative;
     top: 2px;
     padding-right: 8px;
     
-    .sprite-icon(0,0, 16px,16px, "ewf_sprites.svg");
+    .sprite-icon(0,0, 16px,16px, "img/ewf-toolbar-sprites.svg");
     &:hover {
         .sprite-swap(0,16px);
     }
@@ -85,44 +238,36 @@
     }
 }
 
-.dropdown.codehint-menu .ewf-codehint-addition {
-    // NOTE: This is **required** because PopUpManager checks whether a popup is
-    // closed by checking if it has any visible children. PopUps don't always get
-    // removed from the DOM right when they're closed. If we don't have this rule
-    // we get infinite recursion in PopUpManager.
-    display: none;
-}
+/**
+ *  Brackets Code Hint Styling
+ */
 
-.dropdown.codehint-menu.open {
-    .dropdown-menu {
-        border-bottom-left-radius: 0px;
-        border-bottom-right-radius: 0px;        
-    }
+.dropdown.codehint-menu {
     
     .ewf-codehint-addition {
-        display: block;
-        border: 1px solid #C8C8C8;
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
-        background-color: white;
-        p {
-            padding: 5px 10px;
-            margin: 0px;
+        // NOTE: This is **required** because PopUpManager checks whether a popup is
+        // closed by checking if it has any visible children. PopUps don't always get
+        // removed from the DOM right when they're closed. If we don't have this rule
+        // we get infinite recursion in PopUpManager.
+        display: none;
+    }
+    
+    &.open {
+        .ewf-codehint-addition {
+            display: block;
+            border: 1px solid #C8C8C8;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+            background-color: white;
+            p {
+                padding: 5px 10px;
+                margin: 0px;
+            }
         }
+
+        .dropdown-menu.has-addition {
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;        
+        }        
     }
 }
-
-.edge-web-fonts-howto-dialog
-{
-    ol { font-size: 1.1em; }
-    li {
-        margin-bottom: .4em;
-        list-style-position: outside;
-    }
-    .diagram { 
-        width:100%;
-        text-align: center;
-    }
-}
-
-.edge-web-fonts-howto-dialog .dialog-message { margin-bottom:0px; };

@@ -29,14 +29,14 @@ define(function (require, exports, module) {
     "use strict";
     
     // Modules
-    var webfont                 = require("core/webfont"),
+    var webfont                 = require("webfont"),
         parser                  = require("cssFontParser"),
-        ewfBrowseDialogHtml     = require("text!ewf-browse-dialog.html"),
-        ewfIncludeDialogHtml    = require("text!ewf-include-dialog.html"),
-        ewfHowtoDialogHtml      = require("text!ewf-howto-dialog.html"),
-        ewfToolbarHtml          = require("text!ewf-toolbar.html"),
-        ewfCodeHintAdditionHtml = require("text!ewf-codehint-addition.html"),
-        Strings                 = require("core/strings");
+        ewfBrowseDialogHtml     = require("text!htmlContent/ewf-browse-dialog.html"),
+        ewfIncludeDialogHtml    = require("text!htmlContent/ewf-include-dialog.html"),
+        ewfHowtoDialogHtml      = require("text!htmlContent/ewf-howto-dialog.html"),
+        ewfToolbarHtml          = require("text!htmlContent/ewf-toolbar.html"),
+        ewfCodeHintAdditionHtml = require("text!htmlContent/ewf-codehint-addition.html"),
+        Strings                 = require("strings");
 
     var AppInit            = brackets.getModule("utils/AppInit"),
         ExtensionUtils     = brackets.getModule("utils/ExtensionUtils"),
@@ -56,6 +56,10 @@ define(function (require, exports, module) {
     // Because of the way pop ups wor, we need to create a new code hint addition every time 
     // we have a new popup. But, we only need to render the HTML once.
     var codeHintAdditionHtmlString = Mustache.render(ewfCodeHintAdditionHtml, Strings);
+    
+    var Paths = {
+        ROOT : require.toUrl('./')
+    };
     
     // Commands & Prefs Strings
     var COMMAND_BROWSE_FONTS = "edgewebfonts.browsefonts";
@@ -94,6 +98,10 @@ define(function (require, exports, module) {
         if ($menu.length > 0) {
             var $menuList = $menu.find(".dropdown-menu");
             if ($menuList.length > 0) { // we're actually displaying a code hint
+                // Since this dropdown menu has an addition, we need to add a class that
+                // removes the rounded corners on the bottom
+                $menuList.addClass("has-addition");
+                
                 var $codeHintAddition = $menu.find(".ewf-codehint-addition");
                 
                 // If this is a new popup, we won't have a code hint addition yet (new popup), 
@@ -163,12 +171,6 @@ define(function (require, exports, module) {
     }
     
     function _showHowtoDialog() {
-        
-        // update img.src
-        var howtoimg = module.uri.replace("main.js", "ewf-howto-dialog.png");
-        $("#ewf-howto-dialog-image").attr("src", howtoimg);
-        
-        // show dialog
         Dialogs.showModalDialog("edge-web-fonts-howto-dialog");
     }
     
@@ -354,9 +356,9 @@ define(function (require, exports, module) {
         CodeHintManager.registerHintProvider(fontHints);
         
         // load styles
-        _loadLessFile("ewf-brackets.less", _extensionDirForBrowser());
-        ExtensionUtils.loadStyleSheet(module, "core/styles/popover.css");
-        ExtensionUtils.loadStyleSheet(module, "core/styles/fontchooser.css");
+        _loadLessFile("styles/ewf-brackets.less", _extensionDirForBrowser());
+        //ExtensionUtils.loadStyleSheet(module, "styles/popover.css");
+        //ExtensionUtils.loadStyleSheet(module, "styles/fontchooser.css");
         
         // register commands
         CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
@@ -381,7 +383,11 @@ define(function (require, exports, module) {
         // add dialogs to dom
         $('body').append($(Mustache.render(ewfBrowseDialogHtml, Strings)));
         $('body').append($(Mustache.render(ewfIncludeDialogHtml, Strings)));
-        $('body').append($(Mustache.render(ewfHowtoDialogHtml, Strings)));
+        
+        // TODO write this better
+        var howtoimg = module.uri.replace("main.js", "img/ewf-howto-dialog.png");
+        $("#ewf-howto-dialog-image").attr("src", howtoimg);
+        $('body').append($(Mustache.render(ewfHowtoDialogHtml, {Strings : Strings, Paths : Paths})));
 
         
         // add handler to listen to selection in browse dialog

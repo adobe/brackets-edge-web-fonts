@@ -40,9 +40,9 @@ define(function (require, exports, module) {
         allFonts     = [],
         allSlugs     = [];
     
-    var pickerHtml     = require("text!core/htmlContent/ewf-picker.html"),
-        resultsHtml    = require("text!core/htmlContent/ewf-results.html"),
-        Strings        = require("core/strings");
+    var pickerHtml     = require("text!htmlContent/ewf-picker.html"),
+        resultsHtml    = require("text!htmlContent/ewf-results.html"),
+        Strings        = require("strings");
     
     var $picker  = null,
         $results = null;
