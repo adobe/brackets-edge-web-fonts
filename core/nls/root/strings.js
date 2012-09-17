@@ -25,16 +25,18 @@
 /*global define */
 
 define({
-    "PRODUCT_NAME"                   : "Adobe Edge Web Fonts",
+    "PRODUCT_NAME"                   : "Adobe® Edge Web Font Extension",
 
     "DIALOG_DONE"                    : "Done",
     "SEARCH_PLACEHOLDER"             : "Search",
     "BROWSE_FONTS_COMMAND_NAME"      : "Browse Edge Web Fonts",
     "CODEHINT_BROWSE"                : "Browse Web Fonts...", // Needs to be short to fit in popup, but not sure about acronym
-    "GENERATE_INCLUDE_COMMAND_NAME"  : "Generate Edge Web Fonts Include Code",
-    "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Include Code",
+    "GENERATE_INCLUDE_COMMAND_NAME"  : "Generate Edge Web Fonts Embed Code",
+    "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Embed Code",
+    "INCLUDE_TITLE"                  : "Adobe® Edge Web Fonts Embed Code",
     "INCLUDE_INSTRUCTIONS_1"         : "Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.",
-    "INCLUDE_INSTRUCTIONS_2"         : "Add the following script tag to all HTML files that reference this CSS file:",
+    "INCLUDE_INSTRUCTIONS_2"         : "Copy the following script tag and paste it into all HTML files that reference this CSS file:",
+    "HOWTO_TITLE"                    : "How To Use Adobe® Edge Web Fonts",
     "HOWTO_INSTRUCTIONS_1"           : "The Adobe Edge Web Font service helps you add FREE and awesome fonts to your web project. Just specify the fonts you want to use in your CSS and we'll generate the required <script> tag for your HTML.",
     "HOWTO_INSTRUCTIONS_2"           : "When specifying a font-face property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.",
     "HOWTO_INSTRUCTIONS_3"           : "When your done, click the [ Wf ] icon in the top right to generate the required embed script.",
