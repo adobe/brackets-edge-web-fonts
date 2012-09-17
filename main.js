@@ -358,7 +358,6 @@ define(function (require, exports, module) {
         ExtensionUtils.loadStyleSheet(module, "core/styles/popover.css");
         ExtensionUtils.loadStyleSheet(module, "core/styles/fontchooser.css");
         
-        
         // register commands
         CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
         CommandManager.register(Strings.GENERATE_INCLUDE_COMMAND_NAME, COMMAND_GENERATE_INCLUDE, _handleGenerateInclude);

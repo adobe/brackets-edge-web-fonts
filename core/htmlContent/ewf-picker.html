@@ -1,7 +1,7 @@
 <div class="ewf-picker">
     <div class="ewf-tabs">
         <label class="ewf-title">{{Strings.PRODUCT_NAME}}</label>
-        <input type="text" placeholder="search for font..." class="search_fonts">
+        <input type="text" placeholder="{{Strings.SEARCH_PLACEHOLDER}}" class="search-fonts">
         <div class="ewf-side-bar">
             <ul class="recommended-uses">
               <li>
@@ -10,7 +10,7 @@
                 </button>
               </li>
               <li>
-                <button class="ewf-paragraphs_button">
+                <button class="ewf-paragraphs-button">
                     <div class="ewf-icon paragraphs-font"></div>
                 </button>
               </li>
@@ -24,9 +24,11 @@
                     </li>
                 {{/localizedClassifications}}
             </ul>
-             <button class="ewf-button ewf-chosen-button">
+            <!--
+            <button class="ewf-button ewf-chosen-button">
                 <div class="ewf-icon chosen-fonts-icon"></div>
             </button>
+            -->
         </div>
     </div>
     <div class="divider divider-left"></div>

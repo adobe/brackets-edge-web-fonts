@@ -258,6 +258,8 @@ define(function (require, exports, module) {
         $(domElement).append($picker);
 
         $(".font-classifications button", $picker).click(classificationClickHandler);
+
+        $('.ewf-tabs .search-fonts', $picker).on("keyup", searchHandler);
         
         $results = $(".ewf-results", $picker);
 
