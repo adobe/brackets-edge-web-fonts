@@ -33,7 +33,7 @@ define(function (require, exports, module) {
     
     function parseCurrentFullEditor(assumeCursorInvalid) {
         var cm = EditorManager.getCurrentFullEditor()._codeMirror;
-        var cursor = {ch: 0, line: 0}, t, prev;
+        var cursor = {ch: 0, line: 0}, t;
         var userCursorLine = cm.getCursor().line;
         var isParsingFontList = false, fontListStartLine;
         
