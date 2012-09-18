@@ -186,7 +186,7 @@ define(function (require, exports, module) {
      * @return {Array.<string>}
      */
     FontHints.prototype.search = function (query) {
-        var candidates = parser.parseCurrentFullEditor();
+        var candidates = parser.parseCurrentFullEditor(true);
         candidates = candidates.concat(lastTwentyFonts);
         candidates = candidates.concat(webfont.getWebsafeFonts());
         candidates = webfont.lowerSortUniqStringArray(candidates);
@@ -302,7 +302,7 @@ define(function (require, exports, module) {
          *  configurator UI that lets users specify which variants and subsets they want
          */
         function _handleGenerateInclude() {
-            var fonts = parser.parseCurrentFullEditor();
+            var fonts = parser.parseCurrentFullEditor(false);
             var fontFamilies = [], allFvds = [];
             var i, j, f;
             var includeString = "";
