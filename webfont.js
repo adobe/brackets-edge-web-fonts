@@ -40,14 +40,15 @@ define(function (require, exports, module) {
         allFonts     = [],
         allSlugs     = [];
     
-    var pickerHtml     = require("text!core/htmlContent/ewf-picker.html"),
-        resultsHtml    = require("text!core/htmlContent/ewf-results.html"),
-        Strings        = require("core/strings");
+    var pickerHtml     = require("text!htmlContent/ewf-picker.html"),
+        resultsHtml    = require("text!htmlContent/ewf-results.html"),
+        Strings        = require("strings");
     
     var $picker  = null,
         $results = null;
     
-    var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative", "headings", "paragraphs"];
+    var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"],
+        fontRecommendations = ["headings", "paragraphs"];
 
     var websafeFonts = ["andale mono", "arial", "arial black", "comic sans ms", "courier new", "georgia", "impact", "times new roman", "trebuchet ms", "verdana", "sans-serif", "serif"];
     
@@ -208,28 +209,35 @@ define(function (require, exports, module) {
     
     function renderPicker(domElement) {
         var localizedClassifications = [];
+        var localizedRecommendations = [];
         var i;
                 
         function classificationClickHandler(event) {
-            var classification = $(event.target).attr("data-classification");
-            var families = fontsByClass[classification];
-        
-            // clear previously selected class
-            $('.ewf-tabs a').removeClass("selected");
-            // select this class
-            $(event.target).addClass("selected");
-                    
-            _displayResults(families);
-        
-            // return false because these are anchor tags
-            return false;
+            var $targetButton = $(event.target);
+            while ($targetButton.length > 0 && !$targetButton.attr("data-classification")) {
+                $targetButton = $targetButton.parent();
+            }
+            if ($targetButton.length > 0) {
+                var classification = $targetButton.attr("data-classification");
+                var families = fontsByClass[classification];
+            
+                // clear previously selected class
+                $(".ewf-tabs button").removeClass("selected");
+
+                // select this class
+                $targetButton.addClass("selected");
+                
+                console.log("[ewf]", "clicked a classification", classification);
+            
+                _displayResults(families);
+            }
         }
         
         function searchExecutor(query) {
             console.log("[ewf] searching for:", query);
             var fonts = searchByName(query);
             // clear any previously selected class
-            $('.ewf-tabs a').removeClass("selected");
+            $('.ewf-tabs button').removeClass("selected");
             _displayResults(fonts);
         }
         
@@ -248,17 +256,23 @@ define(function (require, exports, module) {
         for (i = 0; i < fontClassifications.length; i++) {
             localizedClassifications.push({className: fontClassifications[i], localizedName: Strings[fontClassifications[i]]});
         }
+
+        // map font classifications to their localized names:
+        for (i = 0; i < fontRecommendations.length; i++) {
+            localizedRecommendations.push({className: fontRecommendations[i], localizedName: Strings[fontRecommendations[i]]});
+        }
+
         
-        $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications}));
+        $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications, localizedRecommendations: localizedRecommendations}));
         $(domElement).append($picker);
 
-        $('.ewf-tabs a', $picker).click(classificationClickHandler);
-        $('.ewf-tabs input', $picker).on("keyup", searchHandler);
+        $(".ewf-tabs button", $picker).click(classificationClickHandler);
         
+        $('.ewf-tabs .ewf-search-fonts', $picker).on("keyup", searchHandler);
         
         $results = $(".ewf-results", $picker);
 
-        $('.ewf-tabs a:first').trigger('click');
+        $('.font-classifications button:first').trigger('click');
     }
     
     /**

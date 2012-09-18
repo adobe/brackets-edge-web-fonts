@@ -29,7 +29,7 @@ define(function (require, exports, module) {
     "use strict";
     
     var EditorManager = brackets.getModule("editor/EditorManager");
-    var webfont = require("core/webfont");
+    var webfont = require("webfont");
     
     function parseCurrentFullEditor() {
         var cm = EditorManager.getCurrentFullEditor()._codeMirror;
