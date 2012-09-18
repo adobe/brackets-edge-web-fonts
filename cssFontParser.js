@@ -31,10 +31,11 @@ define(function (require, exports, module) {
     var EditorManager = brackets.getModule("editor/EditorManager");
     var webfont = require("webfont");
     
-    function parseCurrentFullEditor() {
+    function parseCurrentFullEditor(assumeCursorInvalid) {
         var cm = EditorManager.getCurrentFullEditor()._codeMirror;
-        var cursor = {ch: 0, line: 0}, t;
-        var isParsingFontList = false;
+        var cursor = {ch: 0, line: 0}, t, prev;
+        var userCursorLine = cm.getCursor().line;
+        var isParsingFontList = false, fontListStartLine;
         
         var fonts = [];
         
@@ -51,8 +52,15 @@ define(function (require, exports, module) {
                         t.className === "variable" &&
                         t.string.toLowerCase() === "font-family") {
                     isParsingFontList = true;
+                    fontListStartLine = cursor.line;
                 } else if (isParsingFontList) {
-                    if (t.string === ";") {
+                    if (t.string === ";" || t.string === "}") {
+                        isParsingFontList = false;
+                    } else if (assumeCursorInvalid && fontListStartLine === userCursorLine && fontListStartLine !== cursor.line) {
+                        // If we're trying to autocomplete, assume the line the user's cursor is on might
+                        // be incomplete (because s/he might be in the middle of typing). In that case,
+                        // we want to assume the font list ends at the first newline (in case they
+                        // haven't typed the ; or } that ends the current property/rule).
                         isParsingFontList = false;
                     } else if (t.className === "number") {
                         fonts.push(t.string);
