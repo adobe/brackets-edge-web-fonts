@@ -114,8 +114,8 @@ define(function (require, exports, module) {
      *   3. All elements that contain the needle
      * Within each category, elements are sorted alphabetically
      *
-     * TODO: We should eventually move this search algorithm (and probably the lowerSortUniqStringArray
-     * to core brackets code. It would likely be useful for things like QUick Open.
+     * TODO: We should eventually move this search algorithm (and probably the lowerSortUniqStringArray)
+     * to core brackets code. It would likely be useful for things like Quick Open.
      *
      * @param {!string} needle - the search term
      * @param {Array} arr - the array to filter and sort
