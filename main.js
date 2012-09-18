@@ -53,7 +53,7 @@ define(function (require, exports, module) {
 
     // DOM elements and HTML
     var $toolbarIcon = null;
-    // Because of the way pop ups wor, we need to create a new code hint addition every time 
+    // Because of the way pop ups work, we need to create a new code hint addition every time 
     // we have a new popup. But, we only need to render the HTML once.
     var codeHintAdditionHtmlString = Mustache.render(ewfCodeHintAdditionHtml, Strings);
     
@@ -352,10 +352,9 @@ define(function (require, exports, module) {
         CodeHintManager.registerHintProvider(fontHints);
         
         // load styles
+        // TODO: Once we're done hacking on the less, compile it to CSS and remove the hacky way we add LESS
         _loadLessFile("styles/ewf-brackets.less", _extensionDirForBrowser());
         ExtensionUtils.loadStyleSheet(module, "styles/retina.css");
-        //ExtensionUtils.loadStyleSheet(module, "styles/popover.css");
-        //ExtensionUtils.loadStyleSheet(module, "styles/fontchooser.css");
         
         // register commands
         CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
