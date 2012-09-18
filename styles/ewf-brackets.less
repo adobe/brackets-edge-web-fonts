@@ -21,7 +21,7 @@
  * 
  */
 
-@import "styles/bootstrap-mixins.less";
+//@import "styles/bootstrap-mixins.less";
 
 /**
  *  Mixins for spritesheet images -- Copied from brackets_mixins.less 
@@ -50,128 +50,175 @@
 }
 
 .edge-web-fonts {
-    .csl {
-        margin: 0px;
-        padding: 0px;
-        font-size: 75%;
+
+    div {
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	    box-sizing: border-box;          
+    }
+    .ewf-picker {
+        position: static;
+        width: 560px;
+        background-color: white;
+        
+        .ewf-side-bar {
+            float: left;
+            clear: both;
+        }
+        
+        .ewf-search-fonts {
+            width: 560px;
+            float: left;
+            clear: both;
+            margin-top: 10px;
+            margin-bottom: 12px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            padding-right: 0px;
+            padding-left: 50px;
+            height: 32px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.48);
+            -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+            -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+            box-sizing: border-box;
+        }
+        
+        button {
+            padding: 0;
+        }
+        
+        button:hover {
+            background: rgb(220,225,228);
+            background-position: 0 -30px;
+        }
+        
+        button.selected {
+            background: rgb(189,189,189);
+        }
+        
+        .ewf-button {
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.48) inset;
+            border: 1px solid rgb(166, 168, 168);
+            background: rgb(219,221,222);
+            border-radius: 3px;
+            width: 33px;
+            height: 33px;
+        }
+        
+        .ewf-button:disabled {
+            background-position: -30px 0;
+        }
+        
+        ul {
+            padding: 0;
+            margin: 0;
+            margin-bottom: 18px;
+        }
         
         li {
-            display: inline;
-            line-height: normal;
+            list-style: none;
+            height: 30px;
         }
         
-        li:before {
-            content: ", "
+        li button {
+            border: 1px solid #b4b6b5;
+            background: rgb(219,221,222);
+            width: 33px;
+            height: 33px;
         }
-
-        li:first-child:before {
-            content: ""
-        }
-    }
-    
-    div {
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
-        background-clip: border-box;
-
-    }
-    
-    .ewf-picker {
-        height: 600px;
-        width: 780px;
-        background-color: #f8f8f8;
-        position: relative;
         
-        .border-radius(5px);
-        .box-shadow(rgba(0, 0, 0, 0.0976563) 1px 2px 5px 0px);
-        border: 1px solid #ccc;
-    
-        .ewf-tabs {
-            width: 180px;
-            height: 580px;
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            padding: 10px;
-            overflow-y: scroll;
-            background-color: darken(#f8f8f8, 10%);
-            .border-radius(5px 0px 0px 5px);
-            color: #333;
-    
-            a:link {
-                color: inherit;
-            }
-            
-            a.selected {
-                text-decoration: underline   
-            }
-            
-            li {
-                margin: 0px;
-                padding: 0px;
-            }
-            
-            ul {
-                margin: 0px;
-                padding: 0px;
-                list-style-type: none;
-            }
+        li:first-child button {
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.48) inset;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
         }
-    
+        
+        li:last-child button {
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+        
+        .ewf-icon {
+            padding: 0;
+            margin: 0 auto;
+            width: 120px;
+            height: 60px;
+        }
+        
+        .ewf-icon:disabled {
+            background-position: -30px 0;
+        }
+        
+        .divider {
+            width: 1px;
+            height: 340px;
+            float: left;
+        }
+        
+        .divider-left {
+            margin: 0px 0px 0px 9px;
+            background-image: -webkit-linear-gradient(top, rgba(169, 169, 169, 0) 0%, rgba(169, 169, 169, 1) 50%, rgba(169, 169, 169, 0) 100%, rgba(169, 169, 169, 1) 50%, rgba(169, 169, 169, 0) 0%);
+        }
+        
+        .divider-right {
+            margin: 0px 9px 0px 0px;
+            background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 0%);
+        }
+        
         .ewf-results {
-            position: absolute;
-            left: 200px;
-            width: 580px;
-            max-height:600px;
+            float: left;
+            width: 507px;
+            height: 340px;
             overflow-y: scroll;
-            
-            .ewf-font {
-                position: relative;
-                width: 120px;
-                height: 120px;
-                top: 0px;
-                left: 0px;
-                float: left;
-                margin-top: 18px;
-                margin-left: 18px;
+            overflow-x: hidden;
+        }
         
-                .border-radius(5px);
-                .box-shadow(rgba(0, 0, 0, 0.0976563) 1px 2px 5px 0px);
-                border: 1px solid #ccc;
+        .ewf-font {
+            position: relative;
+            float: left;
+            width: 102px;
+            height: 120px;
+            margin-left: 15px;
+            margin-bottom: 15px;
+            background-repeat: no-repeat;
+            border: 1px solid #b4b6b5;
+            border-radius: 3px;
+            background-color: white;
+            background-position: center 5px;
+            cursor: pointer;
+            &.selected {
+                //box-shadow: 0 0 15px rgba(0,0,0,0.48);   
+                border: 1px solid #F18900;
+            }
+        }
         
-                background-color: #fff;
-                background-repeat: no-repeat;
-                background-position: center 5px;
-                
-                cursor: pointer;
-                
-                &.selected {
-                    border-color: #F18900;
-                }
-                
-                .ewf-font-details {
-                    position: absolute;
-                    top: 80px;
-                    left: 0px;
-                    width: 114px;
-                    height: 40px;
-                    padding-left: 3px;
-                    padding-right: 3px;
+        .ewf-font-details {
+            position: absolute;
+            bottom: 0;
+            height: 40px;
+            width: 100px;
+            padding: 6px;
+            background-color: rgb(229,232,231);
+            border-top: 1px solid #b4b6b5;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+        
+        .ewf-font-details label {
+            position: relative;
+            font-size: 12px;
+            text-shadow: 0 1px 0 #fff;
+            width: auto;
+            text-align: left;
+            line-height: normal;
+            padding-top: 0px;
+        }
+        
+        .wait {
+            top: 250px;
+            left: 300px;
+        }
             
-                    .border-radius(0px 0px 5px 5px);
-            
-                    background-color: fade(darken(#f8f8f8, 10%), 75%);
-            
-                    h1 {
-                        font-size: 100%;
-                        padding: 0px;
-                        margin: 0px;
-                        line-height:normal;
-                    }
-                } // END .ewf-font-details
-            } // END .ewf-font
-        } // END .ewf-results
     } // END .ewf-picker
 } // END .edge-web-fonts
 
@@ -179,14 +226,12 @@
  *  Brackets-specific Dialog Styling
  */
 
-@dialog-width: 812px;
+//@dialog-width: 812px;
 
 .edge-web-fonts-browse-dialog {
-    width: @dialog-width;
-    margin-left: -406px;
-    margin-top: -400px;
-    .modal-header {
-        width: @dialog-width - 30px;   
+    margin-top: -340px;
+    .modal-footer {
+        clear: both;   
     }
 }
 

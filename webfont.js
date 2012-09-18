@@ -47,7 +47,8 @@ define(function (require, exports, module) {
     var $picker  = null,
         $results = null;
     
-    var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative", "headings", "paragraphs"];
+    var fontClassifications = ["serif", "sans-serif", "slab-serif", "script", "blackletter", "monospaced", "handmade", "decorative"],
+        fontRecommendations = ["headings", "paragraphs"];
 
     var websafeFonts = ["andale mono", "arial", "arial black", "comic sans ms", "courier new", "georgia", "impact", "times new roman", "trebuchet ms", "verdana", "sans-serif", "serif"];
     
@@ -208,6 +209,7 @@ define(function (require, exports, module) {
     
     function renderPicker(domElement) {
         var localizedClassifications = [];
+        var localizedRecommendations = [];
         var i;
                 
         function classificationClickHandler(event) {
@@ -220,7 +222,8 @@ define(function (require, exports, module) {
                 var families = fontsByClass[classification];
             
                 // clear previously selected class
-                $('.font-classifications button').removeClass("selected");
+                $(".ewf-tabs button").removeClass("selected");
+
                 // select this class
                 $targetButton.addClass("selected");
                 
@@ -234,7 +237,7 @@ define(function (require, exports, module) {
             console.log("[ewf] searching for:", query);
             var fonts = searchByName(query);
             // clear any previously selected class
-            $('.ewf-tabs a').removeClass("selected");
+            $('.ewf-tabs button').removeClass("selected");
             _displayResults(fonts);
         }
         
@@ -253,13 +256,19 @@ define(function (require, exports, module) {
         for (i = 0; i < fontClassifications.length; i++) {
             localizedClassifications.push({className: fontClassifications[i], localizedName: Strings[fontClassifications[i]]});
         }
+
+        // map font classifications to their localized names:
+        for (i = 0; i < fontRecommendations.length; i++) {
+            localizedRecommendations.push({className: fontRecommendations[i], localizedName: Strings[fontRecommendations[i]]});
+        }
+
         
-        $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications}));
+        $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications, localizedRecommendations: localizedRecommendations}));
         $(domElement).append($picker);
 
-        $(".font-classifications button", $picker).click(classificationClickHandler);
-
-        $('.ewf-tabs .search-fonts', $picker).on("keyup", searchHandler);
+        $(".ewf-tabs button", $picker).click(classificationClickHandler);
+        
+        $('.ewf-tabs .ewf-search-fonts', $picker).on("keyup", searchHandler);
         
         $results = $(".ewf-results", $picker);
 

@@ -1,19 +1,16 @@
 <div class="ewf-picker">
     <div class="ewf-tabs">
-        <label class="ewf-title">{{Strings.PRODUCT_NAME}}</label>
-        <input type="text" placeholder="{{Strings.SEARCH_PLACEHOLDER}}" class="search-fonts">
+        <!-- <label class="ewf-title">{{Strings.PRODUCT_NAME}}</label> -->
+        <input type="text" placeholder="{{Strings.SEARCH_PLACEHOLDER}}" class="ewf-search-fonts">
         <div class="ewf-side-bar">
             <ul class="recommended-uses">
-              <li>
-                <button class="ewf-headlines-button">
-                    <div class="ewf-icon headlines-font"></div>
-                </button>
-              </li>
-              <li>
-                <button class="ewf-paragraphs-button">
-                    <div class="ewf-icon paragraphs-font"></div>
-                </button>
-              </li>
+                {{#localizedRecommendations}}
+                    <li>
+                        <button data-classification="{{className}}" class="ewf-classification-button">
+                            <div class="ewf-icon {{className}}"></div>
+                        </button>
+                    </li>
+                {{/localizedRecommendations}}
             </ul>
             <ul class="font-classifications">
                 {{#localizedClassifications}}
@@ -24,11 +21,6 @@
                     </li>
                 {{/localizedClassifications}}
             </ul>
-            <!--
-            <button class="ewf-button ewf-chosen-button">
-                <div class="ewf-icon chosen-fonts-icon"></div>
-            </button>
-            -->
         </div>
     </div>
     <div class="divider divider-left"></div>

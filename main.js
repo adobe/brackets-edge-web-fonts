@@ -38,18 +38,18 @@ define(function (require, exports, module) {
         ewfCodeHintAdditionHtml = require("text!htmlContent/ewf-codehint-addition.html"),
         Strings                 = require("strings");
 
-    var AppInit            = brackets.getModule("utils/AppInit"),
-        ExtensionUtils     = brackets.getModule("utils/ExtensionUtils"),
-        StringUtils        = brackets.getModule("utils/StringUtils"),
-        DocumentManager    = brackets.getModule("document/DocumentManager"),
-        EditorManager      = brackets.getModule("editor/EditorManager"),
-        EditorUtils        = brackets.getModule("editor/EditorUtils"),
-        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        CodeHintManager    = brackets.getModule("editor/CodeHintManager"),
-        CommandManager     = brackets.getModule("command/CommandManager"),
-        Commands           = brackets.getModule("command/Commands"),
-        Dialogs            = brackets.getModule("widgets/Dialogs"),
-        Menus              = brackets.getModule("command/Menus");
+    var AppInit                 = brackets.getModule("utils/AppInit"),
+        ExtensionUtils          = brackets.getModule("utils/ExtensionUtils"),
+        StringUtils             = brackets.getModule("utils/StringUtils"),
+        DocumentManager         = brackets.getModule("document/DocumentManager"),
+        EditorManager           = brackets.getModule("editor/EditorManager"),
+        EditorUtils             = brackets.getModule("editor/EditorUtils"),
+        PreferencesManager      = brackets.getModule("preferences/PreferencesManager"),
+        CodeHintManager         = brackets.getModule("editor/CodeHintManager"),
+        CommandManager          = brackets.getModule("command/CommandManager"),
+        Commands                = brackets.getModule("command/Commands"),
+        Dialogs                 = brackets.getModule("widgets/Dialogs"),
+        Menus                   = brackets.getModule("command/Menus");
 
     // DOM elements and HTML
     var $toolbarIcon = null;
@@ -258,7 +258,6 @@ define(function (require, exports, module) {
     FontHints.prototype.shouldShowHintsOnKey = function (key) {
         return false;
     };
-    
         
     function init() {
         /** Finds this extension's directory relative to the brackets root */
@@ -283,6 +282,14 @@ define(function (require, exports, module) {
                 });
             });
         }
+        
+        // temporary for ease of development
+        // TODO: Remove me!
+        brackets.ewf = require('main');
+        exports.loadLess = function loadLess() {
+            _loadLessFile("styles/ewf-brackets.less?" + Math.random(), _extensionDirForBrowser());
+        };
+        
 
         function _handleBrowseFonts() {
             var editor = EditorManager.getFocusedEditor();
@@ -357,6 +364,7 @@ define(function (require, exports, module) {
         
         // load styles
         _loadLessFile("styles/ewf-brackets.less", _extensionDirForBrowser());
+        ExtensionUtils.loadStyleSheet(module, "styles/retina.css");
         //ExtensionUtils.loadStyleSheet(module, "styles/popover.css");
         //ExtensionUtils.loadStyleSheet(module, "styles/fontchooser.css");
         
@@ -383,10 +391,6 @@ define(function (require, exports, module) {
         // add dialogs to dom
         $('body').append($(Mustache.render(ewfBrowseDialogHtml, Strings)));
         $('body').append($(Mustache.render(ewfIncludeDialogHtml, Strings)));
-        
-        // TODO write this better
-        var howtoimg = module.uri.replace("main.js", "img/ewf-howto-dialog.png");
-        $("#ewf-howto-dialog-image").attr("src", howtoimg);
         $('body').append($(Mustache.render(ewfHowtoDialogHtml, {Strings : Strings, Paths : Paths})));
 
         
