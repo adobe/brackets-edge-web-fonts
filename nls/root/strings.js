@@ -41,8 +41,6 @@ define({
     "HOWTO_INSTRUCTIONS_2"           : "When specifying a font-face property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.",
     "HOWTO_INSTRUCTIONS_3"           : "When your done, click the [ Wf ] icon in the top right to generate the required embed script.",
     "HOWTO_INSTRUCTIONS_4"           : "Paste the embed script into any HTML page to include the fonts.",
-    "BROWSER_HOWTO_HEADER"           : "Next Step",
-    "BROWSER_HOWTO_INSTRUCTIONS"     : "[[WHAT TO DO NEXT]]",
     
     
     // Font classifications

@@ -1,0 +1,157 @@
+.popover {
+	font-family: "SourceSans";
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #dfe2e2;
+	//display: none;
+	box-shadow: 0 9px 18px 0 rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, .75);
+	border: 1px solid rgba(0, 0, 0, .45);
+	border-radius: 5px;
+}
+
+.popover .arrow, .popover .top-arrow, .popover .bottom-arrow, .popover .left-arrow, .popover .right-arrow {
+	position: absolute;
+	top: 0;
+	width: 30px;
+	height: 14px;
+	background-image: -webkit-image-set(url("../img/popover_arrow.png") 1x, url("../img/popover_arrow@2x.png") 2x);
+}
+
+.popover .top-arrow {
+	top: 0;
+	left: 47%;
+	margin: -13px 0 0 0;
+}
+
+.popover .bottom-arrow {
+	top: 100%;
+	left: 47%;
+	margin: -2px 0 0 0px;
+	-webkit-transform: rotate(180deg);
+}
+
+.popover .left-arrow {
+	top: 40%;
+	left: -15px;
+	margin: 0;
+	-webkit-transform: rotate(-90deg);
+}
+
+.popover .right-arrow {
+	top: 40%;
+	left: 97%;
+	margin: 0;
+	-webkit-transform: rotate(90deg);
+}
+
+.popover .content {
+	padding: 15px 15px 11px 15px;
+	overflow: auto;
+}
+
+.popover input {
+    color: #454545;
+    background: #fff;
+    border: 1px solid #a5a8a8;
+}
+
+.popover input:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0,0,0,.35), inset 0 2px 4px rgba(0,0,0,.15);
+    border: 1px solid #898b8a;
+    z-index: 911;
+}
+
+.popover label:hover input, .popover label:hover select {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.popover select {
+    color: #454545;
+    background-color: #dbddde;
+    background-image: linear-gradient(to bottom, #e3e5e6, #d1d3d3);
+    border: 1px solid #a6a8a8;
+    box-shadow: inset 0 1px 0 #fff;
+}
+
+.popover select.unit {
+	background: transparent; 
+    background-image: -webkit-image-set(url("../img/unit_drop_light.png") 1x, url("../img/unit_drop_light@2x.png") 2x);
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+}
+
+.popover select.unit:hover {
+	background-position: 0 15px;
+	box-shadow: none;
+    border-radius: 0;
+    border: none;
+}
+
+.popover #bgimage {
+	margin-bottom: 12px;
+}
+
+.popover #bgpreviewcontainer {
+    display: inline-block;
+    width: 232px;
+    height: 137px;
+    padding: 0;
+    border: solid 1px #a5a8a8;
+    border-radius: 3px;
+    background-image: -webkit-image-set(url("../img/swatch_back.png") 1x, url("../img/swatch_back@2x.png") 2x);
+    box-shadow: 0 1px 0 rgba(255,255,255,1), inset 0 1px 0 rgba(0,0,0,.1);	
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.popover #bgpreviewimage {
+	width: 234px;
+	height: 134px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 50% auto;
+}
+
+.popover #bgpreviewimage #background-image {
+	width: 234px;
+	height: 133px;
+	background: transparent no-repeat center center;
+	background-image: -webkit-image-set(url("../img/image_input.png") 1x, url("../img/image_input@2x.png") 2x);
+	border: none;
+	box-shadow: none;
+}
+
+.popover .property-header {
+    text-shadow: 0 1px 0 rgba(255,255,255,.75);
+    color: #454545;
+    width: 50px;
+}
+
+.popover .property {
+	margin-bottom: 4px;
+}
+
+.popover label {
+	height: 23px;
+	margin-bottom: 0;
+}
+
+.popover label.half.last {
+	margin-right: 0;
+}
+
+.popover label.half input {
+	width: 59px;
+}
+
+.popover label.full.noicon select {
+	width: 177px;
+}
+
+.popover label.color-input input {
+	width: 153px;
+}
