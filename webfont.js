@@ -113,6 +113,11 @@ define(function (require, exports, module) {
      *   2. All fonts with a slug part (separated by hyphens) that starts with the needle
      *   3. All fonts with a slug that contain the needle
      * Within each category, fonts are sorted alphabetically
+     *
+     * TODO: Generalize this algorithm and move it into a utility class in Brackets.
+     * Would be useful for quick open, etc.
+     *
+     * TODO: Combine this function and "searchByName"
      * 
      * @param {!string} needle - the search term
      * @return {Array.<Object>} Array of font objects that contain the search term.
@@ -226,15 +231,12 @@ define(function (require, exports, module) {
 
                 // select this class
                 $targetButton.addClass("selected");
-                
-                console.log("[ewf]", "clicked a classification", classification);
-            
+                            
                 _displayResults(families);
             }
         }
         
         function searchExecutor(query) {
-            console.log("[ewf] searching for:", query);
             var fonts = searchByName(query);
             // clear any previously selected class
             $('.ewf-tabs button').removeClass("selected");
@@ -243,7 +245,6 @@ define(function (require, exports, module) {
         
         function searchHandler(event) {
             var query = $(event.target).val();
-            console.log("[ewf] typed:", query);
             if (lastSearchTimer) {
                 clearTimeout(lastSearchTimer);
             }
@@ -314,7 +315,15 @@ define(function (require, exports, module) {
             
             // We keep allFonts in alphabetical order by name, so that all other
             // lists will also be in order.
-            allFonts.sort(function (a, b) { return (a.lowerCaseName < b.lowerCaseName ? -1 : 1); });
+            allFonts.sort(function (a, b) {
+                if (a.lowerCaseName < b.lowerCaseName) {
+                    return -1;
+                } else if (a.lowerCaseName > b.lowerCaseName) {
+                    return 1;
+                } else { // they're equal
+                    return 0;
+                }
+            });
             
             // setup the allSlugs array;
             for (i = 0; i < allFonts.length; i++) {

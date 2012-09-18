@@ -74,10 +74,7 @@ define(function (require, exports, module) {
     var whitespaceRegExp = new RegExp("\\s");
     
     function _documentIsCSS(doc) {
-
-        return ((doc !== null) &&
-                (doc !== undefined) &&
-                (EditorUtils.getModeFromFileExtension(doc.file.fullPath) === "css"));
+        return doc && EditorUtils.getModeFromFileExtension(doc.file.fullPath) === "css";
     }
     
     /** Adds an option to browse EWF to the bottom of the code hint list
@@ -92,6 +89,9 @@ define(function (require, exports, module) {
      *  This is because PopUpManager checks whether a popup is closed by checking if 
      *  it has any visible children. PopUps don't always get removed from the DOM right 
      *  when they're closed. If we don't have this rule we get infinite recursion in PopUpManager.
+     *
+     *  TODO: Write a unit test to check the code hint menu dom structure. This way, 
+     *  if the code hint UI gets reorganized, the unit test will catch it. 
      */
     function _augmentCodeHintUI() {
         var $menu = $(".dropdown.codehint-menu.open");
@@ -186,8 +186,6 @@ define(function (require, exports, module) {
      * @return {Array.<string>}
      */
     FontHints.prototype.search = function (query) {
-        // return webfont.searchBySlug(query.queryStr);
-        
         var candidates = parser.parseCurrentFullEditor();
         candidates = candidates.concat(lastTwentyFonts);
         candidates = candidates.concat(webfont.getWebsafeFonts());
@@ -304,7 +302,7 @@ define(function (require, exports, module) {
             webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
         }
         
-        /** Determins what font slugs are in the CSS file and generates the appropriate
+        /** Determines what font slugs are in the CSS file and generates the appropriate
          *  data to build the include string. Then, displays the string in a dialog
          *  The actual generation of the string is handled by a core API function
          *
