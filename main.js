@@ -189,9 +189,8 @@ define(function (require, exports, module) {
         var candidates = parser.parseCurrentFullEditor();
         candidates = candidates.concat(lastTwentyFonts);
         candidates = candidates.concat(webfont.getWebsafeFonts());
-        
-        candidates = webfont.filterAndSortSlugArray(query.queryStr, candidates);
-        
+        candidates = webfont.lowerSortUniqStringArray(candidates);
+        candidates = webfont.filterAndSortArray(query.queryStr, candidates);
         return candidates;
     };
 
@@ -281,14 +280,6 @@ define(function (require, exports, module) {
             });
         }
         
-        // temporary for ease of development
-        // TODO: Remove me!
-        brackets.ewf = require('main');
-        exports.loadLess = function loadLess() {
-            _loadLessFile("styles/ewf-brackets.less?" + Math.random(), _extensionDirForBrowser());
-        };
-        
-
         function _handleBrowseFonts() {
             var editor = EditorManager.getFocusedEditor();
             var cursor = editor._codeMirror.getCursor();
