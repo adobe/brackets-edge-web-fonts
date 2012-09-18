@@ -31,8 +31,9 @@ define(function (require, exports, module) {
     var EditorManager = brackets.getModule("editor/EditorManager");
     var webfont = require("webfont");
     
-    function parseCurrentFullEditor(assumeCursorInvalid) {
-        var cm = EditorManager.getCurrentFullEditor()._codeMirror;
+    function parseCurrentEditor(assumeCursorInvalid) {
+        var editor = EditorManager.getFocusedEditor() || EditorManager.getCurrentFullEditor();
+        var cm = editor._codeMirror;
         var cursor = {ch: 0, line: 0}, t;
         var userCursorLine = cm.getCursor().line;
         var isParsingFontList = false, fontListStartLine;
@@ -120,6 +121,6 @@ define(function (require, exports, module) {
         return result;
     }
     
-    exports.parseCurrentFullEditor = parseCurrentFullEditor;
+    exports.parseCurrentEditor = parseCurrentEditor;
     exports.getFontTokenAtCursor = getFontTokenAtCursor;
 });
