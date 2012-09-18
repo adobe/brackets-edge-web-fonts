@@ -53,7 +53,7 @@ define(function (require, exports, module) {
 
     // DOM elements and HTML
     var $toolbarIcon = null;
-    // Because of the way pop ups wor, we need to create a new code hint addition every time 
+    // Because of the way pop ups work, we need to create a new code hint addition every time 
     // we have a new popup. But, we only need to render the HTML once.
     var codeHintAdditionHtmlString = Mustache.render(ewfCodeHintAdditionHtml, Strings);
     
@@ -74,10 +74,7 @@ define(function (require, exports, module) {
     var whitespaceRegExp = new RegExp("\\s");
     
     function _documentIsCSS(doc) {
-
-        return ((doc !== null) &&
-                (doc !== undefined) &&
-                (EditorUtils.getModeFromFileExtension(doc.file.fullPath) === "css"));
+        return doc && EditorUtils.getModeFromFileExtension(doc.file.fullPath) === "css";
     }
     
     /** Adds an option to browse EWF to the bottom of the code hint list
@@ -92,6 +89,9 @@ define(function (require, exports, module) {
      *  This is because PopUpManager checks whether a popup is closed by checking if 
      *  it has any visible children. PopUps don't always get removed from the DOM right 
      *  when they're closed. If we don't have this rule we get infinite recursion in PopUpManager.
+     *
+     *  TODO: Write a unit test to check the code hint menu dom structure. This way, 
+     *  if the code hint UI gets reorganized, the unit test will catch it. 
      */
     function _augmentCodeHintUI() {
         var $menu = $(".dropdown.codehint-menu.open");
@@ -186,14 +186,11 @@ define(function (require, exports, module) {
      * @return {Array.<string>}
      */
     FontHints.prototype.search = function (query) {
-        // return webfont.searchBySlug(query.queryStr);
-        
         var candidates = parser.parseCurrentEditor();
         candidates = candidates.concat(lastTwentyFonts);
         candidates = candidates.concat(webfont.getWebsafeFonts());
-        
-        candidates = webfont.filterAndSortSlugArray(query.queryStr, candidates);
-        
+        candidates = webfont.lowerSortUniqStringArray(candidates);
+        candidates = webfont.filterAndSortArray(query.queryStr, candidates);
         return candidates;
     };
 
@@ -283,14 +280,6 @@ define(function (require, exports, module) {
             });
         }
         
-        // temporary for ease of development
-        // TODO: Remove me!
-        brackets.ewf = require('main');
-        exports.loadLess = function loadLess() {
-            _loadLessFile("styles/ewf-brackets.less?" + Math.random(), _extensionDirForBrowser());
-        };
-        
-
         function _handleBrowseFonts() {
             var editor = EditorManager.getFocusedEditor();
             var cursor = editor._codeMirror.getCursor();
@@ -304,7 +293,7 @@ define(function (require, exports, module) {
             webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
         }
         
-        /** Determins what font slugs are in the CSS file and generates the appropriate
+        /** Determines what font slugs are in the CSS file and generates the appropriate
          *  data to build the include string. Then, displays the string in a dialog
          *  The actual generation of the string is handled by a core API function
          *
@@ -363,10 +352,9 @@ define(function (require, exports, module) {
         CodeHintManager.registerHintProvider(fontHints);
         
         // load styles
+        // TODO: Once we're done hacking on the less, compile it to CSS and remove the hacky way we add LESS
         _loadLessFile("styles/ewf-brackets.less", _extensionDirForBrowser());
         ExtensionUtils.loadStyleSheet(module, "styles/retina.css");
-        //ExtensionUtils.loadStyleSheet(module, "styles/popover.css");
-        //ExtensionUtils.loadStyleSheet(module, "styles/fontchooser.css");
         
         // register commands
         CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);

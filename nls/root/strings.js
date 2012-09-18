@@ -40,7 +40,7 @@ define({
     "HOWTO_TITLE"                    : "How To Use Adobe® Edge Web Fonts",
     "HOWTO_INSTRUCTIONS_1"           : "The Adobe Edge Web Font service helps you add FREE and awesome fonts to your web project. Just specify the fonts you want to use in your CSS and we'll generate the required <script> tag for your HTML.",
     "HOWTO_INSTRUCTIONS_2"           : "When specifying a font-family property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.",
-    "HOWTO_INSTRUCTIONS_3"           : "When your done, click the [ Wf ] icon in the top right to generate the required embed code.",
+    "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the [ Wf ] icon in the top right to generate the required embed code.",
     "HOWTO_INSTRUCTIONS_4"           : "Paste the embed code into any HTML page to include the fonts.",
     
     
@@ -51,7 +51,7 @@ define({
     "script"                   : "Script",
     "blackletter"              : "Blackletter",
     "monospaced"               : "Monospaced",
-    "handmade"                 : "Handmande",
+    "handmade"                 : "Handmade",
     "decorative"               : "Decorative",
     "headings"                 : "Headings",
     "paragraphs"               : "Paragraphs"

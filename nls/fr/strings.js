@@ -25,33 +25,34 @@
 /*global define */
 
 define({
-	"PRODUCT_NAME": "Adobe Edge Web Fonts",
+	"PRODUCT_NAME": "Extension des polices Web Adobe® Edge",
 
-	"DIALOG_DONE": "Terminer",
+	"DIALOG_DONE": "Terminé",
 	"SEARCH_PLACEHOLDER": "Rechercher",
-	"BROWSE_FONTS_COMMAND_NAME": "[Ck] !é=Browse Edge Web Fonts=!",
-	"CODEHINT_BROWSE": "[Cl] !é=Browse Web Fonts...=!",
-	"GENERATE_INCLUDE_COMMAND_NAME": "[Cn] !é=Generate Edge Web Fonts Include Code=!",
-	"GENERATE_INCLUDE_TOOLTIP": "[Co] !é=Generate Edge Web Fonts Include Code=!",
-	"INCLUDE_INSTRUCTIONS_1": "[Cp] !é=Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.=!",
-	"INCLUDE_INSTRUCTIONS_2": "[Cq] !é=Add the following script tag to all HTML files that reference this CSS file:=!",
-	"HOWTO_INSTRUCTIONS_1": "[C4] !é=The Adobe Edge Web Font service helps you add FREE and awesome fonts to your web project. Just specify the fonts you want to use in your CSS and we'll generate the required <script> tag for your HTML.=!",
-	"HOWTO_INSTRUCTIONS_2": "[C5] !é=When specifying a font-face property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.=!",
-	"HOWTO_INSTRUCTIONS_3": "[C7] !é=When your done, click the [ Wf ] icon in the top right to generate the required embed script.=!",
-	"HOWTO_INSTRUCTIONS_4": "[C8] !é=Paste the embed script into any HTML page to include the fonts.=!",
-	"BROWSER_HOWTO_HEADER": "[C2] !é=Next Step=!",
-	"BROWSER_HOWTO_INSTRUCTIONS": "[C3] !é=[[WHAT TO DO NEXT]]=!",
+	"BROWSE_FONTS_COMMAND_NAME": "Parcourir les polices Web Edge",
+	"BROWSE_FONTS_INSTRUCTIONS": "Recherchez et sélectionnez la police Web que vous souhaitez inclure dans votre projet Web.",
+	"CODEHINT_BROWSE": "Parcourir les polices Web...",
+	"GENERATE_INCLUDE_COMMAND_NAME": "Générer le code d’intégration des polices Web Edge",
+	"GENERATE_INCLUDE_TOOLTIP": "Générer le code d’intégration des polices Web Edge",
+	"INCLUDE_TITLE": "Code d’intégration des polices Web Adobe® Edge",
+	"INCLUDE_INSTRUCTIONS_1": "Les polices Web Edge sont chargées dans le navigateur de l’utilisateur via JavaScript. Pour vérifier que les polices sont correctement chargées, vous devez ajouter une balise de script à votre document HTML.",
+	"INCLUDE_INSTRUCTIONS_2": "Copiez la balise de script qui suit, et collez-la dans tous les fichiers HTML qui font référence à ce fichier CSS :",
+	"HOWTO_TITLE": "Utilisation des polices Web Adobe® Edge",
+	"HOWTO_INSTRUCTIONS_1": "Le service de polices Web Adobe Edge vous permet d’ajouter GRATUITEMENT des polices originales à votre projet Web. Il vous suffit d’indiquer les polices que vous souhaitez utiliser dans votre document CSS. Nous nous chargeons de générer la balise <script> appropriée pour votre page HTML.",
+	"HOWTO_INSTRUCTIONS_2": "Lorsque vous définissez une propriété de famille de polices dans un document CSS, sélectionnez l’option Parcourir les polices Web dans la liste déroulante de définition du code afin d’accéder aux polices Web disponibles gratuitement en ligne.",
+	"HOWTO_INSTRUCTIONS_3": "Lorsque vous avez terminé, cliquez sur l’icône [ Wf ] dans l’angle supérieur droit afin de générer le code d’intégration requis.",
+	"HOWTO_INSTRUCTIONS_4": "Collez ce code d’intégration dans une page HTML afin d’inclure les polices.",
     
     
     // Font classifications
-	"serif": "[C0] !é=Serif=!",
-	"sans-serif": "[Cy] !é=Sans-Serif=!",
-	"slab-serif": "[C1] !é=Slab-Serif=!",
+	"serif": "Serif",
+	"sans-serif": "Sans-Serif",
+	"slab-serif": "Slab-Serif",
 	"script": "Script",
-	"blackletter": "[Cs] !é=Blackletter=!",
-	"monospaced": "[Cw] !é=Monospaced=!",
-	"handmade": "[Cu] !é=Handmande=!",
-	"decorative": "[Ct] !é=Decorative=!",
-	"headings": "[Cv] !é=Headings=!",
-	"paragraphs": "[Cx] !é=Paragraphs=!"
+	"blackletter": "Blackletter",
+	"monospaced": "Monospaced",
+	"handmade": "Handmade",
+	"decorative": "Decorative",
+	"headings": "Headings",
+	"paragraphs": "Paragraphs"
 });
