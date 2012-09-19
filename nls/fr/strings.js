@@ -51,7 +51,7 @@ define({
 	"script": "Script",
 	"blackletter": "Blackletter",
 	"monospaced": "Monospaced",
-	"handmade": "[Cu] !é=Handmade=!",
+	"handmade": "Handmade",
 	"decorative": "Decorative",
 	"headings": "Headings",
 	"paragraphs": "Paragraphs"
