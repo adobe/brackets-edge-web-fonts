@@ -52,16 +52,19 @@
     .edge-web-fonts .ewf-picker .serif {
         background-image: url("../img/fonts_serif@2x.png");
         background-size: 60px 30px;
+        background-repeat: no-repeat;
     }
 
     .edge-web-fonts .ewf-picker .sans-serif {
         background-image: url("../img/fonts_sans-serif@2x.png");
         background-size: 60px 30px;
+        background-repeat: no-repeat;
     }
 
     .edge-web-fonts .ewf-picker .slab-serif {
         background-image:  url("../img/fonts_slab-serif@2x.png");
         background-size: 60px 30px;
+        background-repeat: no-repeat;
     }
 
     .edge-web-fonts .ewf-picker .script {
