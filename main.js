@@ -147,13 +147,16 @@ define(function (require, exports, module) {
                     actualCompletion = stringChar + actualCompletion + stringChar;
                 }
 
-                
+                // HACK: We talk to the private CodeMirror instance directly to replace the range
+                // instead of using the Document, as we should. The reason is due to a flaw in our
+                // current document synchronization architecture when inline editors are open.
+                // See #1688.
                 if (token.className === "string" || token.className === "number") { // replace
-                    editor.document.replaceRange(actualCompletion,
+                    editor._codeMirror.replaceRange(actualCompletion,
                                                  {line: cursor.line, ch: token.start},
                                                  {line: cursor.line, ch: token.end});
                 } else { // insert
-                    editor.document.replaceRange(actualCompletion, cursor);
+                    editor._codeMirror.replaceRange(actualCompletion, cursor);
                 }
             }
         }
