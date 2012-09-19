@@ -31,7 +31,7 @@ define({
 	"SEARCH_PLACEHOLDER": "Rechercher",
 	"BROWSE_FONTS_COMMAND_NAME": "Parcourir les polices Web Edge",
 	"BROWSE_FONTS_INSTRUCTIONS": "Recherchez et sélectionnez la police Web que vous souhaitez inclure dans votre projet Web.",
-	"CODEHINT_BROWSE": "Parcourir les polices Web...",
+	"CODEHINT_BROWSE": "Les polices Web Edge...",
 	"GENERATE_INCLUDE_COMMAND_NAME": "Générer le code d’intégration des polices Web Edge",
 	"GENERATE_INCLUDE_TOOLTIP": "Générer le code d’intégration des polices Web Edge",
 	"INCLUDE_TITLE": "Code d’intégration des polices Web Adobe® Edge",
