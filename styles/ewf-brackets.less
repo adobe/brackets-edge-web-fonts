@@ -47,6 +47,14 @@
     background-position: -@x-offset -@y-offset;
 }
 
+// div < .edge-web-fonts {
+    // background: #000;
+// }
+.edge-web-fonts-browse-dialog {
+    .modal-body, .modal-header {
+        width: 505px;
+    }
+}
 .edge-web-fonts {
 
     div {
@@ -56,7 +64,7 @@
     }
     .ewf-picker {
         position: static;
-        width: 560px;
+        width: 100%;
         background-color: white;
         
         .ewf-side-bar {
@@ -65,7 +73,7 @@
         }
         
         .ewf-search-fonts {
-            width: 560px;
+            width: 100%;
             float: left;
             clear: both;
             margin-top: 10px;
@@ -148,24 +156,27 @@
         }
         
         .divider {
-            width: 1px;
-            height: 340px;
-            float: left;
+            // width: 1px;
+            // height: 340px;
+            // float: left;
+            display: none;
         }
         
         .divider-left {
             margin: 0px 0px 0px 9px;
             background-image: -webkit-linear-gradient(top, rgba(169, 169, 169, 0) 0%, rgba(169, 169, 169, 1) 50%, rgba(169, 169, 169, 0) 100%, rgba(169, 169, 169, 1) 50%, rgba(169, 169, 169, 0) 0%);
+            display: none;
         }
         
         .divider-right {
             margin: 0px 9px 0px 0px;
             background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 0%);
+            display: none;
         }
         
         .ewf-results {
             float: left;
-            width: 507px;
+            width: 470px;
             height: 340px;
             overflow-y: scroll;
             overflow-x: hidden;
