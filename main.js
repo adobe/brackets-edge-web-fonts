@@ -150,7 +150,7 @@ define(function (require, exports, module) {
                 // HACK: We talk to the private CodeMirror instance directly to replace the range
                 // instead of using the Document, as we should. The reason is due to a flaw in our
                 // current document synchronization architecture when inline editors are open.
-                // *** (FILE BUG)
+                // See #1688.
                 if (token.className === "string" || token.className === "number") { // replace
                     editor._codeMirror.replaceRange(actualCompletion,
                                                  {line: cursor.line, ch: token.start},
