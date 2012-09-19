@@ -260,29 +260,6 @@ define(function (require, exports, module) {
     };
         
     function init() {
-        /** Finds this extension's directory relative to the brackets root */
-        function _extensionDirForBrowser() {
-            var bracketsIndex = window.location.pathname;
-            var bracketsDir   = bracketsIndex.substr(0, bracketsIndex.lastIndexOf('/') + 1);
-            var extensionDir  = bracketsDir + require.toUrl('./');
-    
-            return extensionDir;
-        }
-    
-        /** Loads a less file as CSS into the document */
-        function _loadLessFile(file, dir) {
-            // Load the Less code
-            $.get(dir + file, function (code) {
-                // Parse it
-                var parser = new less.Parser({ filename: file, paths: [dir] });
-                parser.parse(code, function onParse(err, tree) {
-                    console.assert(!err, err);
-                    // Convert it to CSS and append that to the document head
-                    $("<style>").text(tree.toCSS()).appendTo(window.document.head);
-                });
-            });
-        }
-        
         function _handleBrowseFonts() {
             var editor = EditorManager.getFocusedEditor();
             var cursor = editor._codeMirror.getCursor();
@@ -355,9 +332,7 @@ define(function (require, exports, module) {
         CodeHintManager.registerHintProvider(fontHints);
         
         // load styles
-        // TODO: Once we're done hacking on the less, compile it to CSS and remove the hacky way we add LESS
-        _loadLessFile("styles/ewf-brackets.less", _extensionDirForBrowser());
-        ExtensionUtils.loadStyleSheet(module, "styles/retina.css");
+        ExtensionUtils.loadStyleSheet(module, "styles/ewf-brackets.css");
         
         // register commands
         CommandManager.register(Strings.CODEHINT_BROWSE, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
