@@ -66,9 +66,8 @@ define(function (require, exports, module) {
                     } else if (!(assumeCursorInvalid && userCursor.line === cursor.line &&
                                  userCursor.ch >= t.start && userCursor.ch <= t.end)) {
                         // The if statement above makes it so that we don't add the font surrounding
-                        // the current cursor position to the completion list for autocompletion
-                        // (but we do for the <script> tag generation, because assumeCursorInvalid is
-                        // false in that case).
+                        // the current cursor position to the autocompletion list (but we do for the 
+                        // <script> tag generation, because assumeCursorInvalid is false in that case).
                         if (t.className === "number") {
                             fonts.push(t.string);
                         } else if (t.className === "string") {
