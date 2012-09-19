@@ -30,7 +30,7 @@ define({
 	"DIALOG_DONE": "Terminé",
 	"SEARCH_PLACEHOLDER": "Rechercher",
 	"BROWSE_FONTS_INSTRUCTIONS": "Recherchez et sélectionnez la police Web que vous souhaitez inclure dans votre projet Web.",
-	"CODEHINT_BROWSE": "Parcourir les polices Web...",
+	"CODEHINT_BROWSE": "Les polices Web Edge...",
 	"GENERATE_INCLUDE_TOOLTIP": "Générer le code d’intégration des polices Web Edge",
 	"INCLUDE_INSTRUCTIONS_1": "Les polices Web Edge sont chargées dans le navigateur de l’utilisateur via JavaScript. Pour vérifier que les polices sont correctement chargées, vous devez ajouter une balise de script à votre document HTML.",
 	"INCLUDE_INSTRUCTIONS_2": "Copiez la balise de script qui suit, et collez-la dans tous les fichiers HTML qui font référence à ce fichier CSS :",
