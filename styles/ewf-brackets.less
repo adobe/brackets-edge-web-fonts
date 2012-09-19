@@ -47,6 +47,17 @@
     background-position: -@x-offset -@y-offset;
 }
 
+// div < .edge-web-fonts {
+    // background: #000;
+// }
+.edge-web-fonts-browse-dialog {
+    .modal-body, .modal-header {
+        width: 505px;
+    }
+    .modal-body {
+        padding: 15px 0 15px 15px;
+    }
+}
 .edge-web-fonts {
 
     div {
@@ -56,7 +67,7 @@
     }
     .ewf-picker {
         position: static;
-        width: 560px;
+        width: 100%;
         background-color: white;
         
         .ewf-side-bar {
@@ -65,7 +76,7 @@
         }
         
         .ewf-search-fonts {
-            width: 560px;
+            width: 503px;
             float: left;
             clear: both;
             margin-top: 10px;
@@ -73,7 +84,7 @@
             padding-top: 0px;
             padding-bottom: 0px;
             padding-right: 0px;
-            padding-left: 50px;
+            padding-left: 30px;
             height: 32px;
             text-shadow: 0 1px 0 rgba(255, 255, 255, 0.48);
             -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -148,25 +159,30 @@
         }
         
         .divider {
-            width: 1px;
-            height: 340px;
-            float: left;
+            // width: 1px;
+            // height: 340px;
+            // float: left;
+            display: none;
         }
         
         .divider-left {
             margin: 0px 0px 0px 9px;
             background-image: -webkit-linear-gradient(top, rgba(169, 169, 169, 0) 0%, rgba(169, 169, 169, 1) 50%, rgba(169, 169, 169, 0) 100%, rgba(169, 169, 169, 1) 50%, rgba(169, 169, 169, 0) 0%);
+            display: none;
         }
         
         .divider-right {
             margin: 0px 9px 0px 0px;
             background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 0%);
+            display: none;
         }
         
         .ewf-results {
-            float: left;
-            width: 507px;
-            height: 340px;
+            position: absolute;
+            bottom: 63px;
+            left: 50px;
+            width: 485px;
+            height: 335px;
             overflow-y: scroll;
             overflow-x: hidden;
         }
