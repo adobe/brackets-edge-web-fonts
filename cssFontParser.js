@@ -35,7 +35,7 @@ define(function (require, exports, module) {
         var editor = EditorManager.getFocusedEditor() || EditorManager.getCurrentFullEditor();
         var cm = editor._codeMirror;
         var cursor = {ch: 0, line: 0}, t;
-        var userCursorLine = cm.getCursor().line;
+        var userCursor = cm.getCursor();
         var isParsingFontList = false, fontListStartLine;
         
         var fonts = [];
@@ -57,17 +57,23 @@ define(function (require, exports, module) {
                 } else if (isParsingFontList) {
                     if (t.string === ";" || t.string === "}") {
                         isParsingFontList = false;
-                    } else if (assumeCursorInvalid && fontListStartLine === userCursorLine && fontListStartLine !== cursor.line) {
+                    } else if (assumeCursorInvalid && fontListStartLine === userCursor.line && fontListStartLine !== cursor.line) {
                         // If we're trying to autocomplete, assume the line the user's cursor is on might
                         // be incomplete (because s/he might be in the middle of typing). In that case,
                         // we want to assume the font list ends at the first newline (in case they
                         // haven't typed the ; or } that ends the current property/rule).
                         isParsingFontList = false;
-                    } else if (t.className === "number") {
-                        fonts.push(t.string);
-                    } else if (t.className === "string") {
-                        // string token types still have quotes around them, so strip first/last char
-                        fonts.push(t.string.substring(1, t.string.length - 1));
+                    } else if (!(assumeCursorInvalid && userCursor.line === cursor.line &&
+                                 userCursor.ch >= t.start && userCursor.ch <= t.end)) {
+                        // The if statement above makes it so that we don't add the font surrounding
+                        // the current cursor position to the autocompletion list (but we do for the 
+                        // <script> tag generation, because assumeCursorInvalid is false in that case).
+                        if (t.className === "number") {
+                            fonts.push(t.string);
+                        } else if (t.className === "string") {
+                            // string token types still have quotes around them, so strip first/last char
+                            fonts.push(t.string.substring(1, t.string.length - 1));
+                        }
                     }
                 }
                 // Advance to next token (or possibly to the end of the line)
