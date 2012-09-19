@@ -63,7 +63,8 @@ define(function (require, exports, module) {
                         // we want to assume the font list ends at the first newline (in case they
                         // haven't typed the ; or } that ends the current property/rule).
                         isParsingFontList = false;
-                    } else if (!(assumeCursorInvalid && userCursor.line === cursor.line && userCursor.ch === t.end)) {
+                    } else if (!(assumeCursorInvalid && userCursor.line === cursor.line &&
+                                 userCursor.ch >= t.start && userCursor.ch <= t.end)) {
                         if (t.className === "number") {
                             fonts.push(t.string);
                         } else if (t.className === "string") {
