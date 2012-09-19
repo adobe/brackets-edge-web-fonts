@@ -50,7 +50,7 @@ define(function (require, exports, module) {
         Commands                = brackets.getModule("command/Commands"),
         Dialogs                 = brackets.getModule("widgets/Dialogs"),
         Menus                   = brackets.getModule("command/Menus");
-
+    
     // DOM elements and HTML
     var $toolbarIcon = null;
     // Because of the way pop ups work, we need to create a new code hint addition every time 
@@ -360,8 +360,8 @@ define(function (require, exports, module) {
         ExtensionUtils.loadStyleSheet(module, "styles/retina.css");
         
         // register commands
-        CommandManager.register(Strings.BROWSE_FONTS_COMMAND_NAME, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
-        CommandManager.register(Strings.GENERATE_INCLUDE_COMMAND_NAME, COMMAND_GENERATE_INCLUDE, _handleGenerateInclude);
+        CommandManager.register(Strings.CODEHINT_BROWSE, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
+        CommandManager.register(Strings.GENERATE_INCLUDE_TOOLTIP, COMMAND_GENERATE_INCLUDE, _handleGenerateInclude);
         
         // set up menu and keybinding
         /* NOTE: Decided not to have menu items for now. Leaving this code in case we want to add them back
