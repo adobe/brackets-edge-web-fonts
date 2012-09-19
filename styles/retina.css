@@ -1,111 +1,54 @@
 .edge-web-fonts .ewf-picker .ewf-search-fonts {
-    background-image: url("../img/fonts_search.png");
+    background-image: -webkit-image-set(url("../img/fonts_search.png") 1x, url("../img/fonts_search@2x.png") 2x);
     background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .serif {
-    background-image: url("../img/fonts_serif.png");
+    background-image: -webkit-image-set(url("../img/fonts_serif.png") 1x, url("../img/fonts_serif@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .sans-serif {
-    background-image: url("../img/fonts_sans-serif.png");
+    background-image: -webkit-image-set(url("../img/fonts_sans-serif.png") 1x, url("../img/fonts_sans-serif@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .slab-serif {
-    background-image: url("../img/fonts_slab-serif.png");
+    background-image: -webkit-image-set(url("../img/fonts_slab-serif.png") 1x, url("../img/fonts_slab-serif@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .script {
-    background-image: url("../img/fonts_script.png");
+    background-image: -webkit-image-set(url("../img/fonts_script.png") 1x, url("../img/fonts_script@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .blackletter {
-    background-image: url("../img/fonts_blackletter.png");
+    background-image: -webkit-image-set(url("../img/fonts_blackletter.png") 1x, url("../img/fonts_blackletter@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .monospaced {
-    background-image: url("../img/fonts_mono-spaced.png");
+    background-image: -webkit-image-set(url("../img/fonts_mono-spaced.png") 1x, url("../img/fonts_mono-spaced@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .handmade {
-    background-image: url("../img/fonts_handwritten.png");
+    background-image: -webkit-image-set(url("../img/fonts_handwritten.png") 1x, url("../img/fonts_handwritten@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .decorative {
-    background-image: url("../img/fonts_decorative.png");
+    background-image: -webkit-image-set(url("../img/fonts_decorative.png") 1x, url("../img/fonts_decorative@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .paragraphs {
-    background-image: url("../img/fonts_paragraphs.png");
+    background-image: -webkit-image-set(url("../img/fonts_paragraphs.png") 1x, url("../img/fonts_paragraphs@2x.png") 2x);
+    background-repeat: no-repeat;
 }
 
 .edge-web-fonts .ewf-picker .headings {
-    background-image: url("../img/fonts_headlines.png");
-}
-
-@media all and (-webkit-min-device-pixel-ratio : 2), (min-device-pixel-ratio : 2) {
-    .edge-web-fonts .ewf-picker .ewf-search-fonts {
-        background-image: url("../img/fonts_search@2x.png");
-        background-size: 30px 60px;
-    }
-
-    .edge-web-fonts .ewf-picker .serif {
-        background-image: url("../img/fonts_serif@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .sans-serif {
-        background-image: url("../img/fonts_sans-serif@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .slab-serif {
-        background-image:  url("../img/fonts_slab-serif@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .script {
-        background-image: url("../img/fonts_script@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .blackletter {
-        background-image: url("../img/fonts_blackletter@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .monospaced {
-        background-image: url("../img/fonts_mono-spaced@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .handmade {
-        background-image: url("../img/fonts_handwritten@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .decorative {
-        background-image: url("../img/fonts_decorative@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .paragraphs {
-        background-image: url("../img/fonts_paragraphs@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
-
-    .edge-web-fonts .ewf-picker .headings {
-        background-image: url("../img/fonts_headlines@2x.png");
-        background-size: 60px 30px;
-        background-repeat: no-repeat;
-    }
+    background-image: -webkit-image-set(url("../img/fonts_headlines.png") 1x, url("../img/fonts_headlines@2x.png") 2x);
+    background-repeat: no-repeat;
 }
