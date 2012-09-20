@@ -154,11 +154,19 @@ define(function (require, exports, module) {
     }
     
     function searchByName(needle) {
-        return filterAndSortArray(needle, allFonts, function (f) { return f.lowerCaseName; });
+        if (needle === "") {
+            return [];
+        } else {
+            return filterAndSortArray(needle, allFonts, function (f) { return f.lowerCaseName; });
+        }
     }
     
     function searchBySlug(needle) {
-        return filterAndSortArray(needle, getAllSlugs());
+        if (needle === "") {
+            return [];
+        } else {
+            return filterAndSortArray(needle, getAllSlugs());
+        }
     }
     
     function _displayResults(families) {
@@ -201,6 +209,9 @@ define(function (require, exports, module) {
                 // clear previously selected class
                 $(".ewf-tabs button").removeClass("selected");
 
+                // clear any previous search
+                $(".ewf-search-fonts").val("");
+                
                 // select this class
                 $targetButton.addClass("selected");
                             
