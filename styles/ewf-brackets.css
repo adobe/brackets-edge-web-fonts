@@ -256,6 +256,8 @@
 }
 .edge-web-fonts-include-dialog textarea {
   width: 550px;
+  resize: none;
+  cursor: text;
 }
 .edge-web-fonts-howto-dialog ol {
   font-size: 1.1em;
