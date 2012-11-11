@@ -248,6 +248,7 @@ define(function (require, exports, module) {
      */
     FontHints.prototype.handleSelect = function (completion, editor, cursor) {
         _insertFontCompletionAtCursor(completion, editor, cursor);
+        return true;
     };
 
     /**
