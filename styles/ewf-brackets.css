@@ -254,6 +254,11 @@
 .edge-web-fonts-browse-dialog .modal-footer {
   clear: both;
 }
+.edge-web-fonts-browse-dialog .ewf-terms-of-use {
+  position: relative;
+  top: 7px;
+  left: 3px;
+}
 .edge-web-fonts-include-dialog textarea {
   width: 550px;
   resize: none;
