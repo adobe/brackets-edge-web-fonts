@@ -364,7 +364,7 @@ define(function (require, exports, module) {
                 appNameInclude = "<script>var __adobewebfontsappname__ = \"code\"</script>\n";
             }
         } catch (err) {
-            console.log("[edge-web-font extension] failed to compute app identifier: " + err);
+            // Do nothing. Include generation will still work even if we don't get an app identifier.
         }
         
         return d.promise();
