@@ -38,7 +38,7 @@ define({
     "HOWTO_INSTRUCTIONS_2"           : "When specifying a font-family property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.",
     "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the [ Wf ] icon in the top right to generate the required embed code.",
     "HOWTO_INSTRUCTIONS_4"           : "Paste the embed code into any HTML page to include the fonts.",
-    "TERMS_OF_USE"                   : "Edge Web Fonts <a class=\"clickable-link\" data-href=\"http://www.adobe.com/products/eulas/tou_typekit/\">Terms of Use</a>",
+    "TERMS_OF_USE"                   : "Edge Web Fonts <a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou\">Terms of Use</a>",
     
     
     // Font classifications
