@@ -23,13 +23,14 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global require, define, Mustache, $, setTimeout, clearTimeout */
+/*global brackets, require, define, Mustache, $, setTimeout, clearTimeout */
 
 
 define(function (require, exports, module) {
     "use strict";
     
     var apiUrlPrefix      = "https://api.typekit.com/edge_internal_v1/",
+        appNameInclude    = "", // filled in on init()
         fontIncludePrefix = "<script src=\"http://use.edgefonts.net/",
         fontIncludeSuffix = ".js\"></script>";
     
@@ -274,7 +275,7 @@ define(function (require, exports, module) {
         for (i = 0; i < fonts.length; i++) {
             fontStrings.push(fonts[i].slug + ":" + fonts[i].fvds.join(",") + ":" + fonts[i].subset);
         }
-        return fontIncludePrefix + fontStrings.join(";") + fontIncludeSuffix;
+        return appNameInclude + fontIncludePrefix + fontStrings.join(";") + fontIncludeSuffix;
     }
     
     function init(newApiUrlPrefix) {
@@ -284,6 +285,7 @@ define(function (require, exports, module) {
             apiUrlPrefix = newApiUrlPrefix;
         }
     
+        // setup callback function for metadata request
         function organizeFamilies(families) {
             allFonts = families.families;
             var i, j;
@@ -337,6 +339,7 @@ define(function (require, exports, module) {
             }
         }
         
+        // request font metadata
         $.ajax({
             url: apiUrlPrefix + "families",
             dataType: 'json',
@@ -348,6 +351,21 @@ define(function (require, exports, module) {
                 d.reject("XHR request to 'families' API failed");
             }
         });
+        
+        // set up include strings
+        var appId = "";
+        try {
+            // Check if we're running inside Edge Code or Brackets
+            // We do this in a 'try' because we don't want this to break horribly if the place we keep the
+            // app name changes. Also, we want it to work if we switch from "Edge Code" to "Adobe Edge Code" etc, 
+            // so we look at the lowercase version of the last word in the name
+            appId = brackets.metadata.name.split(" ").pop().toLowerCase();
+            if (appId === "code") {
+                appNameInclude = "<script>var __adobewebfontsappname__ = \"code\"</script>\n";
+            }
+        } catch (err) {
+            console.log("[edge-web-font extension] failed to compute app identifier: " + err);
+        }
         
         return d.promise();
                 
