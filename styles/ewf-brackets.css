@@ -262,6 +262,7 @@
   left: 3px;
 }
 .edge-web-fonts-include-dialog textarea {
+  height: 175px;
   width: 550px;
   resize: none;
   cursor: text;

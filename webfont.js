@@ -23,15 +23,17 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global require, define, Mustache, $, setTimeout, clearTimeout */
+/*global brackets, require, define, Mustache, $, setTimeout, clearTimeout */
 
 
 define(function (require, exports, module) {
     "use strict";
     
-    var apiUrlPrefix      = "https://api.typekit.com/edge_internal_v1/",
-        fontIncludePrefix = "<script src=\"http://use.edgefonts.net/",
-        fontIncludeSuffix = ".js\"></script>";
+    var apiUrlPrefix          = "https://api.typekit.com/edge_internal_v1/",
+        appIdentifierTemplate = "<script>\n/*\n * {{{APP_IDENTIFIER_1}}}\n * {{{APP_IDENTIFIER_2}}}\n */\nvar __adobewebfontsappname__ = \"{{{APP_ID}}}\";\n</script>\n",
+        appIdentifier         = "", // rendered by Mustache on initialization
+        fontIncludePrefix     = "<script src=\"http://use.edgefonts.net/",
+        fontIncludeSuffix     = ".js\"></script>";
     
     var fontsByClass = {},
         fontsByName  = {},
@@ -274,7 +276,7 @@ define(function (require, exports, module) {
         for (i = 0; i < fonts.length; i++) {
             fontStrings.push(fonts[i].slug + ":" + fonts[i].fvds.join(",") + ":" + fonts[i].subset);
         }
-        return fontIncludePrefix + fontStrings.join(";") + fontIncludeSuffix;
+        return appIdentifier + fontIncludePrefix + fontStrings.join(";") + fontIncludeSuffix;
     }
     
     function init(newApiUrlPrefix) {
@@ -348,6 +350,17 @@ define(function (require, exports, module) {
                 d.reject("XHR request to 'families' API failed");
             }
         });
+        
+        // render the app identifier for the include generation
+        // the app id will be the last word of the app name, in all lowercase
+        // (i.e. 'brackets' or 'code')
+        var appId = "brackets";
+        try { // in case we change where we keep the app name in the future, don't want this to break horribly
+            appId = brackets.metadata.name.split(" ").pop().toLocaleLowerCase();
+        } catch (err) {
+            console.log("[edge-web-font extension] failed to compute app identifier: " + err);
+        }
+        appIdentifier = Mustache.render(appIdentifierTemplate, $.extend({"APP_ID" : appId}, Strings));
         
         return d.promise();
                 

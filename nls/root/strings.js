@@ -33,7 +33,7 @@ define({
     "CODEHINT_BROWSE"                : "Browse Web Fonts...", // Needs to be short to fit in popup, but not sure about acronym
     "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Embed Code",
     "INCLUDE_INSTRUCTIONS_1"         : "Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.",
-    "INCLUDE_INSTRUCTIONS_2"         : "Copy the following script tag and paste it into all HTML files that reference this CSS file:",
+    "INCLUDE_INSTRUCTIONS_2"         : "Copy the following script tags and paste them into all HTML files that reference this CSS file:",
     "HOWTO_INSTRUCTIONS_1"           : "Edge Web Fonts lets you add FREE and awesome fonts to your web project. Just specify the fonts you want to use in your CSS and we'll generate the required <script> tag for your HTML.",
     "HOWTO_INSTRUCTIONS_2"           : "When specifying a font-family property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.",
     "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the [ Wf ] icon in the top right to generate the required embed code.",
@@ -51,5 +51,10 @@ define({
     "handmade"                 : "Handmade",
     "decorative"               : "Decorative",
     "headings"                 : "Headings",
-    "paragraphs"               : "Paragraphs"
+    "paragraphs"               : "Paragraphs",
+
+    // Font script include comments
+    "APP_IDENTIFIER_1"         : "Note: The __adobewebfontsappname__ variable below is used to",
+    "APP_IDENTIFIER_2"         : "analyze Edge Web Fonts usage and is optional."
+
 });
