@@ -94,7 +94,18 @@ define(function (require, exports, module) {
      *  if the code hint UI gets reorganized, the unit test will catch it. 
      */
     function _augmentCodeHintUI() {
+
+        function repositionAddition(list, addition) {
+            var menuListPosition = list.position();
+            addition.css("position", "absolute");
+            addition.css("top", menuListPosition.top + list.height());
+            addition.css("left", menuListPosition.left);
+            addition.css("width", list.width());
+            addition.css("max-width", list.width());
+        }
+
         var $menu = $(".dropdown.codehint-menu.open");
+
         if ($menu.length > 0) {
             var $menuList = $menu.find(".dropdown-menu");
             if ($menuList.length > 0) { // we're actually displaying a code hint
@@ -108,21 +119,17 @@ define(function (require, exports, module) {
                 // so create it first
                 if ($codeHintAddition.length === 0) {
                     $codeHintAddition = $(codeHintAdditionHtmlString);
+                    repositionAddition($menuList, $codeHintAddition);
                     $menuList.after($codeHintAddition);
                     $codeHintAddition.find('a').on('click', function () {
                         CommandManager.execute(COMMAND_BROWSE_FONTS);
                         return false; // don't actually follow link
                     });
+                } else {
+                    // This method only gets called when the pop up has changed in some way
+                    // (e.g. a new search). So, the popup has always moved. We need to reposition.
+                    repositionAddition($menuList, $codeHintAddition);
                 }
-
-                // This method only gets called when the pop up has changed in some way
-                // (e.g. a new search). So, the popup has always moved. We need to reposition.
-                var menuListPosition = $menuList.position();
-                $codeHintAddition.css("position", "absolute");
-                $codeHintAddition.css("top", menuListPosition.top + $menuList.height());
-                $codeHintAddition.css("left", menuListPosition.left);
-                $codeHintAddition.css("width", $menuList.width());
-                $codeHintAddition.css("max-width", $menuList.width());
             }
         }
     }
@@ -183,80 +190,104 @@ define(function (require, exports, module) {
     function FontHints() {}
 
     /**
-     * Filters the source list by query and returns the result
-     * @param {Object.<queryStr: string, ...} query -- a query object with a required property queryStr 
-     *     that will be used to filter out code hints
-     * @return {Array.<string>}
+     * Determines whether font hints are available in the current editor
+     * context.
+     *
+     * @param {Editor} editor
+     * A non-null editor object for the active window.
+     *
+     * @param {String} implicitChar
+     * Either null, if the hinting request was explicit, or a single character
+     * that represents the last insertion and that indicates an implicit
+     * hinting request.
+     *
+     * @return {Boolean}
+     * Determines whether the current provider is able to provide hints for
+     * the given editor context and, in case implicitChar is non- null,
+     * whether it is appropriate to do so.
      */
-    FontHints.prototype.search = function (query) {
-        var candidates = parser.parseCurrentEditor(true);
-        candidates = candidates.concat(lastTwentyFonts);
-        candidates = candidates.concat(webfont.getWebsafeFonts());
-        candidates = webfont.lowerSortUniqStringArray(candidates);
-        candidates = webfont.filterAndSortArray(query.queryStr, candidates);
-        return candidates;
+    FontHints.prototype.hasHints = function (editor, implicitChar) {
+        this.editor = editor;
+        if (!implicitChar) {
+            if (_documentIsCSS(editor.document)) {
+                if (parser.getFontTokenAtCursor(editor, editor.getCursorPos())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     };
 
-
     /**
-     * Figures out the text to use for the hint list query based on the text
-     * around the cursor
-     * Query is the text from the start of a tag to the current cursor position
-     * @param {Editor} editor
-     * @param {Cursor} current cursor location
-     * @return {Object.<queryStr: string, ...} search query results will be filtered by.
-     *      Return empty queryStr string to indicate code hinting should not filter and show all results.
-     *      Return null in queryStr to indicate NO hints can be provided.
+     * Returns a list of availble font hints, if possible, for the current
+     * editor context.
+     *
+     * @return {Object<hints: Array<String>, match: String, 
+     *      selectInitial: Boolean>}
+     * Null if the provider wishes to end the hinting session. Otherwise, a
+     * response object that provides 1. a sorted array unformatted hints; 2. a
+     * string match used by the hint list to emphasize the matched portions of
+     * the hints; and 3. a boolean that indicates whether the first result, if
+     * one exists, should be selected by default in the hint list window.
      */
-    FontHints.prototype.getQueryInfo = function (editor, cursor) {
-        var queryInfo = {queryStr: null}; // by default, don't handle
-        var token = null;
+    FontHints.prototype.getHints = function (key) {
+        var editor = this.editor,
+            cursor = editor.getCursorPos(),
+            query,
+            token;
         
         if (_documentIsCSS(editor.document)) {
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
                 if (token.className === "string") { // is wrapped in quotes        
                     if (token.start < cursor.ch) { // actually in the text
-                        queryInfo.queryStr = token.string.substring(1, cursor.ch - token.start);
+                        query = token.string.substring(1, cursor.ch - token.start);
                         if (token.end === cursor.ch) { // at the end, so need to clip off closing quote
-                            queryInfo.queryStr = queryInfo.queryStr.substring(0, queryInfo.queryStr.length - 1);
+                            query = query.substring(0, query.length - 1);
                         }
                     } else { // not in the text
-                        queryInfo.queryStr = "";
+                        query = "";
                     }
                 } else if (token.className === "number") { // is not wrapped in quotes
-                    queryInfo.queryStr = token.string.substring(0, cursor.ch - token.start);
+                    query = token.string.substring(0, cursor.ch - token.start);
                 } else { // after a ":", a space, or a ","
-                    queryInfo.queryStr = "";
+                    query = "";
                 }
+
+                // we're going to handle this query, so we need to add our UI
+                setTimeout(_augmentCodeHintUI, 1);
+
+                var candidates = parser.parseCurrentEditor(true);
+                candidates = candidates.concat(lastTwentyFonts);
+                candidates = candidates.concat(webfont.getWebsafeFonts());
+                candidates = webfont.lowerSortUniqStringArray(candidates);
+                candidates = webfont.filterAndSortArray(query, candidates);
+
+                return {
+                    hints: candidates,
+                    match: query,
+                    selectInitial: true
+                };
             }
         }
-        
-        // we're going to handle this query, so we need to add our UI
-        if (queryInfo.queryStr !== null) {
-            setTimeout(_augmentCodeHintUI, 1);
-        }
-        
-        return queryInfo;
+        return null;
     };
 
     /**
-     * Enters the code completion text into the editor
-     * @param {string} completion - text to insert into current code editor
-     * @param {Editor} editor
-     * @param {Cursor} current cursor location
+     * Inserts a given font hint into the current editor context.
+     *
+     * @param {String} completion
+     * The hint to be inserted into the editor context.
+     *
+     * @return {Boolean}
+     * Indicates whether the manager should follow hint insertion with an
+     * additional explicit hint request.
      */
-    FontHints.prototype.handleSelect = function (completion, editor, cursor) {
+    FontHints.prototype.insertHint = function (completion) {
+        var editor = this.editor,
+            cursor = editor.getCursorPos();
+
         _insertFontCompletionAtCursor(completion, editor, cursor);
-        return true;
-    };
-
-    /**
-     * Check whether to show hints on a specific key.
-     * @param {string} key -- the character for the key user just presses.
-     * @return {boolean} return true/false to indicate whether hinting should be triggered by this key.
-     */
-    FontHints.prototype.shouldShowHintsOnKey = function (key) {
         return false;
     };
         
@@ -330,7 +361,7 @@ define(function (require, exports, module) {
         
         // install autocomplete handler
         var fontHints = new FontHints();
-        CodeHintManager.registerHintProvider(fontHints);
+        CodeHintManager.registerHintProvider(fontHints, ["css"], 1);
         
         // load styles
         ExtensionUtils.loadStyleSheet(module, "styles/ewf-brackets.css");
