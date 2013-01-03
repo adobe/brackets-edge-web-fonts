@@ -95,13 +95,13 @@ define(function (require, exports, module) {
      */
     function _augmentCodeHintUI() {
 
-        function repositionAddition(list, addition) {
-            var menuListPosition = list.position();
-            addition.css("position", "absolute");
-            addition.css("top", menuListPosition.top + list.height());
-            addition.css("left", menuListPosition.left);
-            addition.css("width", list.width());
-            addition.css("max-width", list.width());
+        function repositionAddition($list, $addition) {
+            var menuListPosition = $list.position();
+            $addition.css("position", "absolute");
+            $addition.css("top", menuListPosition.top + $list.height());
+            $addition.css("left", menuListPosition.left);
+            $addition.css("width", $list.width());
+            $addition.css("max-width", $list.width());
         }
 
         var $menu = $(".dropdown.codehint-menu.open");
