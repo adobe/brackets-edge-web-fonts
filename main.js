@@ -66,6 +66,7 @@ define(function (require, exports, module) {
     var COMMAND_GENERATE_INCLUDE = "edgewebfonts.generateinclude";
     var PREFERENCES_CLIENT_ID = "com.adobe.edgewebfonts";
     var PREFERENCES_FONT_HISTORY_KEY = "ewf-font-history";
+    var SAMPLE_TEXT = "Sample";
     
     // Local variables
     var lastFontSelected = null;
@@ -119,6 +120,9 @@ define(function (require, exports, module) {
                 // If this is a new popup, we won't have a code hint addition yet (new popup), 
                 // so create it first
                 if ($codeHintAddition.length === 0) {
+                    // hack to prevent shifting as the background fonts load
+                    $menuList.width($menuList.width() + 20);
+
                     $codeHintAddition = $(codeHintAdditionHtmlString);
                     repositionAddition($menuList, $codeHintAddition);
                     $menuList.after($codeHintAddition);
@@ -291,7 +295,12 @@ define(function (require, exports, module) {
                     }
 
                     // set the font family and attach the hint string as data
-                    $hintObj.css('font-family', hint)
+                    $hintObj
+                        .append($('<span>')
+                                .append(SAMPLE_TEXT)
+                                .css('padding-right', '10px') // hack to match left-side padding
+                                .css('float', 'right')
+                                .css('font-family', hint))
                         .data('hint', hint);
                     return $hintObj;
                 });
