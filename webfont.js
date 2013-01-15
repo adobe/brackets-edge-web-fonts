@@ -271,9 +271,16 @@ define(function (require, exports, module) {
      *
      */
     function createInclude(fonts) {
-        var i, fontStrings = [];
+        var i, fontStrings = [], fontString;
         for (i = 0; i < fonts.length; i++) {
-            fontStrings.push(fonts[i].slug + ":" + fonts[i].fvds.join(",") + ":" + fonts[i].subset);
+            fontString = fonts[i].slug;
+            if (fonts[i].fvds) {
+                fontString += ":" + fonts[i].fvds.join(",");
+            }
+            if (fonts[i].subset) {
+                fontString += ":" + fonts[i].subset;
+            }
+            fontStrings.push(fontString);
         }
         return appNameInclude + fontIncludePrefix + fontStrings.join(";") + fontIncludeSuffix;
     }

@@ -72,6 +72,7 @@ define(function (require, exports, module) {
     var lastTwentyFonts = [];
     var prefs = {};
     var whitespaceRegExp = new RegExp("\\s");
+    var scriptCache = {};
     
     function _documentIsCSS(doc) {
         return doc && EditorUtils.getModeFromFileExtension(doc.file.fullPath) === "css";
@@ -118,6 +119,9 @@ define(function (require, exports, module) {
                 // If this is a new popup, we won't have a code hint addition yet (new popup), 
                 // so create it first
                 if ($codeHintAddition.length === 0) {
+                    // hack to prevent shifting as the background fonts load
+                    $menuList.width($menuList.width() + 20);
+
                     $codeHintAddition = $(codeHintAdditionHtmlString);
                     repositionAddition($menuList, $codeHintAddition);
                     $menuList.after($codeHintAddition);
@@ -222,13 +226,13 @@ define(function (require, exports, module) {
      * Returns a list of availble font hints, if possible, for the current
      * editor context.
      *
-     * @return {Object<hints: Array<String>, match: String, 
+     * @return {Object<hints: Array<jQuery.Object>, match: String,
      *      selectInitial: Boolean>}
      * Null if the provider wishes to end the hinting session. Otherwise, a
-     * response object that provides 1. a sorted array unformatted hints; 2. a
-     * string match used by the hint list to emphasize the matched portions of
-     * the hints; and 3. a boolean that indicates whether the first result, if
-     * one exists, should be selected by default in the hint list window.
+     * response object that provides 1. a sorted array formatted hints; 2. a
+     * null string match to indicate that the hints are already formatted;
+     * and 3. a boolean that indicates whether the first result, if one exists,
+     * should be selected by default in the hint list window.
      */
     FontHints.prototype.getHints = function (key) {
         var editor = this.editor,
@@ -262,10 +266,47 @@ define(function (require, exports, module) {
                 candidates = candidates.concat(webfont.getWebsafeFonts());
                 candidates = webfont.lowerSortUniqStringArray(candidates);
                 candidates = webfont.filterAndSortArray(query, candidates);
+                candidates = candidates.map(function (hint) {
+                    var index       = hint.indexOf(query),
+                        $hintObj    = $('<span>'),
+                        slugs       = webfont.searchBySlug(hint);
+
+                    // load the matching font scripts individually for cachability
+                    slugs.forEach(function (slug) {
+                        var font = webfont.getFontBySlug(slug),
+                            script;
+                        if (!(scriptCache.hasOwnProperty(slug))) {
+                            script = webfont.createInclude([font]);
+                            $(script).appendTo("head");
+                            scriptCache[slug] = true;
+                        }
+                    });
+
+                    // emphasize the matching substring
+                    if (index >= 0) {
+                        $hintObj.append(hint.slice(0, index))
+                            .append($('<span>')
+                                    .append(hint.slice(index, index + query.length))
+                                    .css('font-weight', 'bold'))
+                            .append(hint.slice(index + query.length));
+                    } else {
+                        $hintObj.text(hint);
+                    }
+
+                    // set the font family and attach the hint string as data
+                    $hintObj
+                        .append($('<span>')
+                                .append(Strings.SAMPLE_TEXT)
+                                .css('padding-right', '10px') // hack to match left-side padding
+                                .css('float', 'right')
+                                .css('font-family', hint))
+                        .data('hint', hint);
+                    return $hintObj;
+                });
 
                 return {
                     hints: candidates,
-                    match: query,
+                    match: null,
                     selectInitial: true
                 };
             }
@@ -276,7 +317,7 @@ define(function (require, exports, module) {
     /**
      * Inserts a given font hint into the current editor context.
      *
-     * @param {String} completion
+     * @param {jQuery.Object} completion
      * The hint to be inserted into the editor context.
      *
      * @return {Boolean}
@@ -287,7 +328,7 @@ define(function (require, exports, module) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
 
-        _insertFontCompletionAtCursor(completion, editor, cursor);
+        _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
         return false;
     };
         
