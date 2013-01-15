@@ -39,7 +39,7 @@ define({
     "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the [ Wf ] icon in the top right to generate the required embed code.",
     "HOWTO_INSTRUCTIONS_4"           : "Paste the embed code into any HTML page to include the fonts.",
     "TERMS_OF_USE"                   : "Edge Web Fonts <a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou\">Terms of Use</a>",
-    
+    "SAMPLE_TEXT"                    : "Sample", // FUTURE: To be used to render "Sample" font previews as shown in http://bit.ly/YdStz9
     
     // Font classifications
     "serif"                    : "Serif",
