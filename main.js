@@ -66,7 +66,6 @@ define(function (require, exports, module) {
     var COMMAND_GENERATE_INCLUDE = "edgewebfonts.generateinclude";
     var PREFERENCES_CLIENT_ID = "com.adobe.edgewebfonts";
     var PREFERENCES_FONT_HISTORY_KEY = "ewf-font-history";
-    var SAMPLE_TEXT = "Sample";
     
     // Local variables
     var lastFontSelected = null;
@@ -297,7 +296,7 @@ define(function (require, exports, module) {
                     // set the font family and attach the hint string as data
                     $hintObj
                         .append($('<span>')
-                                .append(SAMPLE_TEXT)
+                                .append(Strings.SAMPLE_TEXT)
                                 .css('padding-right', '10px') // hack to match left-side padding
                                 .css('float', 'right')
                                 .css('font-family', hint))
