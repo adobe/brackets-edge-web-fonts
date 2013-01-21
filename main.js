@@ -299,7 +299,7 @@ define(function (require, exports, module) {
                                 .append(Strings.SAMPLE_TEXT)
                                 .css('padding-right', '10px') // hack to match left-side padding
                                 .css('float', 'right')
-                                .css('font-family', hint))
+                                .css('font-family', hint + ", AdobeBlank"))
                         .data('hint', hint);
                     return $hintObj;
                 });
@@ -406,6 +406,7 @@ define(function (require, exports, module) {
         
         // load styles
         ExtensionUtils.loadStyleSheet(module, "styles/ewf-brackets.css");
+        ExtensionUtils.loadStyleSheet(module, "styles/adobe-blank.css");
         
         // register commands
         CommandManager.register(Strings.CODEHINT_BROWSE, COMMAND_BROWSE_FONTS, _handleBrowseFonts);
