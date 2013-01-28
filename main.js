@@ -119,8 +119,18 @@ define(function (require, exports, module) {
                 // If this is a new popup, we won't have a code hint addition yet (new popup), 
                 // so create it first
                 if ($codeHintAddition.length === 0) {
-                    // hack to prevent shifting as the background fonts load
-                    $menuList.width($menuList.width() + 20);
+                    // HACK (tracking adobe/brackets#2695): Fix the width of the code hint 
+                    // window for this session. If we don't do this, the size of the window 
+                    // can change as Webfont "Sample" strings load. Because of the hacky way
+                    // that we're adding the "addition", we can't have the size change. Once 
+                    // we have an API for making additions, we can remove this hack. (In other
+                    // words, we need a div in the CodeHintList to which we can add additions.)
+                    // The "+ 40" adds some spacing between the hint names and the sample
+                    // text. However, this spacing isn't guaranteed, so it shouldn't be
+                    // thougth of as "padding" in the CSS sense. If the font that gets
+                    // loaded is too long, it will wrap to the next line, which looks okay
+                    // and functions properly.
+                    $menuList.width($menuList.width() + 40);
 
                     $codeHintAddition = $(codeHintAdditionHtmlString);
                     repositionAddition($menuList, $codeHintAddition);
@@ -158,10 +168,10 @@ define(function (require, exports, module) {
                     actualCompletion = stringChar + actualCompletion + stringChar;
                 }
 
-                // HACK: We talk to the private CodeMirror instance directly to replace the range
-                // instead of using the Document, as we should. The reason is due to a flaw in our
-                // current document synchronization architecture when inline editors are open.
-                // See #1688.
+                // HACK (tracking adobe/brackets#1688): We talk to the private CodeMirror instance
+                // directly to replace the range instead of using the Document, as we should. The
+                // reason is due to a flaw in our current document synchronization architecture when
+                // inline editors are open.
                 if (token.className === "string" || token.className === "number") { // replace
                     editor._codeMirror.replaceRange(actualCompletion,
                                                  {line: cursor.line, ch: token.start},
@@ -297,7 +307,7 @@ define(function (require, exports, module) {
                     $hintObj
                         .append($('<span>')
                                 .append(Strings.SAMPLE_TEXT)
-                                .css('padding-right', '10px') // hack to match left-side padding
+                                .css('padding-right', '10px')
                                 .css('float', 'right')
                                 .css('font-family', hint + ", AdobeBlank"))
                         .data('hint', hint);
