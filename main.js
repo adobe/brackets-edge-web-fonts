@@ -222,10 +222,27 @@ define(function (require, exports, module) {
      */
     FontHints.prototype.hasHints = function (editor, implicitChar) {
         this.editor = editor;
-        if (!implicitChar) {
-            if (_documentIsCSS(editor.document)) {
+        if (_documentIsCSS(editor.document)) {
+            if (!implicitChar) {
                 if (parser.getFontTokenAtCursor(editor, editor.getCursorPos())) {
                     return true;
+                }
+            } else if (implicitChar === " ") {
+                // We only display the hint list implicitly if all of the following conditions are met:
+                //   1. We're in a font-family rule (covered by checking parser.getFontTokenAtCursor !== null)
+                //   2. Our current character is a space that is NOT inside a variable (covered by checking
+                //      if the class name is null and the string value)
+                //   3. Our prior character was a "," that is not inside a variable (again covered by checking
+                //      if the class name is null and the string value)
+                var currentPosition = editor.getCursorPos();
+                if (currentPosition.ch >= 1) {
+                    var currentToken = parser.getFontTokenAtCursor(editor, currentPosition);
+                    var priorToken = parser.getFontTokenAtCursor(editor, {ch: currentPosition.ch - 1, line: currentPosition.line});
+                    if (currentToken && priorToken &&
+                            currentToken.className === null && priorToken.className === null &&
+                            currentToken.string === " " && priorToken.string === ",") {
+                        return true;
+                    }
                 }
             }
         }
