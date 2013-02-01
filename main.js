@@ -227,20 +227,15 @@ define(function (require, exports, module) {
                 if (parser.getFontTokenAtCursor(editor, editor.getCursorPos())) {
                     return true;
                 }
-            } else if (implicitChar === " ") {
-                // We only display the hint list implicitly if all of the following conditions are met:
-                //   1. We're in a font-family rule (covered by checking parser.getFontTokenAtCursor !== null)
-                //   2. Our current character is a space that is NOT inside a variable (covered by checking
-                //      if the class name is null and the string value)
-                //   3. Our prior character was a "," that is not inside a variable (again covered by checking
-                //      if the class name is null and the string value)
+            } else if (/[\w"']/.test(implicitChar)) {
+                // We only display the hint list implicitly if the following conditions are both met:
+                //   1. The implicit char is a word character or a quote (covered by the test above)
+                //   2. We're in a font-family rule (covered by checking parser.getFontTokenAtCursor !== null)
+                // We check them in this order because checking the implict char is much cheaper.
                 var currentPosition = editor.getCursorPos();
                 if (currentPosition.ch >= 1) {
-                    var currentToken = parser.getFontTokenAtCursor(editor, currentPosition);
-                    var priorToken = parser.getFontTokenAtCursor(editor, {ch: currentPosition.ch - 1, line: currentPosition.line});
-                    if (currentToken && priorToken &&
-                            currentToken.className === null && priorToken.className === null &&
-                            currentToken.string === " " && priorToken.string === ",") {
+                    var currentToken = parser.getFontTokenAtCursor(editor, editor.getCursorPos());
+                    if (currentToken) {
                         return true;
                     }
                 }
