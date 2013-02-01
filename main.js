@@ -71,7 +71,9 @@ define(function (require, exports, module) {
     var lastFontSelected = null;
     var lastTwentyFonts = [];
     var prefs = {};
-    var whitespaceRegExp = new RegExp("\\s");
+    var whitespaceRegExp = /\s/;
+    var commaSemiRegExp = /([;,])/;
+    var fontnameStartRegExp = /[\w"']/;
     var scriptCache = {};
     
     function _documentIsCSS(doc) {
@@ -168,6 +170,20 @@ define(function (require, exports, module) {
                     actualCompletion = stringChar + actualCompletion + stringChar;
                 }
 
+                // Check if we're modifying an existing string. If so, it's possible that we're
+                // in a situation with only one quote (i.e. the parser thinks the rest of the
+                // line is a string. So, we want to stop at the first occurrence of a comma or 
+                // semi-colon.
+                var endChar = token.end;
+                if (token.className === "string") {
+                    // Find the *first* comma or semi
+                    var match = commaSemiRegExp.exec(token.string);
+                    if (match) {
+                        endChar = token.start + match.index;
+                    }
+                    
+                }
+                
                 // HACK (tracking adobe/brackets#1688): We talk to the private CodeMirror instance
                 // directly to replace the range instead of using the Document, as we should. The
                 // reason is due to a flaw in our current document synchronization architecture when
@@ -175,7 +191,7 @@ define(function (require, exports, module) {
                 if (token.className === "string" || token.className === "number") { // replace
                     editor._codeMirror.replaceRange(actualCompletion,
                                                  {line: cursor.line, ch: token.start},
-                                                 {line: cursor.line, ch: token.end});
+                                                 {line: cursor.line, ch: endChar});
                 } else { // insert
                     editor._codeMirror.replaceRange(actualCompletion, cursor);
                 }
@@ -222,10 +238,22 @@ define(function (require, exports, module) {
      */
     FontHints.prototype.hasHints = function (editor, implicitChar) {
         this.editor = editor;
-        if (!implicitChar) {
-            if (_documentIsCSS(editor.document)) {
+        if (_documentIsCSS(editor.document)) {
+            if (!implicitChar) {
                 if (parser.getFontTokenAtCursor(editor, editor.getCursorPos())) {
                     return true;
+                }
+            } else if (fontnameStartRegExp.test(implicitChar)) {
+                // We only display the hint list implicitly if the following conditions are both met:
+                //   1. The implicit char is a word character or a quote (covered by the test above)
+                //   2. We're in a font-family rule (covered by checking parser.getFontTokenAtCursor !== null)
+                // We check them in this order because checking the implict char is much cheaper.
+                var currentPosition = editor.getCursorPos();
+                if (currentPosition.ch >= 1) {
+                    var currentToken = parser.getFontTokenAtCursor(editor, editor.getCursorPos());
+                    if (currentToken) {
+                        return true;
+                    }
                 }
             }
         }
