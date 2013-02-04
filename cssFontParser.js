@@ -50,7 +50,7 @@ define(function (require, exports, module) {
             } else {
                 // A new token!
                 if (!isParsingFontList &&
-                        t.className === "variable" &&
+                        (t.className === "property" || t.className === "property error") &&
                         t.string.toLowerCase() === "font-family") {
                     isParsingFontList = true;
                     fontListStartLine = cursor.line;
@@ -68,7 +68,7 @@ define(function (require, exports, module) {
                         // The if statement above makes it so that we don't add the font surrounding
                         // the current cursor position to the autocompletion list (but we do for the 
                         // <script> tag generation, because assumeCursorInvalid is false in that case).
-                        if (t.className === "number") {
+                        if (t.className === "variable-2" || t.className === "string-2") {
                             fonts.push(t.string);
                         } else if (t.className === "string") {
                             // string token types still have quotes around them, so strip first/last char
@@ -94,9 +94,9 @@ define(function (require, exports, module) {
         // If we're in a rule, then "rule" will be on the top of the parse stack. All
         // rules start with a "variable" token, then a ":", then values. We only want
         // autocomplete if we're somewhere after the ":"
-        if (currentToken.className !== "variable" &&
+        if (currentToken.className !== "property" && currentToken.className !== "property error" &&
                 currentToken.state.stack.length > 0 &&
-                currentToken.state.stack[currentToken.state.stack.length - 1] === "rule") {
+                currentToken.state.stack[currentToken.state.stack.length - 1] === "propertyValue") {
             
             // We're in a rule body. Step backwards until we find the most recent 
             // "variable" or are no longer in a rule (the latter, stepping out of the rule, 
@@ -104,9 +104,9 @@ define(function (require, exports, module) {
             // rule or not.
             t = currentToken;
             c = {ch: cursor.start, line: cursor.line};
-            while (t.className !== "variable" &&
+            while (t.className !== "property" && t.className !== "property error" &&
                     currentToken.state.stack.length > 0 &&
-                    currentToken.state.stack[currentToken.state.stack.length - 1] === "rule") {
+                    currentToken.state.stack[currentToken.state.stack.length - 1] === "propertyValue") {
                 c.ch = t.start - 1;
                 if (c.ch < 0) {
                     // need to go up a line
@@ -120,7 +120,7 @@ define(function (require, exports, module) {
                 t = cm.getTokenAt(c);
             }
             
-            if (t.className === "variable" && t.string.toLowerCase() === "font-family") {
+            if ((t.className === "property" || t.className === "property error") && t.string.toLowerCase() === "font-family") {
                 result = currentToken;
             }
         }
