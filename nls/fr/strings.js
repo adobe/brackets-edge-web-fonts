@@ -38,7 +38,7 @@ define({
 	"HOWTO_INSTRUCTIONS_2": "Lorsque vous définissez une propriété de famille de polices dans un document CSS, sélectionnez l’option Parcourir les polices Web dans la liste déroulante de définition du code afin d’accéder aux polices Web disponibles gratuitement en ligne.",
 	"HOWTO_INSTRUCTIONS_3": "Lorsque vous avez terminé, cliquez sur l’icône [ Wf ] dans l’angle supérieur droit afin de générer le code d’intégration requis.",
 	"HOWTO_INSTRUCTIONS_4": "Collez ce code d’intégration dans une page HTML afin d’inclure les polices.",
-	"TERMS_OF_USE": "<a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou_fr\">Conditions d’utilisation</a> d’Edge Web Fonts",
+	"TERMS_OF_USE": "<a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou_fr\">Conditions d’utilisation d’Edge Web Fonts</a>",
 	"SAMPLE_TEXT": "Exemple",
     
     // Font classifications
