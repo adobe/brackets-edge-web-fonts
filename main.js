@@ -275,6 +275,7 @@ define(function (require, exports, module) {
         var editor = this.editor,
             cursor = editor.getCursorPos(),
             query,
+            lowerCaseQuery,
             token;
         
         if (_documentIsCSS(editor.document)) {
@@ -295,6 +296,9 @@ define(function (require, exports, module) {
                     query = "";
                 }
 
+                // candidate hints are lower case, so the query should be too
+                lowerCaseQuery = query.toLocaleLowerCase();
+
                 // we're going to handle this query, so we need to add our UI
                 setTimeout(_augmentCodeHintUI, 1);
 
@@ -304,7 +308,7 @@ define(function (require, exports, module) {
                 candidates = webfont.lowerSortUniqStringArray(candidates);
                 candidates = webfont.filterAndSortArray(query, candidates);
                 candidates = candidates.map(function (hint) {
-                    var index       = hint.indexOf(query),
+                    var index       = hint.indexOf(lowerCaseQuery),
                         $hintObj    = $('<span>'),
                         slugs       = webfont.searchBySlug(hint);
 
