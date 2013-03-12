@@ -43,7 +43,6 @@ define(function (require, exports, module) {
         StringUtils             = brackets.getModule("utils/StringUtils"),
         DocumentManager         = brackets.getModule("document/DocumentManager"),
         EditorManager           = brackets.getModule("editor/EditorManager"),
-        Languages               = brackets.getModule("language/LanguageManager"),
         PreferencesManager      = brackets.getModule("preferences/PreferencesManager"),
         CodeHintManager         = brackets.getModule("editor/CodeHintManager"),
         CommandManager          = brackets.getModule("command/CommandManager"),
@@ -77,7 +76,7 @@ define(function (require, exports, module) {
     var scriptCache = {};
     
     function _documentIsCSS(doc) {
-        return doc && Languages.getLanguageForFileExtension(doc.file.fullPath).mode === "css";
+        return doc && doc.getLanguage().getName() === "CSS";
     }
     
     /** Adds an option to browse EWF to the bottom of the code hint list
