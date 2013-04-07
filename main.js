@@ -80,7 +80,7 @@ define(function (require, exports, module) {
     }
 
     function _contextIsCSS(editor) {
-	return editor && editor.getLanguageForSelection().getName() == "CSS";
+        return editor && editor.getLanguageForSelection().getName() == "CSS";
     }
     
     /** Adds an option to browse EWF to the bottom of the code hint list

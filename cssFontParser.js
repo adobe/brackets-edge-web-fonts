@@ -87,8 +87,8 @@ define(function (require, exports, module) {
     function getFontTokenAtCursor(editor, cursor) {
         var cm = editor._codeMirror;
         var currentToken = cm.getTokenAt(cursor);
-	var stateStack = currentToken.state.stack? currentToken.state.stack: 
-	                                           currentToken.state.localState.stack;
+        var stateStack = currentToken.state.stack? currentToken.state.stack: 
+                                                   currentToken.state.localState.stack;
         var t, c;
         var result = null;
         
