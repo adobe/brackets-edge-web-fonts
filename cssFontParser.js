@@ -87,6 +87,8 @@ define(function (require, exports, module) {
     function getFontTokenAtCursor(editor, cursor) {
         var cm = editor._codeMirror;
         var currentToken = cm.getTokenAt(cursor);
+        var stateStack = currentToken.state.stack? currentToken.state.stack: 
+                                                   currentToken.state.localState.stack;
         var t, c;
         var result = null;
         
@@ -95,8 +97,8 @@ define(function (require, exports, module) {
         // rules start with a "variable" token, then a ":", then values. We only want
         // autocomplete if we're somewhere after the ":"
         if (currentToken.className !== "property" && currentToken.className !== "property error" &&
-                currentToken.state.stack.length > 0 &&
-                currentToken.state.stack[currentToken.state.stack.length - 1] === "propertyValue") {
+                stateStack.length > 0 &&
+                stateStack[stateStack.length - 1] === "propertyValue") {
             
             // We're in a rule body. Step backwards until we find the most recent 
             // "variable" or are no longer in a rule (the latter, stepping out of the rule, 
@@ -105,8 +107,8 @@ define(function (require, exports, module) {
             t = currentToken;
             c = {ch: cursor.start, line: cursor.line};
             while (t.className !== "property" && t.className !== "property error" &&
-                    currentToken.state.stack.length > 0 &&
-                    currentToken.state.stack[currentToken.state.stack.length - 1] === "propertyValue") {
+                    stateStack.length > 0 &&
+                    stateStack[stateStack.length - 1] === "propertyValue") {
                 c.ch = t.start - 1;
                 if (c.ch < 0) {
                     // need to go up a line

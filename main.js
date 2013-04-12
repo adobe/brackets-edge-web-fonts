@@ -78,6 +78,10 @@ define(function (require, exports, module) {
     function _documentIsCSS(doc) {
         return doc && doc.getLanguage().getName() === "CSS";
     }
+
+    function _contextIsCSS(editor) {
+        return editor && editor.getLanguageForSelection().getName() === "CSS";
+    }
     
     /** Adds an option to browse EWF to the bottom of the code hint list
      *
@@ -154,7 +158,7 @@ define(function (require, exports, module) {
         var actualCompletion = completion;
         var stringChar = "\"";
         
-        if (_documentIsCSS(editor.document)) { // on the off-chance we changed documents, don't change anything
+        if (_contextIsCSS(editor)) { // on the off-chance we changed documents, don't change anything
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
                 // get the correct string character if there is already one in use
@@ -237,7 +241,7 @@ define(function (require, exports, module) {
      */
     FontHints.prototype.hasHints = function (editor, implicitChar) {
         this.editor = editor;
-        if (_documentIsCSS(editor.document)) {
+        if (_contextIsCSS(editor)) {
             if (!implicitChar) {
                 if (parser.getFontTokenAtCursor(editor, editor.getCursorPos())) {
                     return true;
@@ -278,7 +282,7 @@ define(function (require, exports, module) {
             lowerCaseQuery,
             token;
         
-        if (_documentIsCSS(editor.document)) {
+        if (_contextIsCSS(editor)) {
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
                 if (token.className === "string") { // is wrapped in quotes        
