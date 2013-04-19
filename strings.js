@@ -24,15 +24,33 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
 /*global define */
 
-/**
- * This file provides the interface to user visible strings in Brackets. Code that needs
- * to display strings should should load this module by calling var Strings = require("strings").
- * The i18n plugin will dynamically load the strings for the right locale and populate
- * the exports variable. See src\nls\strings.js for the master file of English strings.
- */
-define(function (require, exports, module) {
-    "use strict";
+define({
+    "PRODUCT_NAME"                   : "Adobe Edge Web Fonts",
 
-    module.exports = require("i18n!nls/strings");
-
+    "DIALOG_DONE"                    : "Done",
+    "SEARCH_PLACEHOLDER"             : "Search",
+    "BROWSE_FONTS_INSTRUCTIONS"      : "Browse for and select the web font you wish to include in your web project.",
+    "CODEHINT_BROWSE"                : "Browse Web Fonts...", // Needs to be short to fit in popup, but not sure about acronym
+    "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Embed Code",
+    "INCLUDE_INSTRUCTIONS_1"         : "Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.",
+    "INCLUDE_INSTRUCTIONS_2"         : "Copy the following script tag and paste it into all HTML files that reference this CSS file:",
+    "HOWTO_INSTRUCTIONS_1"           : "Edge Web Fonts gives you access to a library of web fonts made possible by contributions from Adobe, Google, and designers around the world. The fonts are served by Typekit, free for use on your website.",
+    "HOWTO_INSTRUCTIONS_2"           : "When specifying a font-family property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.",
+    "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the [ Wf ] icon in the top right to generate the required embed code.",
+    "HOWTO_INSTRUCTIONS_4"           : "Paste the embed code into any HTML page to include the fonts.",
+    "HOWTO_DIAGRAM_IMAGE"            : "img/ewf-howto-dialog-en.png",
+    "TERMS_OF_USE"                   : "<a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou\">Edge Web Fonts Terms of Use</a>",
+    "SAMPLE_TEXT"                    : "Sample",
+    
+    // Font classifications
+    "serif"                    : "Serif",
+    "sans-serif"               : "Sans-Serif",
+    "slab-serif"               : "Slab-Serif",
+    "script"                   : "Script",
+    "blackletter"              : "Blackletter",
+    "monospaced"               : "Monospaced",
+    "handmade"                 : "Handmade",
+    "decorative"               : "Decorative",
+    "headings"                 : "Headings",
+    "paragraphs"               : "Paragraphs"
 });
