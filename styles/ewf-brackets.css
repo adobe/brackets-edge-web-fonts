@@ -280,6 +280,13 @@
 .edge-web-fonts-howto-dialog .dialog-message {
   margin-bottom: 0px;
 }
+
+.edge-web-fonts-howto-diagram {
+    width: 531px;
+    height: 179px;
+    background-repeat: no-repeat;
+}
+
 /**
  *  Brackets Toolbar Icon Styling
  */
