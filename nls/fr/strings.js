@@ -39,6 +39,7 @@ define({
 	"HOWTO_INSTRUCTIONS_3": "Lorsque vous avez terminé, cliquez sur l’icône [ Wf ] dans l’angle supérieur droit afin de générer le code d’intégration requis.",
 	"HOWTO_INSTRUCTIONS_4": "Collez ce code d’intégration dans une page HTML afin d’inclure les polices.",
     "HOWTO_DIAGRAM_IMAGE"            : "img/ewf-howto-dialog-fr.png",
+    "HOWTO_DIAGRAM_IMAGE_HIDPI"      : "img/ewf-howto-dialog-fr@2x.png",
 	"TERMS_OF_USE": "<a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou_fr\">Conditions d’utilisation d’Edge Web Fonts</a>",
 	"SAMPLE_TEXT": "Exemple",
     

@@ -478,6 +478,11 @@ define(function (require, exports, module) {
         $('body').append($(Mustache.render(ewfIncludeDialogHtml, Strings)));
         $('body').append($(Mustache.render(ewfHowtoDialogHtml, {Strings : Strings, Paths : Paths})));
 
+        // work around a URL jQuery URL escaping issue
+        var howtoDiagramURL         = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}", {Strings : Strings, Paths : Paths}),
+            howtoDiagramHiDPIURL    = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}", {Strings : Strings, Paths : Paths});
+        
+        $(".edge-web-fonts-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
         
         // add handler to listen to selection in browse dialog
         $(webfont).on("ewfFontSelected", function (event, slug) {
