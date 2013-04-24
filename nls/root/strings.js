@@ -39,6 +39,7 @@ define({
     "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the [ Wf ] icon in the top right to generate the required embed code.",
     "HOWTO_INSTRUCTIONS_4"           : "Paste the embed code into any HTML page to include the fonts.",
     "HOWTO_DIAGRAM_IMAGE"            : "img/ewf-howto-dialog-en.png",
+    "HOWTO_DIAGRAM_IMAGE_HIDPI"      : "img/ewf-howto-dialog-en@2x.png",
     "TERMS_OF_USE"                   : "<a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou\">Edge Web Fonts Terms of Use</a>",
     "SAMPLE_TEXT"                    : "Sample",
     
