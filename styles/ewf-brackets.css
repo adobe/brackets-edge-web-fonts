@@ -291,24 +291,22 @@
  *  Brackets Toolbar Icon Styling
  */
 #toolbar-ewf {
-  position: relative;
-  top: 2px;
-  padding-right: 8px;
-  content: "";
-  background: url("../img/ewf-toolbar-sprites.svg") 0 0 no-repeat;
+  background: no-repeat -webkit-image-set(url("../img/webfonts_icon.png") 1x, url("../img/webfonts_icon@2x.png") 2x);
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 21px;
+  height: 15px;
+  opacity: 0.75;
 }
 #toolbar-ewf:hover {
-  background-position: 0 -16px;
+  opacity: 0.50;
 }
 #toolbar-ewf.active {
-  background-position: 0 -32px;
+  opacity: 1.0;
 }
 #toolbar-ewf.active:hover {
-  background-position: 0 -48px;
+  opacity: 0.75;
 }
+
 /**
  *  Brackets Code Hint Styling
  */
