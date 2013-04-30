@@ -36,7 +36,7 @@ define({
     "INCLUDE_INSTRUCTIONS_2"         : "Copy the following script tag and paste it into all HTML files that reference this CSS file:",
     "HOWTO_INSTRUCTIONS_1"           : "Edge Web Fonts gives you access to a library of web fonts made possible by contributions from Adobe, Google, and designers around the world. The fonts are served by Typekit, free for use on your website.",
     "HOWTO_INSTRUCTIONS_2"           : "When specifying a font-family property in a CSS document, select 'Browse Web Fonts' from the code completion drop-down to browse for free online web fonts.",
-    "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the [ Wf ] icon in the top right to generate the required embed code.",
+    "HOWTO_INSTRUCTIONS_3"           : "When you're done, click the <div class='instructions-icon'></div> icon in the top right to generate the required embed code.",
     "HOWTO_INSTRUCTIONS_4"           : "Paste the embed code into any HTML page to include the fonts.",
     "HOWTO_DIAGRAM_IMAGE"            : "img/ewf-howto-dialog-en.png",
     "HOWTO_DIAGRAM_IMAGE_HIDPI"      : "img/ewf-howto-dialog-en@2x.png",

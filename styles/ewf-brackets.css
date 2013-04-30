@@ -280,6 +280,13 @@
 .edge-web-fonts-howto-dialog .dialog-message {
   margin-bottom: 0px;
 }
+.edge-web-fonts-howto-dialog .instructions-icon {
+    background: no-repeat -webkit-image-set(url("../img/webfonts_icon.png") 1x, url("../img/webfonts_icon@2x.png") 2x);
+    display: inline-block;
+    width: 21px;
+    height: 15px;
+    margin-top: -2px;
+}
 
 .edge-web-fonts-howto-diagram {
     width: 531px;
@@ -328,4 +335,3 @@
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
 }
-
