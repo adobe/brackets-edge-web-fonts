@@ -500,11 +500,17 @@ define(function (require, exports, module) {
 
     // load everything when brackets is done loading
     AppInit.appReady(function () {
-        webfont.init()
-            .done(init) // only register commands if the core loaded properly
-            .fail(function (err) {
-                // TODO: Should probably keep trying at some interval -- may have failed because not connected to net
-                console.log("[edge-web-font extension] failed to initialize: " + err);
-            });
+        
+        var delay = 1000;
+        
+        (function startExtension() {
+            webfont.init()
+                .done(init) // register commands if the core loaded properly
+                .fail(function (err) {
+                    setTimeout(startExtension, delay);
+                    delay *= 2;
+                    console.log("[edge-web-fonts] Initialization failed: " + err);
+                });
+        }());
     });
 });
