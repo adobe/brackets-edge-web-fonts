@@ -32,7 +32,7 @@ define({
     "BROWSE_FONTS_INSTRUCTIONS"      : "Browse for and select the web font you wish to include in your web project.",
     "CODEHINT_BROWSE"                : "Browse Web Fonts...", // Needs to be short to fit in popup, but not sure about acronym
     "GENERATE_INCLUDE_TOOLTIP"       : "Generate Edge Web Fonts Embed Code",
-    "WEBFONTS_OFFLINE"               : "The Edge Web Fonts extension is disabled because the Web Fonts server cannot be reached. Check your internet connect or try again later.",
+    "WEBFONTS_OFFLINE"               : "The Edge Web Fonts extension is disabled because the Web Fonts server cannot be reached. Please check your internet connection or try again later.",
     "INCLUDE_INSTRUCTIONS_1"         : "Edge Web Fonts are loaded into the user's browser via JavaScript. To ensure that fonts are properly loaded, you must add a script tag to your HTML.",
     "INCLUDE_INSTRUCTIONS_2"         : "Copy the following script tag and paste it into all HTML files that reference this CSS file:",
     "HOWTO_INSTRUCTIONS_1"           : "Edge Web Fonts gives you access to a library of web fonts made possible by contributions from Adobe, Google, and designers around the world. The fonts are served by Typekit, free for use on your website.",
