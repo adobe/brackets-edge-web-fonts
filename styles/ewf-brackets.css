@@ -313,6 +313,9 @@
 #toolbar-ewf.active:hover {
   opacity: 0.75;
 }
+#toolbar-ewf.disabled {
+  opacity: 0.25;
+}
 
 /**
  *  Brackets Code Hint Styling

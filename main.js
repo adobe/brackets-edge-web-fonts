@@ -23,7 +23,7 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, window, Mustache, less, setTimeout */
+/*global define, brackets, $, window, Mustache, less, setTimeout, clearTimeout */
 
 define(function (require, exports, module) {
     "use strict";
@@ -303,8 +303,11 @@ define(function (require, exports, module) {
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
 
-                // we're going to handle this query, so we need to add our UI
-                setTimeout(_augmentCodeHintUI, 1);
+                
+                if (window.navigator.onLine) {
+                    // we're going to handle this query, so we need to add our UI
+                    setTimeout(_augmentCodeHintUI, 0);
+                }
 
                 var candidates = parser.parseCurrentEditor(true);
                 candidates = candidates.concat(lastTwentyFonts);
@@ -320,7 +323,7 @@ define(function (require, exports, module) {
                     slugs.forEach(function (slug) {
                         var font = webfont.getFontBySlug(slug),
                             script;
-                        if (!(scriptCache.hasOwnProperty(slug))) {
+                        if (!(scriptCache.hasOwnProperty(slug)) && window.navigator.onLine) {
                             script = webfont.createInclude([font]);
                             $(script).appendTo("head");
                             scriptCache[slug] = true;
@@ -424,33 +427,12 @@ define(function (require, exports, module) {
                 $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
             }
         }
-
-        function _handleToolbarClick() {
-            var doc = DocumentManager.getCurrentDocument();
-
-            if (!doc || !_documentIsCSS(doc)) {
-                _showHowtoDialog();
-            } else {
-                CommandManager.execute(COMMAND_GENERATE_INCLUDE);
-            }
-        }
-        
-        function _handleDocumentChange() {
-            var doc = DocumentManager.getCurrentDocument();
-            // doc will be null if there's no active document (user closed all docs)
-            if (doc && _documentIsCSS(doc)) {
-                $toolbarIcon.addClass("active");
-            } else {
-                $toolbarIcon.removeClass("active");
-            }
-        }
         
         // install autocomplete handler
         var fontHints = new FontHints();
         CodeHintManager.registerHintProvider(fontHints, ["css"], 1);
         
-        // load styles
-        ExtensionUtils.loadStyleSheet(module, "styles/ewf-brackets.css");
+        // load blank font
         ExtensionUtils.loadStyleSheet(module, "styles/adobe-blank.css");
         
         // register commands
@@ -464,19 +446,11 @@ define(function (require, exports, module) {
         menu.addMenuItem(Menus.DIVIDER, null, Menus.BEFORE, COMMAND_BROWSE_FONTS);
         */
 
-        // set up toolbar icon
-        $toolbarIcon = $(Mustache.render(ewfToolbarHtml, Strings));
-        $("#main-toolbar .buttons").append($toolbarIcon);
-        $toolbarIcon.on("click", _handleToolbarClick);
-        
-        // add event handler to enable/disable the webfont toolbar icon
-        $(DocumentManager).on("currentDocumentChange", _handleDocumentChange);
-        _handleDocumentChange(); // set to appropriate state for curret doc
-        
         // add dialogs to dom
-        $('body').append($(Mustache.render(ewfBrowseDialogHtml, Strings)));
-        $('body').append($(Mustache.render(ewfIncludeDialogHtml, Strings)));
-        $('body').append($(Mustache.render(ewfHowtoDialogHtml, {Strings : Strings, Paths : Paths})));
+        $("body")
+            .append($(Mustache.render(ewfBrowseDialogHtml, Strings)))
+            .append($(Mustache.render(ewfIncludeDialogHtml, Strings)))
+            .append($(Mustache.render(ewfHowtoDialogHtml, {Strings : Strings, Paths : Paths})));
 
         // work around a URL jQuery URL escaping issue
         var howtoDiagramURL         = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}", {Strings : Strings, Paths : Paths}),
@@ -501,16 +475,108 @@ define(function (require, exports, module) {
     // load everything when brackets is done loading
     AppInit.appReady(function () {
         
-        var delay = 1000;
+        function _handleToolbarClick() {
+            var doc = DocumentManager.getCurrentDocument();
+
+            if (!doc || !_documentIsCSS(doc)) {
+                _showHowtoDialog();
+            } else {
+                CommandManager.execute(COMMAND_GENERATE_INCLUDE);
+            }
+        }
         
-        (function startExtension() {
-            webfont.init()
-                .done(init) // register commands if the core loaded properly
-                .fail(function (err) {
-                    setTimeout(startExtension, delay);
-                    delay *= 2;
-                    console.log("[edge-web-fonts] Initialization failed: " + err);
-                });
-        }());
+        function _handleDocumentChange() {
+            var doc = DocumentManager.getCurrentDocument();
+            // doc will be null if there's no active document (user closed all docs)
+            if (doc && _documentIsCSS(doc)) {
+                $toolbarIcon.addClass("active");
+            } else {
+                $toolbarIcon.removeClass("active");
+            }
+        }
+
+        var handleOnline,
+            handleOffline;
+        
+        /*
+         * Handle the connection online event by re-enabling the toolbar icon
+         * and the document change listeners.
+         */
+        handleOnline = function () {
+            window.addEventListener("offline", handleOffline);
+            window.removeEventListener("online", handleOnline);
+            
+            $toolbarIcon.on("click", _handleToolbarClick);
+            $toolbarIcon.attr("title", Strings.GENERATE_INCLUDE_TOOLTIP);
+            $toolbarIcon.removeClass("disabled");
+            
+            // add event handler to enable/disable the webfont toolbar icon
+            $(DocumentManager).on("currentDocumentChange", _handleDocumentChange);
+            
+            // set to appropriate state for current doc
+            _handleDocumentChange();
+        };
+
+        /*
+         * Handle the connection offline event by disabling the toolbar icon
+         * and the document change listeners.
+         */
+        handleOffline = function (addListeners) {
+            if (addListeners || addListeners === undefined) {
+                window.addEventListener("online", handleOnline);
+                window.removeEventListener("offline", handleOffline);
+            }
+                
+            $toolbarIcon.off("click", _handleToolbarClick);
+            $toolbarIcon.attr("title", Strings.WEBFONTS_OFFLINE);
+            $toolbarIcon.removeClass("active");
+            $toolbarIcon.addClass("disabled");
+            
+            $(DocumentManager).off("currentDocumentChange", _handleDocumentChange);
+        };
+        
+        /*
+         * Start the web fonts extension
+         */
+        function startExtension() {
+            var MAX_DELAY       = 64000,
+                delay           = 1000;
+            
+            window.removeEventListener("online", startExtension);
+            
+            (function startExtensionHelper() {
+                webfont.init()
+                    .done(function () {
+                        init(); // register commands if the core loaded properly
+                        if (window.navigator.onLine) {
+                            handleOnline();
+                        } else {
+                            window.addEventListener("online", handleOnline);
+                        }
+                    }).fail(function (err) {
+                        if (window.navigator.onLine) {
+                            setTimeout(startExtensionHelper, delay);
+                            if (delay < MAX_DELAY) {
+                                delay *= 2;
+                            }
+                        } else {
+                            window.addEventListener("online", startExtension);
+                        }
+                    });
+            }());
+        }
+        
+        // load styles
+        ExtensionUtils.loadStyleSheet(module, "styles/ewf-brackets.css");
+
+        // set up toolbar icon
+        $toolbarIcon = $(Mustache.render(ewfToolbarHtml, Strings));
+        $("#main-toolbar .buttons").append($toolbarIcon);
+        
+        // begin as though we are offline, but don't add any online listeners
+        handleOffline(false);
+        
+        // try to start the extension
+        startExtension();
     });
 });
