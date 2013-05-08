@@ -76,6 +76,13 @@
 .edge-web-fonts .ewf-picker button.selected {
   background: #bdbdbd;
 }
+.edge-web-fonts .ewf-picker button:focus {
+    outline-style: none;
+    background-color: #ccc;
+}
+.edge-web-fonts .ewf-picker button.selected:focus {
+  background: #aaa;
+}
 .edge-web-fonts .ewf-picker .ewf-button {
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.48) inset;
   border: 1px solid #a6a8a8;
