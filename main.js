@@ -303,13 +303,8 @@ define(function (require, exports, module) {
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
 
-                
-                if (window.navigator.onLine) {
-                    // we're going to handle this query, so we need to add our UI
-                    setTimeout(_augmentCodeHintUI, 0);
-                }
-
                 var candidates = parser.parseCurrentEditor(true);
+
                 candidates = candidates.concat(lastTwentyFonts);
                 candidates = candidates.concat(webfont.getWebsafeFonts());
                 candidates = webfont.lowerSortUniqStringArray(candidates);
@@ -351,11 +346,26 @@ define(function (require, exports, module) {
                         .data('hint', hint);
                     return $hintObj;
                 });
-
+                var selectInitial = true;
+                if (!key) {
+                    var $browseEwfObj = $('<span>')
+                        .append('<span class="ewf-codehint-addition">' +
+                                Mustache.render('{{CODEHINT_BROWSE}}', Strings) + '</span>');
+    
+                    $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
+                        CommandManager.execute(COMMAND_BROWSE_FONTS);
+                        return false; // don't actually follow link
+                    });
+                                    
+                    candidates.unshift($browseEwfObj);
+                    // do not select a default if we show browse EC web fonts
+                    selectInitial = false;
+                }
+                
                 return {
                     hints: candidates,
                     match: null,
-                    selectInitial: true
+                    selectInitial: selectInitial
                 };
             }
         }
