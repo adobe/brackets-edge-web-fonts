@@ -30,7 +30,9 @@ define(function (require, exports, module) {
     
     // Modules
     var webfont                 = require("webfont"),
-        parser                  = require("cssFontParser"),
+        FontParser              = require("fontParser"),
+        cssModeSupport          = require("cssModeSupport"),
+        lessModeSupport         = require("lessModeSupport"),
         ewfBrowseDialogHtml     = require("text!htmlContent/ewf-browse-dialog.html"),
         ewfIncludeDialogHtml    = require("text!htmlContent/ewf-include-dialog.html"),
         ewfHowtoDialogHtml      = require("text!htmlContent/ewf-howto-dialog.html"),
@@ -65,6 +67,10 @@ define(function (require, exports, module) {
     var COMMAND_GENERATE_INCLUDE = "edgewebfonts.generateinclude";
     var PREFERENCES_CLIENT_ID = "com.adobe.edgewebfonts";
     var PREFERENCES_FONT_HISTORY_KEY = "ewf-font-history";
+
+    // Font parsers    
+    var cssParser   = new FontParser(cssModeSupport),
+        lessParser  = new FontParser(lessModeSupport);
     
     // Local variables
     var lastFontSelected = null;
@@ -72,104 +78,74 @@ define(function (require, exports, module) {
     var prefs = {};
     var whitespaceRegExp = /\s/;
     var commaSemiRegExp = /([;,])/;
-    var fontnameStartRegExp = /[\w"']/;
+    var fontnameStartRegExp = /[\w"',]/;
+    var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
+    var closeHintOnNextKey = false;
+
     
-    function _documentIsCSS(doc) {
-        return doc && doc.getLanguage().getName() === "CSS";
+    function _supportedLanguage(language) {
+        var name = language.getName();
+            
+        return (name === "CSS" || name === "LESS");
+    }
+    
+    function _supportedDocument(doc) {
+        return doc && _supportedLanguage(doc.getLanguage());
     }
 
-    function _contextIsCSS(editor) {
-        return editor && editor.getLanguageForSelection().getName() === "CSS";
+    function _supportedContext(editor) {
+        return editor && _supportedLanguage(editor.getLanguageForSelection());
     }
     
-    /** Adds an option to browse EWF to the bottom of the code hint list
-     *
-     *  TODO: Add an API to either CodeHintManager or PopUpManager so that we
-     *  can add UI in a much cleaner way. Once we do that, clean up the
-     *  LESS so that we aren't overriding core brackets LESS (e.g. to change
-     *  the code hint border).
-     *
-     *  NOTE: It is **required** that we have a CSS rule that causes the DOM elements
-     *  here to be hidden when the menu does *not* have the "open" class applied.
-     *  This is because PopUpManager checks whether a popup is closed by checking if 
-     *  it has any visible children. PopUps don't always get removed from the DOM right 
-     *  when they're closed. If we don't have this rule we get infinite recursion in PopUpManager.
-     *
-     *  TODO: Write a unit test to check the code hint menu dom structure. This way, 
-     *  if the code hint UI gets reorganized, the unit test will catch it. 
-     */
-    function _augmentCodeHintUI() {
-
-        function repositionAddition($list, $addition) {
-            var menuListPosition = $list.position();
-            $addition.css("position", "absolute");
-            $addition.css("top", menuListPosition.top + $list.height());
-            $addition.css("left", menuListPosition.left);
-            $addition.css("width", $list.width());
-            $addition.css("max-width", $list.width());
-        }
-
-        var $menu = $(".dropdown.codehint-menu.open");
-
-        if ($menu.length > 0) {
-            var $menuList = $menu.find(".dropdown-menu");
-            if ($menuList.length > 0) { // we're actually displaying a code hint
-                // Since this dropdown menu has an addition, we need to add a class that
-                // removes the rounded corners on the bottom
-                $menuList.addClass("has-addition");
-                
-                var $codeHintAddition = $menu.find(".ewf-codehint-addition");
-                
-                // If this is a new popup, we won't have a code hint addition yet (new popup), 
-                // so create it first
-                if ($codeHintAddition.length === 0) {
-                    // HACK (tracking adobe/brackets#2695): Fix the width of the code hint 
-                    // window for this session. If we don't do this, the size of the window 
-                    // can change as Webfont "Sample" strings load. Because of the hacky way
-                    // that we're adding the "addition", we can't have the size change. Once 
-                    // we have an API for making additions, we can remove this hack. (In other
-                    // words, we need a div in the CodeHintList to which we can add additions.)
-                    // The "+ 40" adds some spacing between the hint names and the sample
-                    // text. However, this spacing isn't guaranteed, so it shouldn't be
-                    // thougth of as "padding" in the CSS sense. If the font that gets
-                    // loaded is too long, it will wrap to the next line, which looks okay
-                    // and functions properly.
-                    $menuList.width($menuList.width() + 40);
-
-                    $codeHintAddition = $(codeHintAdditionHtmlString);
-                    repositionAddition($menuList, $codeHintAddition);
-                    $menuList.after($codeHintAddition);
-                    $codeHintAddition.find('a').on('click', function () {
-                        CommandManager.execute(COMMAND_BROWSE_FONTS);
-                        return false; // don't actually follow link
-                    });
-                } else {
-                    // This method only gets called when the pop up has changed in some way
-                    // (e.g. a new search). So, the popup has always moved. We need to reposition.
-                    repositionAddition($menuList, $codeHintAddition);
-                }
-            }
+    function _getParserForContext(editor) {
+        var language    = editor.getLanguageForSelection(),
+            name        = language.getName();
+        
+        switch (name) {
+        case "CSS":
+            return cssParser;
+        case "LESS":
+            return lessParser;
+        default:
+            throw new Error("Unsupported language: " + name);
         }
     }
     
+    function _getModeSupportForContext(editor) {
+        var language    = editor.getLanguageForSelection(),
+            name        = language.getName();
+        
+        switch (name) {
+        case "CSS":
+            return cssModeSupport;
+        case "LESS":
+            return lessModeSupport;
+        default:
+            throw new Error("Unsupported language: " + name);
+        }
+    }
+
+   
     function _insertFontCompletionAtCursor(completion, editor, cursor) {
-        var token;
+        var modeSupport, parser, token;
         var actualCompletion = completion;
         var stringChar = "\"";
         
-        if (_contextIsCSS(editor)) { // on the off-chance we changed documents, don't change anything
+        if (_supportedContext(editor)) { // on the off-chance we changed documents, don't change anything
+            modeSupport = _getModeSupportForContext(editor);
+            parser = _getParserForContext(editor);
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
                 // get the correct string character if there is already one in use
-                if (token.className === "string") {
+                if (modeSupport.isFontNameStringToken(token)) {
                     stringChar = token.string.substring(0, 1);
                 }
 
                 // wrap the completion in string character if either 
                 //  a.) we're inserting into a string, or 
                 //  b.) the slug contains a space
-                if (token.className === "string" || whitespaceRegExp.test(actualCompletion)) {
+                if (modeSupport.isFontNameStringToken(token) || whitespaceRegExp.test(actualCompletion)) {
                     actualCompletion = stringChar + actualCompletion + stringChar;
                 }
 
@@ -178,7 +154,23 @@ define(function (require, exports, module) {
                 // line is a string. So, we want to stop at the first occurrence of a comma or 
                 // semi-colon.
                 var endChar = token.end;
-                if (token.className === "string") {
+                
+                // add white space if previous char is not a whit space
+                var line = editor.document.getLine(cursor.line);
+
+
+                // if the drop down was opened and the space was pressed, charBeforeCursor will be the 
+                // first char of the actual completion. In that case we do NOT add white space.     
+                var tokenIsPrefix = (modeSupport.isFontNameToken(token)  &&
+                                     completion.indexOf(token.string) === 0) ? true : false;
+                
+                var charBeforeCursor = tokenIsPrefix ? line.charAt(token.start - 1) : line.charAt(token.start);
+                
+                if (!whitespaceRegExp.test(charBeforeCursor)) {
+                    actualCompletion = " " + actualCompletion;
+                }
+                
+                if (modeSupport.isFontNameStringToken(token)) {
                     // Find the *first* comma or semi
                     var match = commaSemiRegExp.exec(token.string);
                     if (match) {
@@ -191,7 +183,8 @@ define(function (require, exports, module) {
                 // directly to replace the range instead of using the Document, as we should. The
                 // reason is due to a flaw in our current document synchronization architecture when
                 // inline editors are open.
-                if (token.className === "string" || token.className === "variable-2" || token.className === "string-2") { // replace
+                if (modeSupport.isFontNameStringToken(token) ||
+                        modeSupport.isFontNameToken(token)) { // replace
                     editor._codeMirror.replaceRange(actualCompletion,
                                                  {line: cursor.line, ch: token.start},
                                                  {line: cursor.line, ch: endChar});
@@ -217,6 +210,15 @@ define(function (require, exports, module) {
         Dialogs.showModalDialog("edge-web-fonts-howto-dialog");
     }
     
+    function _whitespaceFountain(m) {
+        var chemtrail = "",
+            i;
+        for (i = 0; i < m; i++) {
+            chemtrail = chemtrail + "&nbsp;";
+        }
+        return chemtrail;
+    }
+    
     /**
      * @constructor
      */
@@ -240,8 +242,11 @@ define(function (require, exports, module) {
      * whether it is appropriate to do so.
      */
     FontHints.prototype.hasHints = function (editor, implicitChar) {
+        var parser;
+        
         this.editor = editor;
-        if (_contextIsCSS(editor)) {
+        if (_supportedContext(editor)) {
+            parser = _getParserForContext(editor);
             if (!implicitChar) {
                 if (parser.getFontTokenAtCursor(editor, editor.getCursorPos())) {
                     return true;
@@ -276,16 +281,21 @@ define(function (require, exports, module) {
      * should be selected by default in the hint list window.
      */
     FontHints.prototype.getHints = function (key) {
+        
         var editor = this.editor,
             cursor = editor.getCursorPos(),
             query,
             lowerCaseQuery,
+            modeSupport,
+            parser,
             token;
         
-        if (_contextIsCSS(editor)) {
+        if (_supportedContext(editor)) {
+            modeSupport = _getModeSupportForContext(editor);
+            parser = _getParserForContext(editor);
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
-                if (token.className === "string") { // is wrapped in quotes        
+                if (modeSupport.isFontNameStringToken(token)) { // is wrapped in quotes        
                     if (token.start < cursor.ch) { // actually in the text
                         query = token.string.substring(1, cursor.ch - token.start);
                         if (token.end === cursor.ch) { // at the end, so need to clip off closing quote
@@ -294,7 +304,7 @@ define(function (require, exports, module) {
                     } else { // not in the text
                         query = "";
                     }
-                } else if (token.className === "variable-2" || token.className === "string-2") { // is not wrapped in quotes
+                } else if (modeSupport.isFontNameToken(token)) { // is not wrapped in quotes
                     query = token.string.substring(0, cursor.ch - token.start);
                 } else { // after a ":", a space, or a ","
                     query = "";
@@ -302,21 +312,17 @@ define(function (require, exports, module) {
 
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
-
                 
-                if (window.navigator.onLine) {
-                    // we're going to handle this query, so we need to add our UI
-                    setTimeout(_augmentCodeHintUI, 0);
-                }
-
                 var candidates = parser.parseCurrentEditor(true);
+
                 candidates = candidates.concat(lastTwentyFonts);
                 candidates = candidates.concat(webfont.getWebsafeFonts());
                 candidates = webfont.lowerSortUniqStringArray(candidates);
                 candidates = webfont.filterAndSortArray(query, candidates);
                 candidates = candidates.map(function (hint) {
                     var index       = hint.indexOf(lowerCaseQuery),
-                        $hintObj    = $('<span>'),
+                        $hintObj    = $('<div>')
+                                            .css("display", "inline"),
                         slugs       = webfont.searchBySlug(hint);
 
                     // load the matching font scripts individually for cachability
@@ -329,38 +335,85 @@ define(function (require, exports, module) {
                             scriptCache[slug] = true;
                         }
                     });
+                    
+                    var fontNameSpan = $('<span>')
+                                    .css('text-overflow', 'ellipsis')
+                                    .css('white-space', 'nowrap')
+                                    .css('display', 'inline-block')
+                                    .css('overflow', 'hidden')
+                                    .css('width', '112px');
+                    
 
                     // emphasize the matching substring
                     if (index >= 0) {
-                        $hintObj.append(hint.slice(0, index))
+                        fontNameSpan.append(hint.slice(0, index))
                             .append($('<span>')
                                     .append(hint.slice(index, index + query.length))
                                     .css('font-weight', 'bold'))
                             .append(hint.slice(index + query.length));
                     } else {
-                        $hintObj.text(hint);
+                        fontNameSpan.text(hint);
                     }
 
+                    var fontSampleSpan = $('<span>');
                     // set the font family and attach the hint string as data
-                    $hintObj
+                    fontSampleSpan
                         .append($('<span>')
                                 .append(Strings.SAMPLE_TEXT)
                                 .css('padding-right', '10px')
                                 .css('float', 'right')
-                                .css('font-family', hint + ", AdobeBlank"))
-                        .data('hint', hint);
+                                .css('font-family', hint + ", AdobeBlank")
+                                .css('width', '30px')); // this width magically aligns all samples left
+                    
+                    $hintObj.append(fontNameSpan, fontSampleSpan).data('hint', hint);
+                    
                     return $hintObj;
                 });
+                var selectInitial = true;
+                // attach Browse WF
+                if (window.navigator.onLine) {
+                    // Browse Web Fonts link
 
+                    var $browseEwfObj = $('<span>')
+                        .append($('<span>')
+                                .addClass("ewf-codehint-addition")
+                                .html(Strings.CODEHINT_BROWSE + _whitespaceFountain(35)));
+    
+                    $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
+                        CommandManager.execute(COMMAND_BROWSE_FONTS);
+                        return false; // don't actually follow link
+                    });
+                    
+                    if (!key || showBrowseWebFontsRegExp.test(key)) {
+                        // show Browse WF first the user is not typing
+                        candidates.unshift($browseEwfObj);
+                    } else {
+                        // show Browse WF last if the user is typing                   
+                        candidates.push($browseEwfObj);
+                    }
+                    // close the code hint session if we had nothing to 
+                    // suggest but Browse WF last time.
+                    if (closeHintOnNextKey && candidates.length <= 1) {
+                        return null;
+                    }
+                    
+                    closeHintOnNextKey = candidates.length > 1 ? false : true;
+                    
+                    // always select the fist code hint, unless we suggedt Browse WF
+                    selectInitial = candidates.length > 1 ? true : false;
+                }
+   
                 return {
                     hints: candidates,
                     match: null,
-                    selectInitial: true
+                    selectInitial: selectInitial
                 };
             }
         }
         return null;
     };
+    
+
 
     /**
      * Inserts a given font hint into the current editor context.
@@ -375,9 +428,16 @@ define(function (require, exports, module) {
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
-
-        _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
-        return false;
+        // if the codehint starts with Browse WF pop EWF dialog
+        if (completion[0].innerText.indexOf(Strings.CODEHINT_BROWSE) === 0) {
+            // open WF dialog if user selects Browse WF            
+            CommandManager.execute(COMMAND_BROWSE_FONTS);
+            return false; // don't actually follow link
+        } else {
+            // insert font name if user selected a font name
+            _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
+            return false;
+        }
     };
         
     function init() {
@@ -403,6 +463,8 @@ define(function (require, exports, module) {
          *  configurator UI that lets users specify which variants and subsets they want
          */
         function _handleGenerateInclude() {
+            var editor = EditorManager.getFocusedEditor() || EditorManager.getCurrentFullEditor();
+            var parser = _getParserForContext(editor);
             var fonts = parser.parseCurrentEditor(false);
             var fontFamilies = [], allFvds = [];
             var i, j, f;
@@ -430,7 +492,7 @@ define(function (require, exports, module) {
         
         // install autocomplete handler
         var fontHints = new FontHints();
-        CodeHintManager.registerHintProvider(fontHints, ["css"], 1);
+        CodeHintManager.registerHintProvider(fontHints, ["css", "less"], 1);
         
         // load blank font
         ExtensionUtils.loadStyleSheet(module, "styles/adobe-blank.css");
@@ -478,7 +540,7 @@ define(function (require, exports, module) {
         function _handleToolbarClick() {
             var doc = DocumentManager.getCurrentDocument();
 
-            if (!doc || !_documentIsCSS(doc)) {
+            if (!doc || !_supportedDocument(doc)) {
                 _showHowtoDialog();
             } else {
                 CommandManager.execute(COMMAND_GENERATE_INCLUDE);
@@ -488,7 +550,7 @@ define(function (require, exports, module) {
         function _handleDocumentChange() {
             var doc = DocumentManager.getCurrentDocument();
             // doc will be null if there's no active document (user closed all docs)
-            if (doc && _documentIsCSS(doc)) {
+            if (doc && _supportedDocument(doc)) {
                 $toolbarIcon.addClass("active");
             } else {
                 $toolbarIcon.removeClass("active");
