@@ -72,7 +72,8 @@ define(function (require, exports, module) {
     var prefs = {};
     var whitespaceRegExp = /\s/;
     var commaSemiRegExp = /([;,])/;
-    var fontnameStartRegExp = /[\w"']/;
+    var fontnameStartRegExp = /[\w"',]/;
+    var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
     
     function _documentIsCSS(doc) {
@@ -276,6 +277,7 @@ define(function (require, exports, module) {
      * should be selected by default in the hint list window.
      */
     FontHints.prototype.getHints = function (key) {
+        
         var editor = this.editor,
             cursor = editor.getCursorPos(),
             query,
@@ -346,8 +348,8 @@ define(function (require, exports, module) {
                         .data('hint', hint);
                     return $hintObj;
                 });
-                var selectInitial = true;
-                if (!key) {
+
+                if (!key || showBrowseWebFontsRegExp.test(key)) {
                     var $browseEwfObj = $('<span>')
                         .append('<span class="ewf-codehint-addition">' +
                                 Mustache.render('{{CODEHINT_BROWSE}}', Strings) + '</span>');
@@ -359,13 +361,12 @@ define(function (require, exports, module) {
                                     
                     candidates.unshift($browseEwfObj);
                     // do not select a default if we show browse EC web fonts
-                    selectInitial = false;
                 }
                 
                 return {
                     hints: candidates,
                     match: null,
-                    selectInitial: selectInitial
+                    selectInitial: true
                 };
             }
         }
