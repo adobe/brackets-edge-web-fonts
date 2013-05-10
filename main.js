@@ -78,8 +78,11 @@ define(function (require, exports, module) {
     var prefs = {};
     var whitespaceRegExp = /\s/;
     var commaSemiRegExp = /([;,])/;
-    var fontnameStartRegExp = /[\w"']/;
+    var fontnameStartRegExp = /[\w"',]/;
+    var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
+    var closeHintOnNextKey = false;
+
     
     function _supportedLanguage(language) {
         var name = language.getName();
@@ -122,77 +125,8 @@ define(function (require, exports, module) {
             throw new Error("Unsupported language: " + name);
         }
     }
-    
-    /** Adds an option to browse EWF to the bottom of the code hint list
-     *
-     *  TODO: Add an API to either CodeHintManager or PopUpManager so that we
-     *  can add UI in a much cleaner way. Once we do that, clean up the
-     *  LESS so that we aren't overriding core brackets LESS (e.g. to change
-     *  the code hint border).
-     *
-     *  NOTE: It is **required** that we have a CSS rule that causes the DOM elements
-     *  here to be hidden when the menu does *not* have the "open" class applied.
-     *  This is because PopUpManager checks whether a popup is closed by checking if 
-     *  it has any visible children. PopUps don't always get removed from the DOM right 
-     *  when they're closed. If we don't have this rule we get infinite recursion in PopUpManager.
-     *
-     *  TODO: Write a unit test to check the code hint menu dom structure. This way, 
-     *  if the code hint UI gets reorganized, the unit test will catch it. 
-     */
-    function _augmentCodeHintUI() {
 
-        function repositionAddition($list, $addition) {
-            var menuListPosition = $list.position();
-            $addition.css("position", "absolute");
-            $addition.css("top", menuListPosition.top + $list.height());
-            $addition.css("left", menuListPosition.left);
-            $addition.css("width", $list.width());
-            $addition.css("max-width", $list.width());
-        }
-
-        var $menu = $(".dropdown.codehint-menu.open");
-
-        if ($menu.length > 0) {
-            var $menuList = $menu.find(".dropdown-menu");
-            if ($menuList.length > 0) { // we're actually displaying a code hint
-                // Since this dropdown menu has an addition, we need to add a class that
-                // removes the rounded corners on the bottom
-                $menuList.addClass("has-addition");
-                
-                var $codeHintAddition = $menu.find(".ewf-codehint-addition");
-                
-                // If this is a new popup, we won't have a code hint addition yet (new popup), 
-                // so create it first
-                if ($codeHintAddition.length === 0) {
-                    // HACK (tracking adobe/brackets#2695): Fix the width of the code hint 
-                    // window for this session. If we don't do this, the size of the window 
-                    // can change as Webfont "Sample" strings load. Because of the hacky way
-                    // that we're adding the "addition", we can't have the size change. Once 
-                    // we have an API for making additions, we can remove this hack. (In other
-                    // words, we need a div in the CodeHintList to which we can add additions.)
-                    // The "+ 40" adds some spacing between the hint names and the sample
-                    // text. However, this spacing isn't guaranteed, so it shouldn't be
-                    // thougth of as "padding" in the CSS sense. If the font that gets
-                    // loaded is too long, it will wrap to the next line, which looks okay
-                    // and functions properly.
-                    $menuList.width($menuList.width() + 40);
-
-                    $codeHintAddition = $(codeHintAdditionHtmlString);
-                    repositionAddition($menuList, $codeHintAddition);
-                    $menuList.after($codeHintAddition);
-                    $codeHintAddition.find('a').on('click', function () {
-                        CommandManager.execute(COMMAND_BROWSE_FONTS);
-                        return false; // don't actually follow link
-                    });
-                } else {
-                    // This method only gets called when the pop up has changed in some way
-                    // (e.g. a new search). So, the popup has always moved. We need to reposition.
-                    repositionAddition($menuList, $codeHintAddition);
-                }
-            }
-        }
-    }
-    
+   
     function _insertFontCompletionAtCursor(completion, editor, cursor) {
         var modeSupport, parser, token;
         var actualCompletion = completion;
@@ -220,6 +154,22 @@ define(function (require, exports, module) {
                 // line is a string. So, we want to stop at the first occurrence of a comma or 
                 // semi-colon.
                 var endChar = token.end;
+                
+                // add white space if previous char is not a whit space
+                var line = editor.document.getLine(cursor.line);
+
+
+                // if the drop down was opened and the space was pressed, charBeforeCursor will be the 
+                // first char of the actual completion. In that case we do NOT add white space.     
+                var tokenIsPrefix = (modeSupport.isFontNameToken(token)  &&
+                                     completion.indexOf(token.string) === 0) ? true : false;
+                
+                var charBeforeCursor = tokenIsPrefix ? line.charAt(token.start - 1) : line.charAt(token.start);
+                
+                if (!whitespaceRegExp.test(charBeforeCursor)) {
+                    actualCompletion = " " + actualCompletion;
+                }
+                
                 if (modeSupport.isFontNameStringToken(token)) {
                     // Find the *first* comma or semi
                     var match = commaSemiRegExp.exec(token.string);
@@ -322,6 +272,7 @@ define(function (require, exports, module) {
      * should be selected by default in the hint list window.
      */
     FontHints.prototype.getHints = function (key) {
+        
         var editor = this.editor,
             cursor = editor.getCursorPos(),
             query,
@@ -352,21 +303,17 @@ define(function (require, exports, module) {
 
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
-
                 
-                if (window.navigator.onLine) {
-                    // we're going to handle this query, so we need to add our UI
-                    setTimeout(_augmentCodeHintUI, 0);
-                }
-
                 var candidates = parser.parseCurrentEditor(true);
+
                 candidates = candidates.concat(lastTwentyFonts);
                 candidates = candidates.concat(webfont.getWebsafeFonts());
                 candidates = webfont.lowerSortUniqStringArray(candidates);
                 candidates = webfont.filterAndSortArray(query, candidates);
                 candidates = candidates.map(function (hint) {
                     var index       = hint.indexOf(lowerCaseQuery),
-                        $hintObj    = $('<span>'),
+                        $hintObj    = $('<div>')
+                                            .css("display", "inline"),
                         slugs       = webfont.searchBySlug(hint);
 
                     // load the matching font scripts individually for cachability
@@ -379,38 +326,87 @@ define(function (require, exports, module) {
                             scriptCache[slug] = true;
                         }
                     });
+                    
+                    var fontNameSpan = $('<span>')
+                                    .css('text-overflow', 'ellipsis')
+                                    .css('white-space', 'nowrap')
+                                    .css('display', 'inline-block')
+                                    .css('overflow', 'hidden')
+                                    .css('width', '112px');
+                    
 
                     // emphasize the matching substring
                     if (index >= 0) {
-                        $hintObj.append(hint.slice(0, index))
+                        fontNameSpan.append(hint.slice(0, index))
                             .append($('<span>')
                                     .append(hint.slice(index, index + query.length))
                                     .css('font-weight', 'bold'))
                             .append(hint.slice(index + query.length));
                     } else {
-                        $hintObj.text(hint);
+                        fontNameSpan.text(hint);
                     }
 
+                    var fontSampleSpan = $('<span>');
                     // set the font family and attach the hint string as data
-                    $hintObj
+                    fontSampleSpan
                         .append($('<span>')
                                 .append(Strings.SAMPLE_TEXT)
                                 .css('padding-right', '10px')
                                 .css('float', 'right')
-                                .css('font-family', hint + ", AdobeBlank"))
-                        .data('hint', hint);
+                                .css('font-family', hint + ", AdobeBlank")
+                                .css('width', '30px')); // this width magically aligns all samples left
+                    
+                    $hintObj.append(fontNameSpan, fontSampleSpan).data('hint', hint);
+                    
                     return $hintObj;
                 });
+                var selectInitial = true;
+                // attach Browse WF
+                if (window.navigator.onLine) {
+                    // Browse Web Fonts link
 
+                    var $browseEwfObj = $('<span>')
+                        .append($('<span>')
+                                .addClass("ewf-codehint-addition")
+                                .html(Strings.CODEHINT_BROWSE)
+                                .css('padding-right','70px'))
+                        .data('stub', true);
+    
+                    $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
+                        CommandManager.execute(COMMAND_BROWSE_FONTS);
+                        return false; // don't actually follow link
+                    });
+                    
+                    if (!key || showBrowseWebFontsRegExp.test(key)) {
+                        // show Browse WF first the user is not typing
+                        candidates.unshift($browseEwfObj);
+                    } else {
+                        // show Browse WF last if the user is typing                   
+                        candidates.push($browseEwfObj);
+                    }
+                    // close the code hint session if we had nothing to 
+                    // suggest but Browse WF last time.
+                    if (closeHintOnNextKey && candidates.length <= 1) {
+                        return null;
+                    }
+                    
+                    closeHintOnNextKey = candidates.length > 1 ? false : true;
+                    
+                    // always select the fist code hint, unless we suggedt Browse WF
+                    selectInitial = candidates.length > 1 ? true : false;
+                }
+   
                 return {
                     hints: candidates,
                     match: null,
-                    selectInitial: true
+                    selectInitial: selectInitial
                 };
             }
         }
         return null;
     };
+    
+
 
     /**
      * Inserts a given font hint into the current editor context.
@@ -425,9 +421,16 @@ define(function (require, exports, module) {
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
-
-        _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
-        return false;
+        // if the codehint is EWF stub pop the dialog
+        if (completion.data('stub')) {
+            // open WF dialog if user selects Browse WF            
+            CommandManager.execute(COMMAND_BROWSE_FONTS);
+            return false; // don't actually follow link
+        } else {
+            // insert font name if user selected a font name
+            _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
+            return false;
+        }
     };
         
     function init() {
