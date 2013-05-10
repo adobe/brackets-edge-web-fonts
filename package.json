@@ -1,6 +1,6 @@
 {
-    "name": "brackets-edge-web-fonts",
-    "description": "Edge Web Fonts extension for Brackets.",
+    "name": "edge-code-web-fonts",
+    "description": "Edge Web Fonts extension for Edge Code.",
     "version": "0.1.0",
     "keywords": [".css"],
     "homepage": "https://github.com/adobe/brackets-edge-web-fonts/",
