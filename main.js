@@ -75,6 +75,7 @@ define(function (require, exports, module) {
     var fontnameStartRegExp = /[\w"',]/;
     var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
+    // TODO: Confirm if this is the right way to localize?
     var browseAdditionText = Mustache.render('{{CODEHINT_BROWSE}}', Strings);
     
     function _documentIsCSS(doc) {
