@@ -348,19 +348,22 @@ define(function (require, exports, module) {
                         .data('hint', hint);
                     return $hintObj;
                 });
+                
+                // Browse Web Fonts link
+                var $browseEwfObj = $('<span>')
+                    .append('<span class="ewf-codehint-addition">' +
+                            Mustache.render('{{CODEHINT_BROWSE}}', Strings) + '</span>');
 
-                if (!key || showBrowseWebFontsRegExp.test(key)) {
-                    var $browseEwfObj = $('<span>')
-                        .append('<span class="ewf-codehint-addition">' +
-                                Mustache.render('{{CODEHINT_BROWSE}}', Strings) + '</span>');
-    
-                    $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
-                        CommandManager.execute(COMMAND_BROWSE_FONTS);
-                        return false; // don't actually follow link
-                    });
-                                    
+                $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
+                    CommandManager.execute(COMMAND_BROWSE_FONTS);
+                    return false; // don't actually follow link
+                });                
+
+                if (!key || showBrowseWebFontsRegExp.test(key)) {                                    
                     candidates.unshift($browseEwfObj);
                     // do not select a default if we show browse EC web fonts
+                } else {
+                    candidates.push($browseEwfObj);
                 }
                 
                 return {
