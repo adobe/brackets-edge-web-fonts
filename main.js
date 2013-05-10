@@ -181,6 +181,14 @@ define(function (require, exports, module) {
                 // line is a string. So, we want to stop at the first occurrence of a comma or 
                 // semi-colon.
                 var endChar = token.end;
+                
+                // add white space if previous char is not a whit space
+                var line = editor.document.getLine(cursor.line);
+                var charBeforeCursor = line.charAt(token.start);
+                if (!whitespaceRegExp.test(charBeforeCursor)) {
+                    actualCompletion = " " + actualCompletion;
+                }
+                
                 if (token.className === "string") {
                     // Find the *first* comma or semi
                     var match = commaSemiRegExp.exec(token.string);
