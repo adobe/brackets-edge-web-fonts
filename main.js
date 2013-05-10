@@ -75,6 +75,7 @@ define(function (require, exports, module) {
     var fontnameStartRegExp = /[\w"',]/;
     var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
+    var browseAdditionText = Mustache.render('{{CODEHINT_BROWSE}}', Strings);
     
     function _documentIsCSS(doc) {
         return doc && doc.getLanguage().getName() === "CSS";
@@ -352,14 +353,14 @@ define(function (require, exports, module) {
                 // Browse Web Fonts link
                 var $browseEwfObj = $('<span>')
                     .append('<span class="ewf-codehint-addition">' +
-                            Mustache.render('{{CODEHINT_BROWSE}}', Strings) + '</span>');
+                            browseAdditionText + '</span>');
 
                 $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
                     CommandManager.execute(COMMAND_BROWSE_FONTS);
                     return false; // don't actually follow link
-                });                
+                });
 
-                if (!key || showBrowseWebFontsRegExp.test(key)) {                                    
+                if (!key || showBrowseWebFontsRegExp.test(key)) {
                     candidates.unshift($browseEwfObj);
                     // do not select a default if we show browse EC web fonts
                 } else {
@@ -389,9 +390,14 @@ define(function (require, exports, module) {
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
-
-        _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
-        return false;
+        
+        if (completion[0].innerText === browseAdditionText) {
+            CommandManager.execute(COMMAND_BROWSE_FONTS);
+            return false; // don't actually follow link
+        } else {
+            _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
+            return false;
+        }
     };
         
     function init() {
