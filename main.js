@@ -285,12 +285,10 @@ define(function (require, exports, module) {
 
                     // emphasize the matching substring
                     if (index >= 0) {
-                        var guessedWidth = hint.length * 10 + 'px';
                         $hintObj.append(hint.slice(0, index))
                             .append($('<span>')
                                     .append(hint.slice(index, index + query.length))
-                                    .css('font-weight', 'bold')
-                                    .css('width', guessedWidth))
+                                    .css('font-weight', 'bold'))
                             .append(hint.slice(index + query.length));
                     } else {
                         $hintObj.text(hint);
@@ -303,7 +301,7 @@ define(function (require, exports, module) {
                                 .css('padding-right', '10px')
                                 .css('float', 'right')
                                 .css('font-family', hint + ", AdobeBlank")
-                                .css('width','35px'))
+                                .css('width','35px')) // this width magically floats all samples left, requires float right above
                         .data('hint', hint);
                     
                     return $hintObj;

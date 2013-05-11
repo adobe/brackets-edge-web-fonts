@@ -332,6 +332,11 @@
 }
 
 
+.dropdown-menu{
+    min-width: 190px;
+    overflow-x: auto;
+}
+
 .dropdown.codehint-menu.open .dropdown-menu.has-addition {
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
