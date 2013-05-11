@@ -76,7 +76,7 @@ define(function (require, exports, module) {
     var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
     // TODO: Confirm if this is the right way to localize?
-    var browseAdditionText = Mustache.render('{{CODEHINT_BROWSE}}', Strings);
+    var browseAdditionText = Strings.CODEHINT_BROWSE;
     
     function _documentIsCSS(doc) {
         return doc && doc.getLanguage().getName() === "CSS";
@@ -85,77 +85,16 @@ define(function (require, exports, module) {
     function _contextIsCSS(editor) {
         return editor && editor.getLanguageForSelection().getName() === "CSS";
     }
+
     
-    /** Adds an option to browse EWF to the bottom of the code hint list
-     *
-     *  TODO: Add an API to either CodeHintManager or PopUpManager so that we
-     *  can add UI in a much cleaner way. Once we do that, clean up the
-     *  LESS so that we aren't overriding core brackets LESS (e.g. to change
-     *  the code hint border).
-     *
-     *  NOTE: It is **required** that we have a CSS rule that causes the DOM elements
-     *  here to be hidden when the menu does *not* have the "open" class applied.
-     *  This is because PopUpManager checks whether a popup is closed by checking if 
-     *  it has any visible children. PopUps don't always get removed from the DOM right 
-     *  when they're closed. If we don't have this rule we get infinite recursion in PopUpManager.
-     *
-     *  TODO: Write a unit test to check the code hint menu dom structure. This way, 
-     *  if the code hint UI gets reorganized, the unit test will catch it. 
-     */
-    function _augmentCodeHintUI() {
-
-        function repositionAddition($list, $addition) {
-            var menuListPosition = $list.position();
-            $addition.css("position", "absolute");
-            $addition.css("top", menuListPosition.top + $list.height());
-            $addition.css("left", menuListPosition.left);
-            $addition.css("width", $list.width());
-            $addition.css("max-width", $list.width());
-        }
-
-        var $menu = $(".dropdown.codehint-menu.open");
-
-        if ($menu.length > 0) {
-            var $menuList = $menu.find(".dropdown-menu");
-            if ($menuList.length > 0) { // we're actually displaying a code hint
-                // Since this dropdown menu has an addition, we need to add a class that
-                // removes the rounded corners on the bottom
-                $menuList.addClass("has-addition");
-                
-                var $codeHintAddition = $menu.find(".ewf-codehint-addition");
-                
-                // If this is a new popup, we won't have a code hint addition yet (new popup), 
-                // so create it first
-                if ($codeHintAddition.length === 0) {
-                    // HACK (tracking adobe/brackets#2695): Fix the width of the code hint 
-                    // window for this session. If we don't do this, the size of the window 
-                    // can change as Webfont "Sample" strings load. Because of the hacky way
-                    // that we're adding the "addition", we can't have the size change. Once 
-                    // we have an API for making additions, we can remove this hack. (In other
-                    // words, we need a div in the CodeHintList to which we can add additions.)
-                    // The "+ 40" adds some spacing between the hint names and the sample
-                    // text. However, this spacing isn't guaranteed, so it shouldn't be
-                    // thougth of as "padding" in the CSS sense. If the font that gets
-                    // loaded is too long, it will wrap to the next line, which looks okay
-                    // and functions properly.
-                    $menuList.width($menuList.width() + 40);
-
-                    $codeHintAddition = $(codeHintAdditionHtmlString);
-                    repositionAddition($menuList, $codeHintAddition);
-                    $menuList.after($codeHintAddition);
-                    $codeHintAddition.find('a').on('click', function () {
-                        CommandManager.execute(COMMAND_BROWSE_FONTS);
-                        return false; // don't actually follow link
-                    });
-                } else {
-                    // This method only gets called when the pop up has changed in some way
-                    // (e.g. a new search). So, the popup has always moved. We need to reposition.
-                    repositionAddition($menuList, $codeHintAddition);
-                }
-            }
-        }
-    }
-    
+//    function _adjustCodehintWidth() {
+//        var $menu = $(".dropdown.codehint-menu.open");
+//        var $menuList = $menu.find(".dropdown-menu");
+//        //var $codeHintAddition = $menu.find(".ewf-codehint-addition");
+//        $menuList.width("auto");
+//        debugger
+//    }
+//    
     function _insertFontCompletionAtCursor(completion, editor, cursor) {
         var token;
         var actualCompletion = completion;
@@ -315,6 +254,13 @@ define(function (require, exports, module) {
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
 
+
+                // very hacky no?
+                // TODO: clarify why like this?
+//                if (window.navigator.onLine) {
+//                    setTimeout(_adjustCodehintWidth, 0);
+//                }
+                
                 var candidates = parser.parseCurrentEditor(true);
 
                 candidates = candidates.concat(lastTwentyFonts);
@@ -339,10 +285,12 @@ define(function (require, exports, module) {
 
                     // emphasize the matching substring
                     if (index >= 0) {
+                        var guessedWidth = hint.length * 10 + 'px';
                         $hintObj.append(hint.slice(0, index))
                             .append($('<span>')
                                     .append(hint.slice(index, index + query.length))
-                                    .css('font-weight', 'bold'))
+                                    .css('font-weight', 'bold')
+                                    .css('width', guessedWidth))
                             .append(hint.slice(index + query.length));
                     } else {
                         $hintObj.text(hint);
@@ -354,8 +302,10 @@ define(function (require, exports, module) {
                                 .append(Strings.SAMPLE_TEXT)
                                 .css('padding-right', '10px')
                                 .css('float', 'right')
-                                .css('font-family', hint + ", AdobeBlank"))
+                                .css('font-family', hint + ", AdobeBlank")
+                                .css('width','35px'))
                         .data('hint', hint);
+                    
                     return $hintObj;
                 });
                 
@@ -375,6 +325,7 @@ define(function (require, exports, module) {
                 } else {
                     candidates.push($browseEwfObj);
                 }
+
                 
                 return {
                     hints: candidates,
