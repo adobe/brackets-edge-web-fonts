@@ -119,7 +119,9 @@ define(function (require, exports, module) {
                 
                 // if the drop down was opened and the space was pressed, charBeforeCursor will be the 
                 // first char of the actual completion. In that case we do NOT add white space.
-                if (!whitespaceRegExp.test(charBeforeCursor) && actualCompletion[0] !== charBeforeCursor) {                                                 actualCompletion = " " + actualCompletion;
+                if (!whitespaceRegExp.test(charBeforeCursor) &&
+                        actualCompletion[0] !== charBeforeCursor) {
+                    actualCompletion = " " + actualCompletion;
                 }
                 
                 if (token.className === "string") {
@@ -296,34 +298,36 @@ define(function (require, exports, module) {
                     
                     return $hintObj;
                 });
-                
-                // Browse Web Fonts link
-                var $browseEwfObj = $('<span>')
-                    .append('<span class="ewf-codehint-addition">' +
-                            Strings.CODEHINT_BROWSE + '</span>');
-
-                $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
-                    CommandManager.execute(COMMAND_BROWSE_FONTS);
-                    return false; // don't actually follow link
-                });
-                
-                if (!key || showBrowseWebFontsRegExp.test(key)) {
-                    // show Browse EWF first the user is not typing
-                    candidates.unshift($browseEwfObj);
-                } else {
-                    // show Browse EWF last if the user is typing                   
-                    candidates.push($browseEwfObj);
-                }
-                // close the code hint session if we had nothing to 
-                // suggest but Browse EWF last time.
-                if (closeHintOnNextKey && candidates.length <= 1) {
-                    return null;
-                }
-                closeHintOnNextKey = candidates.length > 1 ? false : true;
-                
-                // always select the fist code hint, unless we suggedt Browse EWF
-                var selectInitial = candidates.length > 1 ? true : false;
+                var selectInitial = true;
+                if (window.navigator.onLine) {
+                    // Browse Web Fonts link
+                    var $browseEwfObj = $('<span>')
+                        .append('<span class="ewf-codehint-addition">' +
+                                Strings.CODEHINT_BROWSE + '</span>');
+    
+                    $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
+                        CommandManager.execute(COMMAND_BROWSE_FONTS);
+                        return false; // don't actually follow link
+                    });
                     
+                    if (!key || showBrowseWebFontsRegExp.test(key)) {
+                        // show Browse EWF first the user is not typing
+                        candidates.unshift($browseEwfObj);
+                    } else {
+                        // show Browse EWF last if the user is typing                   
+                        candidates.push($browseEwfObj);
+                    }
+                    // close the code hint session if we had nothing to 
+                    // suggest but Browse EWF last time.
+                    if (closeHintOnNextKey && candidates.length <= 1) {
+                        return null;
+                    }
+                    
+                    closeHintOnNextKey = candidates.length > 1 ? false : true;
+                    
+                    // always select the fist code hint, unless we suggedt Browse EWF
+                    selectInitial = candidates.length > 1 ? true : false;
+                }
                 
                 return {
                     hints: candidates,
