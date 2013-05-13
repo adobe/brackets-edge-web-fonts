@@ -294,13 +294,13 @@ define(function (require, exports, module) {
                                 .css('padding-right', '10px')
                                 .css('float', 'right')
                                 .css('font-family', hint + ", AdobeBlank")
-                                .css('width', '30px')) // this width magically floats all samples left,
+                                .css('width', '30px')); // this width magically floats all samples left,
                     // however staying  right of the Browse Web Fonts ...
                             //requires float right above. If the number is too small the hints do not pop up until all 
                     // samples are loaded
-                        .data('hint', hint);
+                        
                     
-                    $hintObj.append(fontNameSpan, fontSampleSpan);
+                    $hintObj.append(fontNameSpan, fontSampleSpan).data('hint', hint);
                     
                     return $hintObj;
                 });
