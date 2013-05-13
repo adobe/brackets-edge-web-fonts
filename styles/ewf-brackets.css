@@ -334,7 +334,6 @@
 
 .dropdown-menu{
     min-width: 190px;
-    overflow-x: auto;
 }
 
 .dropdown.codehint-menu.open .dropdown-menu.has-addition {
