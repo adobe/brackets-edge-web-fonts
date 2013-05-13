@@ -116,8 +116,10 @@ define(function (require, exports, module) {
                 // add white space if previous char is not a whit space
                 var line = editor.document.getLine(cursor.line);
                 var charBeforeCursor = line.charAt(token.start);
-                if (!whitespaceRegExp.test(charBeforeCursor)) {
-                    actualCompletion = " " + actualCompletion;
+                
+                // if the drop down was opened and the space was pressed, charBeforeCursor will be the 
+                // first char of the actual completion. In that case we do NOT add white space.
+                if (!whitespaceRegExp.test(charBeforeCursor) && actualCompletion[0] !== charBeforeCursor) {                                                 actualCompletion = " " + actualCompletion;
                 }
                 
                 if (token.className === "string") {
