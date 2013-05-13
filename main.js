@@ -299,6 +299,7 @@ define(function (require, exports, module) {
                     return $hintObj;
                 });
                 var selectInitial = true;
+                // attach Browse WF
                 if (window.navigator.onLine) {
                     // Browse Web Fonts link
                     var $browseEwfObj = $('<span>')
@@ -311,21 +312,21 @@ define(function (require, exports, module) {
                     });
                     
                     if (!key || showBrowseWebFontsRegExp.test(key)) {
-                        // show Browse EWF first the user is not typing
+                        // show Browse WF first the user is not typing
                         candidates.unshift($browseEwfObj);
                     } else {
-                        // show Browse EWF last if the user is typing                   
+                        // show Browse WF last if the user is typing                   
                         candidates.push($browseEwfObj);
                     }
                     // close the code hint session if we had nothing to 
-                    // suggest but Browse EWF last time.
+                    // suggest but Browse WF last time.
                     if (closeHintOnNextKey && candidates.length <= 1) {
                         return null;
                     }
                     
                     closeHintOnNextKey = candidates.length > 1 ? false : true;
                     
-                    // always select the fist code hint, unless we suggedt Browse EWF
+                    // always select the fist code hint, unless we suggedt Browse WF
                     selectInitial = candidates.length > 1 ? true : false;
                 }
                 
@@ -353,7 +354,7 @@ define(function (require, exports, module) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
         if (completion[0].innerText === Strings.CODEHINT_BROWSE) {
-            // open EWF dialog if user selects Browse EWF            
+            // open WF dialog if user selects Browse WF            
             CommandManager.execute(COMMAND_BROWSE_FONTS);
             return false; // don't actually follow link
         } else {
