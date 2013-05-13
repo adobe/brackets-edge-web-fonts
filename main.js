@@ -271,20 +271,24 @@ define(function (require, exports, module) {
                             scriptCache[slug] = true;
                         }
                     });
-
+                    
+                    var fontNameSpan = $('<span>')
+                                         .css("width", "50")
+                                         .css("overflow", "hidden");
                     // emphasize the matching substring
                     if (index >= 0) {
-                        $hintObj.append(hint.slice(0, index))
+                        fontNameSpan.append(hint.slice(0, index))
                             .append($('<span>')
                                     .append(hint.slice(index, index + query.length))
                                     .css('font-weight', 'bold'))
                             .append(hint.slice(index + query.length));
                     } else {
-                        $hintObj.text(hint);
+                        fontNameSpan.text(hint);
                     }
 
+                    var fontSampleSpan = $('<span>');
                     // set the font family and attach the hint string as data
-                    $hintObj
+                    fontSampleSpan
                         .append($('<span>')
                                 .append(Strings.SAMPLE_TEXT)
                                 .css('padding-right', '10px')
@@ -295,6 +299,8 @@ define(function (require, exports, module) {
                             //requires float right above. If the number is too small the hints do not pop up until all 
                     // samples are loaded
                         .data('hint', hint);
+                    
+                    $hintObj.append(fontNameSpan, fontSampleSpan);
                     
                     return $hintObj;
                 });
