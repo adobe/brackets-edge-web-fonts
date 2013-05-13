@@ -86,15 +86,7 @@ define(function (require, exports, module) {
         return editor && editor.getLanguageForSelection().getName() === "CSS";
     }
 
-    
-//    function _adjustCodehintWidth() {
-//        var $menu = $(".dropdown.codehint-menu.open");
-//        var $menuList = $menu.find(".dropdown-menu");
-//        //var $codeHintAddition = $menu.find(".ewf-codehint-addition");
-//        $menuList.width("auto");
-//        debugger
-//    }
-//    
+   
     function _insertFontCompletionAtCursor(completion, editor, cursor) {
         var token;
         var actualCompletion = completion;
@@ -253,13 +245,6 @@ define(function (require, exports, module) {
 
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
-
-
-                // very hacky no?
-                // TODO: clarify why like this?
-//                if (window.navigator.onLine) {
-//                    setTimeout(_adjustCodehintWidth, 0);
-//                }
                 
                 var candidates = parser.parseCurrentEditor(true);
 
@@ -319,11 +304,12 @@ define(function (require, exports, module) {
                     CommandManager.execute(COMMAND_BROWSE_FONTS);
                     return false; // don't actually follow link
                 });
-
+                
                 if (!key || showBrowseWebFontsRegExp.test(key)) {
+                    // show Browse EWF first the user is not typing
                     candidates.unshift($browseEwfObj);
-                    // do not select a default if we show browse EC web fonts
                 } else {
+                    // show Browse EWF last if the user is typing                   
                     candidates.push($browseEwfObj);
                 }
                 // close the code hint session if we had nothing to 
@@ -360,11 +346,12 @@ define(function (require, exports, module) {
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
-        
         if (completion[0].innerText === Strings.CODEHINT_BROWSE) {
+            // open EWF dialog if user selects Browse EWF            
             CommandManager.execute(COMMAND_BROWSE_FONTS);
             return false; // don't actually follow link
         } else {
+            // insert font name if user selected a font name
             _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
             return false;
         }
