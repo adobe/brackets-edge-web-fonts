@@ -75,6 +75,7 @@ define(function (require, exports, module) {
     var fontnameStartRegExp = /[\w"',]/;
     var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
+    var closeHintOnNextKey = false;
 
     
     function _documentIsCSS(doc) {
@@ -325,7 +326,16 @@ define(function (require, exports, module) {
                 } else {
                     candidates.push($browseEwfObj);
                 }
+                // close the code hint session if we had nothing to 
+                // suggest but Browse EWF last time.
+                if (closeHintOnNextKey && candidates.length <= 1) {
+                    return null;
+                }
+                closeHintOnNextKey = candidates.length > 1 ? false : true;
+                
+                // always select the fist code hint, unless we suggedt Browse EWF
                 var selectInitial = candidates.length > 1 ? true : false;
+                    
                 
                 return {
                     hints: candidates,
