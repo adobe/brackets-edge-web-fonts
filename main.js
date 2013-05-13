@@ -75,8 +75,7 @@ define(function (require, exports, module) {
     var fontnameStartRegExp = /[\w"',]/;
     var showBrowseWebFontsRegExp = /["'\s,]/;
     var scriptCache = {};
-    // TODO: Confirm if this is the right way to localize?
-    var browseAdditionText = Strings.CODEHINT_BROWSE;
+
     
     function _documentIsCSS(doc) {
         return doc && doc.getLanguage().getName() === "CSS";
@@ -301,7 +300,7 @@ define(function (require, exports, module) {
                                 .css('padding-right', '10px')
                                 .css('float', 'right')
                                 .css('font-family', hint + ", AdobeBlank")
-                                .css('width','30px')) // this width magically floats all samples left,
+                                .css('width', '30px')) // this width magically floats all samples left,
                     // however staying  right of the Browse Web Fonts ...
                             //requires float right above. If the number is too small the hints do not pop up until all 
                     // samples are loaded
@@ -313,7 +312,7 @@ define(function (require, exports, module) {
                 // Browse Web Fonts link
                 var $browseEwfObj = $('<span>')
                     .append('<span class="ewf-codehint-addition">' +
-                            browseAdditionText + '</span>');
+                            Strings.CODEHINT_BROWSE + '</span>');
 
                 $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
                     CommandManager.execute(COMMAND_BROWSE_FONTS);
@@ -326,12 +325,12 @@ define(function (require, exports, module) {
                 } else {
                     candidates.push($browseEwfObj);
                 }
-
+                var selectInitial = candidates.length > 1 ? true : false;
                 
                 return {
                     hints: candidates,
                     match: null,
-                    selectInitial: true
+                    selectInitial: selectInitial
                 };
             }
         }
@@ -352,7 +351,7 @@ define(function (require, exports, module) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
         
-        if (completion[0].innerText === browseAdditionText) {
+        if (completion[0].innerText === Strings.CODEHINT_BROWSE) {
             CommandManager.execute(COMMAND_BROWSE_FONTS);
             return false; // don't actually follow link
         } else {
