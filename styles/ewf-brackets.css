@@ -333,6 +333,9 @@
 
 
 .dropdown-menu{
+    /* this has the side effect of changing min width for all code hint menu 
+    * dropdowns, We really should change styles globally frm the EWF extension.
+    */
     min-width: 190px;
 }
 
