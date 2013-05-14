@@ -30,7 +30,9 @@ define(function (require, exports, module) {
     
     // Modules
     var webfont                 = require("webfont"),
-        parser                  = require("cssFontParser"),
+        FontParser              = require("fontParser"),
+        cssModeSupport          = require("cssModeSupport"),
+        lessModeSupport         = require("lessModeSupport"),
         ewfBrowseDialogHtml     = require("text!htmlContent/ewf-browse-dialog.html"),
         ewfIncludeDialogHtml    = require("text!htmlContent/ewf-include-dialog.html"),
         ewfHowtoDialogHtml      = require("text!htmlContent/ewf-howto-dialog.html"),
@@ -65,6 +67,10 @@ define(function (require, exports, module) {
     var COMMAND_GENERATE_INCLUDE = "edgewebfonts.generateinclude";
     var PREFERENCES_CLIENT_ID = "com.adobe.edgewebfonts";
     var PREFERENCES_FONT_HISTORY_KEY = "ewf-font-history";
+
+    // Font parsers    
+    var cssParser   = new FontParser(cssModeSupport),
+        lessParser  = new FontParser(lessModeSupport);
     
     // Local variables
     var lastFontSelected = null;
@@ -78,32 +84,68 @@ define(function (require, exports, module) {
     var closeHintOnNextKey = false;
 
     
-    function _documentIsCSS(doc) {
-        return doc && doc.getLanguage().getName() === "CSS";
+    function _supportedLanguage(language) {
+        var name = language.getName();
+            
+        return (name === "CSS" || name === "LESS");
+    }
+    
+    function _supportedDocument(doc) {
+        return doc && _supportedLanguage(doc.getLanguage());
     }
 
-    function _contextIsCSS(editor) {
-        return editor && editor.getLanguageForSelection().getName() === "CSS";
+    function _supportedContext(editor) {
+        return editor && _supportedLanguage(editor.getLanguageForSelection());
+    }
+    
+    function _getParserForContext(editor) {
+        var language    = editor.getLanguageForSelection(),
+            name        = language.getName();
+        
+        switch (name) {
+        case "CSS":
+            return cssParser;
+        case "LESS":
+            return lessParser;
+        default:
+            throw new Error("Unsupported language: " + name);
+        }
+    }
+    
+    function _getModeSupportForContext(editor) {
+        var language    = editor.getLanguageForSelection(),
+            name        = language.getName();
+        
+        switch (name) {
+        case "CSS":
+            return cssModeSupport;
+        case "LESS":
+            return lessModeSupport;
+        default:
+            throw new Error("Unsupported language: " + name);
+        }
     }
 
    
     function _insertFontCompletionAtCursor(completion, editor, cursor) {
-        var token;
+        var modeSupport, parser, token;
         var actualCompletion = completion;
         var stringChar = "\"";
         
-        if (_contextIsCSS(editor)) { // on the off-chance we changed documents, don't change anything
+        if (_supportedContext(editor)) { // on the off-chance we changed documents, don't change anything
+            modeSupport = _getModeSupportForContext(editor);
+            parser = _getParserForContext(editor);
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
                 // get the correct string character if there is already one in use
-                if (token.className === "string") {
+                if (modeSupport.isFontNameStringToken(token)) {
                     stringChar = token.string.substring(0, 1);
                 }
 
                 // wrap the completion in string character if either 
                 //  a.) we're inserting into a string, or 
                 //  b.) the slug contains a space
-                if (token.className === "string" || whitespaceRegExp.test(actualCompletion)) {
+                if (modeSupport.isFontNameStringToken(token) || whitespaceRegExp.test(actualCompletion)) {
                     actualCompletion = stringChar + actualCompletion + stringChar;
                 }
 
@@ -129,7 +171,8 @@ define(function (require, exports, module) {
                     actualCompletion = " " + actualCompletion;
                 }
                 
-                if (token.className === "string") {
+
+                if (modeSupport.isFontNameStringToken(token)) {
                     // Find the *first* comma or semi
                     var match = commaSemiRegExp.exec(token.string);
                     if (match) {
@@ -142,7 +185,8 @@ define(function (require, exports, module) {
                 // directly to replace the range instead of using the Document, as we should. The
                 // reason is due to a flaw in our current document synchronization architecture when
                 // inline editors are open.
-                if (token.className === "string" || token.className === "variable-2" || token.className === "string-2") { // replace
+                if (modeSupport.isFontNameStringToken(token) ||
+                        modeSupport.isFontNameToken(token)) { // replace
                     editor._codeMirror.replaceRange(actualCompletion,
                                                  {line: cursor.line, ch: token.start},
                                                  {line: cursor.line, ch: endChar});
@@ -191,8 +235,11 @@ define(function (require, exports, module) {
      * whether it is appropriate to do so.
      */
     FontHints.prototype.hasHints = function (editor, implicitChar) {
+        var parser;
+        
         this.editor = editor;
-        if (_contextIsCSS(editor)) {
+        if (_supportedContext(editor)) {
+            parser = _getParserForContext(editor);
             if (!implicitChar) {
                 if (parser.getFontTokenAtCursor(editor, editor.getCursorPos())) {
                     return true;
@@ -232,12 +279,16 @@ define(function (require, exports, module) {
             cursor = editor.getCursorPos(),
             query,
             lowerCaseQuery,
+            modeSupport,
+            parser,
             token;
         
-        if (_contextIsCSS(editor)) {
+        if (_supportedContext(editor)) {
+            modeSupport = _getModeSupportForContext(editor);
+            parser = _getParserForContext(editor);
             token = parser.getFontTokenAtCursor(editor, cursor);
             if (token) {
-                if (token.className === "string") { // is wrapped in quotes        
+                if (modeSupport.isFontNameStringToken(token)) { // is wrapped in quotes        
                     if (token.start < cursor.ch) { // actually in the text
                         query = token.string.substring(1, cursor.ch - token.start);
                         if (token.end === cursor.ch) { // at the end, so need to clip off closing quote
@@ -246,7 +297,7 @@ define(function (require, exports, module) {
                     } else { // not in the text
                         query = "";
                     }
-                } else if (token.className === "variable-2" || token.className === "string-2") { // is not wrapped in quotes
+                } else if (modeSupport.isFontNameToken(token)) { // is not wrapped in quotes
                     query = token.string.substring(0, cursor.ch - token.start);
                 } else { // after a ":", a space, or a ","
                     query = "";
@@ -395,6 +446,8 @@ define(function (require, exports, module) {
          *  configurator UI that lets users specify which variants and subsets they want
          */
         function _handleGenerateInclude() {
+            var editor = EditorManager.getFocusedEditor() || EditorManager.getCurrentFullEditor();
+            var parser = _getParserForContext(editor);
             var fonts = parser.parseCurrentEditor(false);
             var fontFamilies = [], allFvds = [];
             var i, j, f;
@@ -422,7 +475,7 @@ define(function (require, exports, module) {
         
         // install autocomplete handler
         var fontHints = new FontHints();
-        CodeHintManager.registerHintProvider(fontHints, ["css"], 1);
+        CodeHintManager.registerHintProvider(fontHints, ["css", "less"], 1);
         
         // load blank font
         ExtensionUtils.loadStyleSheet(module, "styles/adobe-blank.css");
@@ -470,7 +523,7 @@ define(function (require, exports, module) {
         function _handleToolbarClick() {
             var doc = DocumentManager.getCurrentDocument();
 
-            if (!doc || !_documentIsCSS(doc)) {
+            if (!doc || !_supportedDocument(doc)) {
                 _showHowtoDialog();
             } else {
                 CommandManager.execute(COMMAND_GENERATE_INCLUDE);
@@ -480,7 +533,7 @@ define(function (require, exports, module) {
         function _handleDocumentChange() {
             var doc = DocumentManager.getCurrentDocument();
             // doc will be null if there's no active document (user closed all docs)
-            if (doc && _documentIsCSS(doc)) {
+            if (doc && _supportedDocument(doc)) {
                 $toolbarIcon.addClass("active");
             } else {
                 $toolbarIcon.removeClass("active");
