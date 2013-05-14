@@ -160,10 +160,9 @@ define(function (require, exports, module) {
 
 
                 // if the drop down was opened and the space was pressed, charBeforeCursor will be the 
-                // first char of the actual completion. In that case we do NOT add white space.                
-                var tokenIsPrefix = ((token.className === "string" ||
-                                      token.className ===  "variable-2")
-                                     && completion.indexOf(token.string) === 0) ? true : false;
+                // first char of the actual completion. In that case we do NOT add white space.     
+                var tokenIsPrefix = (modeSupport.isFontNameToken(token)  &&
+                                     completion.indexOf(token.string) === 0) ? true : false;
                 
                 var charBeforeCursor = tokenIsPrefix ? line.charAt(token.start - 1) : line.charAt(token.start);
                 
