@@ -336,7 +336,14 @@ define(function (require, exports, module) {
                         }
                     });
                     
-                    var fontNameSpan = $('<span>');
+                    var fontNameSpan = $('<span>')
+                                    .css('text-overflow','ellipsis')
+                                    .css('white-space','nowrap')
+                                    .css('display','inline-block')                    
+                                    .css('overflow','hidden')   
+                                    .css('width','140px');
+                    
+
                     // emphasize the matching substring
                     if (index >= 0) {
                         fontNameSpan.append(hint.slice(0, index))
