@@ -337,9 +337,7 @@ define(function (require, exports, module) {
                         }
                     });
                     
-                    var fontNameSpan = $('<span>')
-                                         .css("width", "50")
-                                         .css("overflow", "hidden");
+                    var fontNameSpan = $('<span>');
                     // emphasize the matching substring
                     if (index >= 0) {
                         fontNameSpan.append(hint.slice(0, index))
