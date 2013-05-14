@@ -332,11 +332,12 @@
 }
 
 
-.dropdown-menu{
+.dropdown-menu.fonthints{
     /* this has the side effect of changing min width for all code hint menu 
     * dropdowns, We really should change styles globally frm the EWF extension.
-    */
+     */
     min-width: 190px;
+   
 }
 
 .dropdown.codehint-menu.open .dropdown-menu.has-addition {
