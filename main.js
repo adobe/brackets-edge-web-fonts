@@ -115,12 +115,17 @@ define(function (require, exports, module) {
                 
                 // add white space if previous char is not a whit space
                 var line = editor.document.getLine(cursor.line);
-                var charBeforeCursor = line.charAt(token.start);
-                
+
+
                 // if the drop down was opened and the space was pressed, charBeforeCursor will be the 
-                // first char of the actual completion. In that case we do NOT add white space.
-                if (!whitespaceRegExp.test(charBeforeCursor) &&
-                        actualCompletion[0] !== charBeforeCursor) {
+                // first char of the actual completion. In that case we do NOT add white space.                
+                var tokenIsPrefix = ((token.className === "string" ||
+                                      token.className ===  "variable-2")
+                                     && completion.indexOf(token.string) === 0) ? true : false;
+                
+                var charBeforeCursor = tokenIsPrefix ? line.charAt(token.start - 1) : line.charAt(token.start);
+                
+                if (!whitespaceRegExp.test(charBeforeCursor)) {
                     actualCompletion = " " + actualCompletion;
                 }
                 
@@ -258,7 +263,8 @@ define(function (require, exports, module) {
                 candidates = webfont.filterAndSortArray(query, candidates);
                 candidates = candidates.map(function (hint) {
                     var index       = hint.indexOf(lowerCaseQuery),
-                        $hintObj    = $('<span>'),
+                        $hintObj    = $('<div>')
+                                            .css("display", "inline"),
                         slugs       = webfont.searchBySlug(hint);
 
                     // load the matching font scripts individually for cachability
