@@ -341,7 +341,7 @@ define(function (require, exports, module) {
                                     .css('white-space', 'nowrap')
                                     .css('display', 'inline-block')                    
                                     .css('overflow', 'hidden')   
-                                    .css('width', '72px');
+                                    .css('width', '112px');
                     
 
                     // emphasize the matching substring
@@ -373,9 +373,10 @@ define(function (require, exports, module) {
                 // attach Browse WF
                 if (window.navigator.onLine) {
                     // Browse Web Fonts link
-                    var $browseEwfObj = $('<span>')
-                        .append('<span class="ewf-codehint-addition">' +
-                                Strings.CODEHINT_BROWSE + '</span>');
+                    var $browseEwfObj = $('<span>') 
+                        .append($('<span>')
+                                .addClass("ewf-codehint-addition")
+                                .html(Strings.CODEHINT_BROWSE + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
     
                     $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
                         CommandManager.execute(COMMAND_BROWSE_FONTS);
