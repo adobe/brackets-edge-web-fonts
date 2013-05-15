@@ -435,7 +435,8 @@ define(function (require, exports, module) {
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
-        if (completion[0].innerText === Strings.CODEHINT_BROWSE) {
+        // if the codehint starts with Browse WF pop EWF dialog
+        if (completion[0].innerText.indexOf(Strings.CODEHINT_BROWSE) === 0) {
             // open WF dialog if user selects Browse WF            
             CommandManager.execute(COMMAND_BROWSE_FONTS);
             return false; // don't actually follow link
