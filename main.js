@@ -210,15 +210,6 @@ define(function (require, exports, module) {
         Dialogs.showModalDialog("edge-web-fonts-howto-dialog");
     }
     
-    function _whitespaceFountain(m) {
-        var chemtrail = "",
-            i;
-        for (i = 0; i < m; i++) {
-            chemtrail = chemtrail + "&nbsp;";
-        }
-        return chemtrail;
-    }
-    
     /**
      * @constructor
      */
@@ -377,7 +368,8 @@ define(function (require, exports, module) {
                     var $browseEwfObj = $('<span>')
                         .append($('<span>')
                                 .addClass("ewf-codehint-addition")
-                                .html(Strings.CODEHINT_BROWSE + _whitespaceFountain(35)));
+                                .html(Strings.CODEHINT_BROWSE)
+                                .css('padding-right','70px'));
     
                     $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
                         CommandManager.execute(COMMAND_BROWSE_FONTS);
