@@ -328,19 +328,10 @@
  *  Brackets Code Hint Styling
  */
 .dropdown.codehint-menu .ewf-codehint-addition {
-  display: none;
+  
 }
-.dropdown.codehint-menu.open .ewf-codehint-addition {
-  display: block;
-  border: 1px solid #C8C8C8;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-  background-color: white;
-}
-.dropdown.codehint-menu.open .ewf-codehint-addition p {
-  padding: 5px 10px;
-  margin: 0px;
-}
+
+
 .dropdown.codehint-menu.open .dropdown-menu.has-addition {
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
