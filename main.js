@@ -369,7 +369,8 @@ define(function (require, exports, module) {
                         .append($('<span>')
                                 .addClass("ewf-codehint-addition")
                                 .html(Strings.CODEHINT_BROWSE)
-                                .css('padding-right','70px'));
+                                .css('padding-right','70px'))
+                        .data('stub', true);
     
                     $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
                         CommandManager.execute(COMMAND_BROWSE_FONTS);
@@ -420,8 +421,8 @@ define(function (require, exports, module) {
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
-        // if the codehint starts with Browse WF pop EWF dialog
-        if (completion[0].innerText.indexOf(Strings.CODEHINT_BROWSE) === 0) {
+        // if the codehint is EWF stub pop the dialog
+        if (completion.data('stub')) {
             // open WF dialog if user selects Browse WF            
             CommandManager.execute(COMMAND_BROWSE_FONTS);
             return false; // don't actually follow link
