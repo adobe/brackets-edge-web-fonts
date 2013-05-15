@@ -373,10 +373,11 @@ define(function (require, exports, module) {
                 // attach Browse WF
                 if (window.navigator.onLine) {
                     // Browse Web Fonts link
+
                     var $browseEwfObj = $('<span>') 
                         .append($('<span>')
                                 .addClass("ewf-codehint-addition")
-                                .html(Strings.CODEHINT_BROWSE + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+                                .html(Strings.CODEHINT_BROWSE +_whitespaceFountain(35) ));
     
                     $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
                         CommandManager.execute(COMMAND_BROWSE_FONTS);
@@ -411,6 +412,14 @@ define(function (require, exports, module) {
             }
         }
         return null;
+    };
+    
+    function _whitespaceFountain (m) {
+        var chemtrail = "";
+        for (var i = 0; i < m; i++) {
+            chemtrail = chemtrail + "&nbsp;";            
+        }
+        return chemtrail;
     };
 
     /**

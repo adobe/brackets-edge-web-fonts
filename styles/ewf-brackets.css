@@ -331,22 +331,6 @@
   font-style: italic;
 }
 
-
-.dropdown-menu{
-    /* this has the side effect of changing min width for all code hint menu 
-    * dropdowns, We really should change styles globally frm the EWF extension.
-  
-    
-        
-   
-    min-width: 190px;
-    
-    overflow-x: inherit;  
-    overflow-y: scroll;
-     */  
-
-}
-
 .dropdown.codehint-menu.open .dropdown-menu.has-addition {
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
