@@ -376,8 +376,7 @@ define(function (require, exports, module) {
                     if (closeHintOnNextKey && candidates.length <= 1) {
                         return null;
                     }
-                    
-                    closeHintOnNextKey = candidates.length > 1 ? false : true;
+                    closeHintOnNextKey = candidates.length <= 1;
                     
                     // always select the fist code hint, unless we suggedt Browse WF
                     selectInitial = candidates.length > 1 ? true : false;
