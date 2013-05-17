@@ -305,23 +305,29 @@
  *  Brackets Toolbar Icon Styling
  */
 #toolbar-ewf {
-  background: no-repeat -webkit-image-set(url("../img/webfonts_icon.png") 1x, url("../img/webfonts_icon@2x.png") 2x);
+  background: no-repeat url("../img/toolbar.svg");
   display: inline-block;
-  width: 21px;
-  height: 15px;
-  opacity: 0.75;
+  width: 20px;
+  height: 20px;
+  opacity: 0.70;
 }
-#toolbar-ewf:hover {
-  opacity: 0.50;
+
+#toolbar-ewf:active {
+  opacity: 0.5;
 }
+
+
 #toolbar-ewf.active {
-  opacity: 1.0;
+    opacity: 1.0;
+    background-position: -40px 0px;
 }
-#toolbar-ewf.active:hover {
-  opacity: 0.75;
+
+#toolbar-ewf.active:active {
+    opacity: 0.5;
 }
+
 #toolbar-ewf.disabled {
-  opacity: 0.25;
+  opacity: 0.3;
 }
 
 /**
