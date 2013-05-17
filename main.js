@@ -79,7 +79,7 @@ define(function (require, exports, module) {
     var whitespaceRegExp = /\s/;
     var commaSemiRegExp = /([;,])/;
     var fontnameStartRegExp = /[\w"',]/;
-    var showBrowseWebFontsRegExp = /["'\s,]/;
+    var showBrowseWebFontsRegExp = /["\'\s,]/;
     var scriptCache = {};
     var closeHintOnNextKey = false;
 
@@ -364,7 +364,7 @@ define(function (require, exports, module) {
                         return false; // don't actually follow link
                     });
                     
-                    if (!key || showBrowseWebFontsRegExp.test(key)) {
+                    if (!query || showBrowseWebFontsRegExp.test(query)) {
                         // show Browse WF first the user is not typing
                         candidates.unshift($browseEwfObj);
                     } else {
