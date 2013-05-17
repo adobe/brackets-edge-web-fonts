@@ -329,6 +329,26 @@
  */
 .dropdown.codehint-menu .ewf-codehint-addition {
   font-style: italic;
+  padding-right: '70px;
+}
+
+.dropdown.codehint-menu .ewf-fontname {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    overflow: hidden;
+    width: 112px;
+}
+
+.dropdown.codehint-menu .ewf-fontsample {
+    .padding-right: 10px;
+    .float: right;
+    .width: 30px;
+}
+
+
+.dropdown.codehint-menu .ewf-fontname .ewf-fontname-bold {
+    font-weight: bold;
 }
 
 .dropdown.codehint-menu.open .dropdown-menu.has-addition {

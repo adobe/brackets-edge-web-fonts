@@ -312,8 +312,7 @@ define(function (require, exports, module) {
                 candidates = webfont.filterAndSortArray(query, candidates);
                 candidates = candidates.map(function (hint) {
                     var index       = hint.indexOf(lowerCaseQuery),
-                        $hintObj    = $('<div>')
-                                            .css("display", "inline"),
+                        $hintObj    = $('<span>'),
                         slugs       = webfont.searchBySlug(hint);
 
                     // load the matching font scripts individually for cachability
@@ -327,20 +326,13 @@ define(function (require, exports, module) {
                         }
                     });
                     
-                    var fontNameSpan = $('<span>')
-                                    .css('text-overflow', 'ellipsis')
-                                    .css('white-space', 'nowrap')
-                                    .css('display', 'inline-block')
-                                    .css('overflow', 'hidden')
-                                    .css('width', '112px');
-                    
+                    var fontNameSpan = $('<span class="ewf-fontname">');
 
                     // emphasize the matching substring
                     if (index >= 0) {
                         fontNameSpan.append(hint.slice(0, index))
-                            .append($('<span>')
-                                    .append(hint.slice(index, index + query.length))
-                                    .css('font-weight', 'bold'))
+                            .append($('<span class="ewf-fontname-bold">')
+                                    .append(hint.slice(index, index + query.length)))
                             .append(hint.slice(index + query.length));
                     } else {
                         fontNameSpan.text(hint);
@@ -349,12 +341,9 @@ define(function (require, exports, module) {
                     var fontSampleSpan = $('<span>');
                     // set the font family and attach the hint string as data
                     fontSampleSpan
-                        .append($('<span>')
+                        .append($('<span class="ewf-fontsample">')
                                 .append(Strings.SAMPLE_TEXT)
-                                .css('padding-right', '10px')
-                                .css('float', 'right')
-                                .css('font-family', hint + ", AdobeBlank")
-                                .css('width', '30px')); // this width magically aligns all samples left
+                                .css('font-family', hint + ", AdobeBlank"));
                     
                     $hintObj.append(fontNameSpan, fontSampleSpan).data('hint', hint);
                     
@@ -366,10 +355,8 @@ define(function (require, exports, module) {
                     // Browse Web Fonts link
 
                     var $browseEwfObj = $('<span>')
-                        .append($('<span>')
-                                .addClass("ewf-codehint-addition")
-                                .html(Strings.CODEHINT_BROWSE)
-                                .css('padding-right','70px'))
+                        .append($('<span class="ewf-codehint-addition">')
+                                .html(Strings.CODEHINT_BROWSE))
                         .data('stub', true);
     
                     $browseEwfObj.find('.ewf-codehint-addition').on('click', function () {
