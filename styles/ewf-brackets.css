@@ -65,6 +65,8 @@
   /* Firefox, other Gecko */
 
   box-sizing: border-box;
+  color: #454545;
+  font-weight: 500;
 }
 .edge-web-fonts .ewf-picker button {
   padding: 0;
