@@ -185,11 +185,17 @@ define(function (require, exports, module) {
                 $(exports).triggerHandler("ewfFontSelected", d.attributes["data-slug"].value);
             }
         }
+        
+        function fontDoubleClickHandler(event) {
+            fontClickHandler(event);
+            $(exports).triggerHandler("ewfFontChosen");
+        }
 
         if ($results) {
             $results.empty();
             $results.html(Mustache.render(resultsHtml, {Strings: Strings, families: families}));
-            $(".ewf-font").click(fontClickHandler);
+            $(".ewf-font").click(fontClickHandler)
+                .dblclick(fontDoubleClickHandler);
         }
     }
     

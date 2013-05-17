@@ -435,13 +435,26 @@ define(function (require, exports, module) {
             var editor = EditorManager.getFocusedEditor();
             var cursor = editor._codeMirror.getCursor();
             lastFontSelected = null;
-            Dialogs.showModalDialog("edge-web-fonts-browse-dialog").done(function (id) {
-                if (id === Dialogs.DIALOG_BTN_OK && lastFontSelected) {
+
+            function handleFontChosen() {
+                if (lastFontSelected) {
                     _insertFontCompletionAtCursor(lastFontSelected, editor, cursor);
                 }
                 editor.focus();
+                $(webfont).off("ewfFontChosen");
+            }
+            
+            Dialogs.showModalDialog("edge-web-fonts-browse-dialog").done(function (id) {
+                if (id === Dialogs.DIALOG_BTN_OK) {
+                    handleFontChosen();
+                }
             });
             webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
+            
+            $(webfont).on("ewfFontChosen", function () {
+                handleFontChosen();
+                Dialogs.cancelModalDialogIfOpen("edge-web-fonts-browse-dialog");
+            });
         }
         
         /** Determines what font slugs are in the CSS file and generates the appropriate
