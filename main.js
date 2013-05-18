@@ -164,9 +164,9 @@ define(function (require, exports, module) {
                 
                 // remove  semicolon from the end of the token, we only want to look at the actual
                 // letters of the word to test for a prefix
-                var normalizedString = token.string.replace(/;$/, "");
+                var prefix = token.string.replace(/[;,"]$/, "");
                 var tokenIsPrefix = ((modeSupport.isFontNameToken(token) || modeSupport.isFontNameStringToken(token)) &&
-                                     (actualCompletion.indexOf(normalizedString) === 0 || completion.indexOf(normalizedString) === 0));
+                                     (actualCompletion.indexOf(prefix) === 0 || completion.indexOf(prefix) === 0));
                 
                 var charBeforeCursor = tokenIsPrefix ? line.charAt(token.start - 1) : line.charAt(token.start);
                 
