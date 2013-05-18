@@ -155,7 +155,7 @@ define(function (require, exports, module) {
                 // semi-colon.
                 var endChar = token.end;
                 
-                // add white space if previous char is not a whit space
+                // add white space if previous char is not a white space
                 var line = editor.document.getLine(cursor.line);
 
 
