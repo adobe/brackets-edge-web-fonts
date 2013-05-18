@@ -162,11 +162,11 @@ define(function (require, exports, module) {
                 // if the drop down was opened and the space was pressed, charBeforeCursor will be the 
                 // first char of the actual completion. In that case we do NOT add white space.   
                 
-                // remove  semicolon from the token, we only want to look at the actual
-                // of the word
-                
+                // remove  semicolon from the end of the token, we only want to look at the actual
+                // letters of the word to test for a prefix
+                var normalizedString = token.string.replace(/;$/, "");
                 var tokenIsPrefix = ((modeSupport.isFontNameToken(token) || modeSupport.isFontNameStringToken(token)) &&
-                                     (actualCompletion.indexOf(token.string) === 0 || completion.indexOf(token.string) === 0));
+                                     (actualCompletion.indexOf(normalizedString) === 0 || completion.indexOf(normalizedString) === 0));
                 
                 var charBeforeCursor = tokenIsPrefix ? line.charAt(token.start - 1) : line.charAt(token.start);
                 
