@@ -355,7 +355,7 @@ define(function (require, exports, module) {
                 });
                 var selectInitial = true;
                 // attach Browse WF
-                //if (window.navigator.onLine) {
+                if (window.navigator.onLine) {
                     // Browse Web Fonts link
                     var $browseEwfObj = $('<span>')
                         .append($('<span class="ewf-codehint-addition">')
@@ -383,7 +383,7 @@ define(function (require, exports, module) {
                     
                     // always select the fist code hint, unless we suggedt Browse WF
                     selectInitial = candidates.length > 1;
-                //}
+                }
    
                 return {
                     hints: candidates,
