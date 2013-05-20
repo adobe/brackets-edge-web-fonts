@@ -79,7 +79,7 @@ define(function (require, exports, module) {
     var whitespaceRegExp = /\s/;
     var commaSemiRegExp = /([;,])/;
     var fontnameStartRegExp = /[\w"',]/;
-    var showBrowseWebFontsRegExp = /["\'\s,]/;
+    var showBrowseWebFontsRegExp = /^["\'\s,]$/;
     var scriptCache = {};
     var closeHintOnNextKey = false;
 
@@ -355,9 +355,8 @@ define(function (require, exports, module) {
                 });
                 var selectInitial = true;
                 // attach Browse WF
-                if (window.navigator.onLine) {
+                //if (window.navigator.onLine) {
                     // Browse Web Fonts link
-
                     var $browseEwfObj = $('<span>')
                         .append($('<span class="ewf-codehint-addition">')
                                 .html(Strings.CODEHINT_BROWSE))
@@ -383,8 +382,8 @@ define(function (require, exports, module) {
                     closeHintOnNextKey = candidates.length <= 1;
                     
                     // always select the fist code hint, unless we suggedt Browse WF
-                    selectInitial = candidates.length > 1 ? true : false;
-                }
+                    selectInitial = candidates.length > 1;
+                //}
    
                 return {
                     hints: candidates,
@@ -411,16 +410,15 @@ define(function (require, exports, module) {
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
             cursor = editor.getCursorPos();
-        // if the codehint is EWF stub pop the dialog
+
         if (completion.data('stub')) {
             // open WF dialog if user selects Browse WF            
             CommandManager.execute(COMMAND_BROWSE_FONTS);
-            return false; // don't actually follow link
         } else {
             // insert font name if user selected a font name
             _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
-            return false;
         }
+        return false;
     };
         
     function init() {

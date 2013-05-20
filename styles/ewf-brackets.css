@@ -329,7 +329,7 @@
  */
 .dropdown.codehint-menu .ewf-codehint-addition {
   font-style: italic;
-  padding-right: '70px;
+  padding-right: 70px;
 }
 
 .dropdown.codehint-menu .ewf-fontname {
@@ -341,9 +341,9 @@
 }
 
 .dropdown.codehint-menu .ewf-fontsample {
-    .padding-right: 10px;
-    .float: right;
-    .width: 30px;
+    padding-right: 10px;
+    float: right;
+    width: 30px;
 }
 
 
