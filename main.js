@@ -82,6 +82,9 @@ define(function (require, exports, module) {
     var showBrowseWebFontsRegExp = /^["\'\s,]$/;
     var scriptCache = {};
     var closeHintOnNextKey = false;
+    var previousCandidates;
+    var previousQuery;
+    var isFontNameWithWhitespace = false;
 
     
     function _supportedLanguage(language) {
@@ -127,7 +130,7 @@ define(function (require, exports, module) {
     }
 
    
-    function _insertFontCompletionAtCursor(completion, editor, cursor) {
+    function _insertFontCompletionAtCursor(completion, editor, cursor, endCursor) {
         var modeSupport, parser, token;
         var actualCompletion = completion;
         var stringChar = "\"";
@@ -153,7 +156,12 @@ define(function (require, exports, module) {
                 // in a situation with only one quote (i.e. the parser thinks the rest of the
                 // line is a string. So, we want to stop at the first occurrence of a comma or 
                 // semi-colon.
-                var endChar = token.end;
+                var endChar;
+                if (endCursor) {
+                    endChar = parser.getFontTokenAtCursor(editor, endCursor).end;
+                } else {
+                    endChar = token.end;
+                }
                 
                 // add white space if previous char is not a white space
                 var line = editor.document.getLine(cursor.line);
@@ -308,12 +316,36 @@ define(function (require, exports, module) {
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
                 
+                var selectInitial = true;
                 var candidates = parser.parseCurrentEditor(true);
 
+                if ((previousQuery && !query && key === " ") || isFontNameWithWhitespace) {
+                    if (previousQuery && !query && key === " ") {
+                        query = previousQuery;
+                        isFontNameWithWhitespace = true;
+                    } else if (isFontNameWithWhitespace) {
+                        query = previousQuery + key;
+                    }
+                    
+                    
+                    lowerCaseQuery = query.toLowerCase();
+                    // filter candidates by previous candidates
+                    candidates = candidates.map(function (hint) {
+                        var i;
+                        for (i = 0; i < previousCandidates.length; i++) {
+                            if (previousCandidates[i].data('hint') === hint) {
+                                return hint;
+                            }
+                        }
+                    });
+                }
+                
                 candidates = candidates.concat(lastTwentyFonts);
                 candidates = candidates.concat(webfont.getWebsafeFonts());
                 candidates = webfont.lowerSortUniqStringArray(candidates);
                 candidates = webfont.filterAndSortArray(query, candidates);
+                
+                
                 candidates = candidates.map(function (hint) {
                     var index       = hint.indexOf(lowerCaseQuery),
                         $hintObj    = $('<span>'),
@@ -350,10 +382,12 @@ define(function (require, exports, module) {
                                 .css('font-family', hint + ", AdobeBlank"));
                     
                     $hintObj.append(fontNameSpan, fontSampleSpan).data('hint', hint);
-                    
+
                     return $hintObj;
                 });
-                var selectInitial = true;
+            
+            
+                
                 // attach Browse WF
                 if (window.navigator.onLine) {
                     // Browse Web Fonts link
@@ -382,9 +416,14 @@ define(function (require, exports, module) {
                     closeHintOnNextKey = candidates.length <= 1;
                     
                     // always select the fist code hint, unless we suggedt Browse WF
-                    selectInitial = candidates.length > 1;
+                        
                 }
-   
+                selectInitial = candidates.length > 1;
+                previousQuery = query;
+                if (key === " ") {
+                    previousQuery = previousQuery + " ";
+                }
+                previousCandidates = candidates;
                 return {
                     hints: candidates,
                     match: null,
@@ -409,15 +448,43 @@ define(function (require, exports, module) {
      */
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
-            cursor = editor.getCursorPos();
+            cursor = editor.getCursorPos(),
+            originalCursor;
+        
+        var _getCursorForFontNameStub = function (editor, cursor, hint, originalCursor) {
+            if (!originalCursor) {
+                originalCursor = $.extend({}, cursor);
+            }
+            var cm = editor._codeMirror;
+            var currentToken = cm.getTokenAt(cursor);
+            if (hint.indexOf(currentToken.string) !== 0) {
+                if (cursor.ch > 0) {
+                    cursor.ch = cursor.ch - 1;
+                    return _getCursorForFontNameStub(editor, cursor, hint, originalCursor);
+                } else {
+                    return originalCursor;
+                }
+            } else {
+                return cursor;
+            }
+        };
 
         if (completion.data('stub')) {
             // open WF dialog if user selects Browse WF            
             CommandManager.execute(COMMAND_BROWSE_FONTS);
         } else {
+            if (isFontNameWithWhitespace) {
+                originalCursor = $.extend({}, cursor);
+                cursor = _getCursorForFontNameStub(editor, cursor, completion.data('hint'));
+            }
             // insert font name if user selected a font name
-            _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
+            _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor, originalCursor);
         }
+        // reset 
+        isFontNameWithWhitespace = false;
+        previousQuery = null;
+        previousCandidates = null;
+        
         return false;
     };
         
