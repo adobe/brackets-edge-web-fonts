@@ -180,6 +180,7 @@ define(function (require, exports, module) {
             }
             
             if (d) {
+                d.focus();
                 $(".ewf-font.selected").removeClass("selected");
                 $(d).addClass("selected");
                 $(exports).triggerHandler("ewfFontSelected", d.attributes["data-slug"].value);
@@ -192,14 +193,21 @@ define(function (require, exports, module) {
         }
 
         if ($results) {
+            families.forEach(function (elem, index) {
+                // tabindex starts at one
+                elem.index = index + 1;
+            });
+            
             $results.empty();
             $results.html(Mustache.render(resultsHtml, {Strings: Strings, families: families}));
             $(".ewf-font").click(fontClickHandler)
+                .focus(fontClickHandler)
                 .dblclick(fontDoubleClickHandler);
         }
     }
     
-    function renderPicker(domElement) {
+    function renderPicker($dlg) {
+        var domElement = $dlg.find(".edge-web-fonts-browse-dialog-body")[0];
         var localizedClassifications = [];
         var localizedRecommendations = [];
         var i;
@@ -252,10 +260,20 @@ define(function (require, exports, module) {
         for (i = 0; i < fontRecommendations.length; i++) {
             localizedRecommendations.push({className: fontRecommendations[i], localizedName: Strings[fontRecommendations[i]]});
         }
-
         
         $picker = $(Mustache.render(pickerHtml, {Strings: Strings, localizedClassifications: localizedClassifications, localizedRecommendations: localizedRecommendations}));
         $(domElement).append($picker);
+        
+        // set the dialog's OK button to have a very large tabindex so that it
+        // will only gain focus after tabbing past the last font result
+        $dlg.find(".dialog-button").attr("tabindex", 99999);
+        
+        // prevent tabbing in front of the search input
+        $dlg.find(".ewf-search-fonts").on("keydown", function (event) {
+            if (event.shiftKey && event.keyCode === 9) {
+                event.preventDefault();
+            }
+        });
 
         $(".ewf-tabs button", $picker).click(classificationClickHandler);
         
