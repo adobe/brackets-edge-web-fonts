@@ -440,7 +440,7 @@ define(function (require, exports, module) {
                     handleFontChosen();
                 }
             });
-            webfont.renderPicker($('.instance .edge-web-fonts-browse-dialog-body')[0]);
+            webfont.renderPicker($('.edge-web-fonts-browse-dialog.instance'));
             
             $(webfont).on("ewfFontChosen", function () {
                 handleFontChosen();

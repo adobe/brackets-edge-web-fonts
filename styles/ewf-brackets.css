@@ -77,18 +77,18 @@
 .edge-web-fonts .ewf-picker button {
   padding: 0;
 }
-.edge-web-fonts .ewf-picker button:hover {
+.edge-web-fonts .ewf-tabs button:hover {
   background: #dce1e4;
   background-position: 0 -30px;
 }
-.edge-web-fonts .ewf-picker button.selected {
+.edge-web-fonts .ewf-tabs button.selected {
   background: #bdbdbd;
 }
-.edge-web-fonts .ewf-picker button:focus {
+.edge-web-fonts .ewf-tabs button:focus {
     outline-style: none;
     background-color: #ccc;
 }
-.edge-web-fonts .ewf-picker button.selected:focus {
+.edge-web-fonts .ewf-tabs button.selected:focus {
   background: #aaa;
 }
 .edge-web-fonts .ewf-picker .ewf-button {
@@ -171,7 +171,9 @@
   background-position: 50% -20px;
   cursor: pointer;
 }
+.edge-web-fonts .ewf-picker .ewf-font:focus,
 .edge-web-fonts .ewf-picker .ewf-font.selected {
+  outline: none;
   border: 1px solid #F18900;
 }
 .edge-web-fonts .ewf-picker .ewf-font-details {

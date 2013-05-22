@@ -1,12 +1,12 @@
 <div class="ewf-picker">
     <div class="ewf-tabs">
         <p>{{Strings.BROWSE_FONTS_INSTRUCTIONS}}</p>
-        <input type="text" placeholder="{{Strings.SEARCH_PLACEHOLDER}}" class="ewf-search-fonts" autofocus="autofocus">
+        <input type="text" placeholder="{{Strings.SEARCH_PLACEHOLDER}}" class="ewf-search-fonts" autofocus="autofocus" tabindex="0">
         <div class="ewf-side-bar">
             <ul class="recommended-uses">
                 {{#localizedRecommendations}}
                     <li>
-                        <button title="{{localizedName}}" data-classification="{{className}}" class="ewf-classification-button">
+                        <button title="{{localizedName}}" data-classification="{{className}}" class="ewf-classification-button" tabindex="-1">
                             <div class="ewf-icon {{className}}"></div>
                         </button>
                     </li>
@@ -15,7 +15,7 @@
             <ul class="font-classifications">
                 {{#localizedClassifications}}
                     <li>
-                        <button title="{{localizedName}}" data-classification="{{className}}" class="ewf-classification-button">
+                        <button title="{{localizedName}}" data-classification="{{className}}" class="ewf-classification-button" tabindex="-1">
                             <div class="ewf-icon {{className}}"></div>
                         </button>
                     </li>
