@@ -21,6 +21,13 @@
  * 
  */
 
+.edge-web-fonts-browse-dialog .modal-header .close,
+.edge-web-fonts-include-dialog .modal-header .close,
+.edge-web-fonts-howto-dialog .modal-header .close {
+    margin-top: 0px;
+    line-height: 40px;
+}
+
 .edge-web-fonts-browse-dialog .modal-body,
 .edge-web-fonts-browse-dialog .modal-header {
   width: 505px;
