@@ -25,7 +25,7 @@
 /*global define */
 
 define({
-    "PRODUCT_NAME"                   : "Adobe Edge Web Fonts",
+    "PRODUCT_NAME"                   : "Edge Web Fonts",
 
     "DIALOG_DONE"                    : "Done",
     "SEARCH_PLACEHOLDER"             : "Search",
