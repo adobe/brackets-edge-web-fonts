@@ -430,8 +430,7 @@ define(function (require, exports, module) {
             function handleFontChosen() {
                 if (lastFontSelected) {
                     _insertFontCompletionAtCursor(lastFontSelected, editor, cursor);
-                }
-                editor.focus();
+                }                
                 $(webfont).off("ewfFontChosen");
             }
             
@@ -439,12 +438,14 @@ define(function (require, exports, module) {
                 if (id === Dialogs.DIALOG_BTN_OK) {
                     handleFontChosen();
                 }
+                editor.focus();
             });
             webfont.renderPicker($('.edge-web-fonts-browse-dialog.instance'));
             
             $(webfont).on("ewfFontChosen", function () {
-                handleFontChosen();
                 Dialogs.cancelModalDialogIfOpen("edge-web-fonts-browse-dialog");
+                handleFontChosen();
+                editor.focus();
             });
         }
         
