@@ -237,8 +237,16 @@ define(function (require, exports, module) {
         function searchExecutor(query) {
             var fonts = searchByName(query);
             // clear any previously selected class
-            $('.ewf-tabs button').removeClass("selected");
-            _displayResults(fonts);
+            $('.ewf-results button').removeClass("selected");
+            
+            if (fonts.length > 0) {
+                _displayResults(fonts);
+            } else {
+                var $button = $(".ewf-side-bar button.selected"),
+                    classification = $button.attr("data-classification");
+                fonts = fontsByClass[classification];
+                _displayResults(fonts);
+            }
         }
         
         function searchHandler(event) {
