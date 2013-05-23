@@ -430,7 +430,7 @@ define(function (require, exports, module) {
             function handleFontChosen() {
                 if (lastFontSelected) {
                     _insertFontCompletionAtCursor(lastFontSelected, editor, cursor);
-                }                
+                }
                 $(webfont).off("ewfFontChosen");
             }
             
