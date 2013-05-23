@@ -59,10 +59,11 @@
   margin-top: 10px;
   margin-bottom: 12px;
   padding-top: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 4px;
   padding-right: 0px;
   padding-left: 30px;
-  height: 32px;
+  height: 31px;
+  line-height: 32px;    
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.48);
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
@@ -208,7 +209,7 @@
 
 .edge-web-fonts .ewf-picker .ewf-search-fonts {
     background-image: -webkit-image-set(url("../img/fonts_search.png") 1x, url("../img/fonts_search@2x.png") 2x);
-    background-repeat: no-repeat;
+    background-repeat: no-repeat;    
 }
 
 .edge-web-fonts .ewf-picker .serif {
