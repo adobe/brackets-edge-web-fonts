@@ -81,7 +81,23 @@ define(function (require, exports, module) {
     var fontnameStartRegExp = /[\w"',]/;
     var showBrowseWebFontsRegExp = /^["\'\s,]$/;
     var scriptCache = {};
+    
+    // variables to maintain state over the course of a hinting session
+    // ----------------
+    // signal to close the hinting session if no there are neither hints nor does the user want to
+    // Browse EWF
     var closeHintOnNextKey = false;
+    
+    // used to ensure we can filter a list of hints down to only contain elements that we also in the 
+    // previous list of hints. I.e. this necessary when font names are typed including the white space
+    // and the list needs to be kept open for further refinement
+    var previousCandidates;
+    // used in same context as above, i.e. typing font names with white spaces.
+    // in this case the query string returned by the CodeHint API needs to be augmented with chars typed 
+    // before the white space was typed as the query returned by the API is never spans across white space
+    var previousQuery;
+    // flag to indicate whether a font name with white space has been typed.
+    var isFontNameWithWhitespace = false;
 
     
     function _supportedLanguage(language) {
@@ -127,7 +143,7 @@ define(function (require, exports, module) {
     }
 
    
-    function _insertFontCompletionAtCursor(completion, editor, cursor) {
+    function _insertFontCompletionAtCursor(completion, editor, cursor, endCursor) {
         var modeSupport, parser, token;
         var actualCompletion = completion;
         var stringChar = "\"";
@@ -153,7 +169,12 @@ define(function (require, exports, module) {
                 // in a situation with only one quote (i.e. the parser thinks the rest of the
                 // line is a string. So, we want to stop at the first occurrence of a comma or 
                 // semi-colon.
-                var endChar = token.end;
+                var endChar;
+                if (endCursor) {
+                    endChar = parser.getFontTokenAtCursor(editor, endCursor).end;
+                } else {
+                    endChar = token.end;
+                }
                 
                 // add white space if previous char is not a white space
                 var line = editor.document.getLine(cursor.line);
@@ -304,16 +325,42 @@ define(function (require, exports, module) {
                 } else { // after a ":", a space, or a ","
                     query = "";
                 }
-
+                
+                var candidates = parser.parseCurrentEditor(true);
+                // if we detect that the user typing a white space as part of a font name
+                // or have done the same in a previous getHints call in teh same hinting session
+                // we cannot use the query as returned by the API
+                // Instead we use the one we have kept around in the previous call
+                if ((previousQuery && !query && key === " ") || isFontNameWithWhitespace) {
+                    if (previousQuery && !query && key === " ") {
+                        query = previousQuery;
+                        isFontNameWithWhitespace = true;
+                    } else if (isFontNameWithWhitespace) {
+                        query = previousQuery + key;
+                    }
+                    
+                    // we now need to ensure we are not adding any hints to the list 
+                    // that were not on the list before.
+                    // filter candidates by previous candidates
+                    candidates = candidates.map(function (hint) {
+                        var i;
+                        for (i = 0; i < previousCandidates.length; i++) {
+                            if (previousCandidates[i].data('hint') === hint) {
+                                return hint;
+                            }
+                        }
+                    });
+                }
+                
                 // candidate hints are lower case, so the query should be too
                 lowerCaseQuery = query.toLocaleLowerCase();
                 
-                var candidates = parser.parseCurrentEditor(true);
-
                 candidates = candidates.concat(lastTwentyFonts);
                 candidates = candidates.concat(webfont.getWebsafeFonts());
                 candidates = webfont.lowerSortUniqStringArray(candidates);
                 candidates = webfont.filterAndSortArray(query, candidates);
+                
+                
                 candidates = candidates.map(function (hint) {
                     var index       = hint.indexOf(lowerCaseQuery),
                         $hintObj    = $('<span>'),
@@ -350,10 +397,12 @@ define(function (require, exports, module) {
                                 .css('font-family', hint + ", AdobeBlank"));
                     
                     $hintObj.append(fontNameSpan, fontSampleSpan).data('hint', hint);
-                    
+
                     return $hintObj;
                 });
-                var selectInitial = true;
+            
+            
+                
                 // attach Browse WF
                 if (window.navigator.onLine) {
                     // Browse Web Fonts link
@@ -377,14 +426,25 @@ define(function (require, exports, module) {
                     // close the code hint session if we had nothing to 
                     // suggest but Browse WF last time.
                     if (closeHintOnNextKey && candidates.length <= 1) {
+                        // reset state if we exit the hinting session
+                        isFontNameWithWhitespace = false;
+                        previousQuery = null;
+                        previousCandidates = null;
+                        
+                        // exit session w/o hints
                         return null;
                     }
                     closeHintOnNextKey = candidates.length <= 1;
                     
                     // always select the fist code hint, unless we suggedt Browse WF
-                    selectInitial = candidates.length > 1;
+                        
                 }
-   
+                var selectInitial = candidates.length > 1;
+                previousQuery = query;
+                if (key === " ") {
+                    previousQuery = previousQuery + " ";
+                }
+                previousCandidates = candidates;
                 return {
                     hints: candidates,
                     match: null,
@@ -409,15 +469,46 @@ define(function (require, exports, module) {
      */
     FontHints.prototype.insertHint = function (completion) {
         var editor = this.editor,
-            cursor = editor.getCursorPos();
+            cursor = editor.getCursorPos(),
+            originalCursor;
+        
+        var _getCursorForFontNameStub = function (editor, cursor, hint, originalCursor) {
+            if (!originalCursor) {
+                originalCursor = $.extend({}, cursor);
+            }
+            var cm = editor._codeMirror;
+            var currentToken = cm.getTokenAt(cursor);
+            if (hint.indexOf(currentToken.string) !== 0) {
+                if (cursor.ch > 0) {
+                    cursor.ch = cursor.ch - 1;
+                    return _getCursorForFontNameStub(editor, cursor, hint, originalCursor);
+                } else {
+                    return originalCursor;
+                }
+            } else {
+                return cursor;
+            }
+        };
 
         if (completion.data('stub')) {
             // open WF dialog if user selects Browse WF            
             CommandManager.execute(COMMAND_BROWSE_FONTS);
         } else {
+            if (isFontNameWithWhitespace) {
+                originalCursor = $.extend({}, cursor);
+                cursor = _getCursorForFontNameStub(editor, cursor, completion.data('hint'));
+            }
             // insert font name if user selected a font name
-            _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor);
+            // if the font name contains a white space two cursors need to be passed in:
+            // - a ref to the beginning of the string to replaced
+            // - a ref to the end of the string to be replaced
+            _insertFontCompletionAtCursor(completion.data('hint'), editor, cursor, originalCursor);
         }
+        // reset state if we exit the hinting session
+        isFontNameWithWhitespace = false;
+        previousQuery = null;
+        previousCandidates = null;
+        
         return false;
     };
         
