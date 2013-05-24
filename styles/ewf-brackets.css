@@ -65,6 +65,7 @@
   height: 32px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.48);
   -webkit-box-sizing: border-box;
+  -webkit-transform-style: flat;
   /* Safari/Chrome, other WebKit */
 
   -moz-box-sizing: border-box;
