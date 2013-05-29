@@ -35,7 +35,7 @@ define(function (require, exports, module) {
     }
     
     function isFontNameToken(t) {
-        return t.className === null &&
+        return (t.className === null || t.className === "tag") &&
             t.string.trim().length > 0 &&
             t.string.indexOf(",") === -1 &&
             t.string.indexOf(":") === -1;
