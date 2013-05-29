@@ -32,8 +32,7 @@ define({
     "BROWSE_FONTS_INSTRUCTIONS"      : "Suchen und wählen Sie die Schrift, die Sie in ihrem Webprojekt integrieren möchten.",
     "CODEHINT_BROWSE"                : "Web-Fonts durchsuchen...", // Needs to be short to fit in popup, but not sure about acronym
     "GENERATE_INCLUDE_TOOLTIP"       : "Generiere Edge Web Fonts Einbettungscode",
-    "INCLUDE_INSTRUCTIONS_1"         : "Edge Web Fonts werden mittels JavaScript in den Browser des Nutzers geladen. Um sicherzustellen, dass Schriften richtig geladen werden, müssen Sie einen 'Script-Tag' zu ihrem HTML hinzufügen.",
-    "INCLUDE_INSTRUCTIONS_2"         : "Kopieren Sie den folgenden 'Script-Tag' und fügen Sie ihn in alle HTML-Dateien ein, auf welche sich diese CSS-Datei bezieht:",
+    "INCLUDE_INSTRUCTIONS"           : "Edge Web Fonts werden mittels JavaScript in den Browser des Nutzers geladen. Um sicherzustellen, dass Schriften richtig geladen werden, müssen Sie einen 'Script-Tag' zu ihrem HTML hinzufügen. Kopieren Sie den folgenden 'Script-Tag' und fügen Sie ihn in alle HTML-Dateien ein, auf welche sich diese CSS-Datei bezieht:",
     "HOWTO_INSTRUCTIONS_1"           : "Edge Web Fonts bietet Ihnen Zugriff auf eine Bibliothek von Web-Fonts, ermöglicht durch Beiträge von Adobe, Google und Designern auf der ganzen Welt. Die Schriften werden ausgeliefert von Typekit, kostenlos für die Nutzung auf ihrer Webseite.",
     "HOWTO_INSTRUCTIONS_2"           : "Beim definieren eines font-family Attributs in einem CSS Dokument, bitte 'Web-Fonts durchsuchen' aus dem Autovervollständigungs-Dialog auswählen um die kostenlosen Web-Fonts zu durchsuchen.",
     "HOWTO_INSTRUCTIONS_3"           : "Wenn Sie fertig sind, klicken Sie auf das <div class='instructions-icon'></div> Icon oben rechts um den benötigten Einbettungscode zu generieren.",
