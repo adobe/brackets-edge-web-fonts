@@ -527,14 +527,11 @@ define(function (require, exports, module) {
     AppInit.appReady(function () {
         
         function _handleToolbarClick() {
-            console.log(1);
             var doc = DocumentManager.getCurrentDocument();
 
             if (!doc || !_supportedDocument(doc)) {
-                console.log(2);
                 _showHowtoDialog();
             } else {
-                console.log(3);
                 CommandManager.execute(COMMAND_GENERATE_INCLUDE);
             }
         }
