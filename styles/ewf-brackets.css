@@ -174,7 +174,7 @@
 .edge-web-fonts .ewf-picker .ewf-font:focus,
 .edge-web-fonts .ewf-picker .ewf-font.selected {
   outline: none;
-  border: 1px solid #F18900;
+  border: 1px solid #288EDF;
 }
 .edge-web-fonts .ewf-picker .ewf-font-details {
   position: absolute;
