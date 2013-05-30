@@ -37,7 +37,6 @@ define(function (require, exports, module) {
         ewfIncludeDialogHtml    = require("text!htmlContent/ewf-include-dialog.html"),
         ewfHowtoDialogHtml      = require("text!htmlContent/ewf-howto-dialog.html"),
         ewfToolbarHtml          = require("text!htmlContent/ewf-toolbar.html"),
-        ewfCodeHintAdditionHtml = require("text!htmlContent/ewf-codehint-addition.html"),
         Strings                 = require("strings");
 
     var AppInit                 = brackets.getModule("utils/AppInit"),
@@ -54,9 +53,6 @@ define(function (require, exports, module) {
     
     // DOM elements and HTML
     var $toolbarIcon = null;
-    // Because of the way pop ups work, we need to create a new code hint addition every time 
-    // we have a new popup. But, we only need to render the HTML once.
-    var codeHintAdditionHtmlString = Mustache.render(ewfCodeHintAdditionHtml, Strings);
     
     var Paths = {
         ROOT : require.toUrl('./')
