@@ -275,6 +275,7 @@
 .edge-web-fonts-include-dialog .ewf-terms-of-use,
 .edge-web-fonts-howto-dialog .ewf-terms-of-use {
   position: relative;
+  float: left;
   top: 7px;
   left: 3px;
 }
