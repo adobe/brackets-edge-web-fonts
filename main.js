@@ -78,7 +78,16 @@ define(function (require, exports, module) {
     var showBrowseWebFontsRegExp = /^["\'\s,]$/;
     var scriptCache = {};
     var closeHintOnNextKey = false;
-
+    
+    // Rendered templates
+    var ewfBrowseDialogTemplate  = Mustache.render(ewfBrowseDialogHtml, Strings);
+    var ewfIncludeDialogTemplate = Mustache.render(ewfIncludeDialogHtml, Strings);
+    var ewfHowtoDialogTemplate   = Mustache.render(ewfHowtoDialogHtml, {Strings : Strings, Paths : Paths});
+    
+    // work around a URL jQuery URL escaping issue
+    var howtoDiagramURL      = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}", {Strings : Strings, Paths : Paths}),
+        howtoDiagramHiDPIURL = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}", {Strings : Strings, Paths : Paths});
+    
     
     function _supportedLanguage(language) {
         var name = language.getName();
@@ -207,7 +216,9 @@ define(function (require, exports, module) {
     }
     
     function _showHowtoDialog() {
-        Dialogs.showModalDialog("edge-web-fonts-howto-dialog");
+        Dialogs.showModalDialogUsingTemplate(ewfHowtoDialogTemplate);
+        
+        $(".edge-web-fonts-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
     }
     
     /**
@@ -430,7 +441,7 @@ define(function (require, exports, module) {
                 $(webfont).off("ewfFontChosen");
             }
             
-            Dialogs.showModalDialog("edge-web-fonts-browse-dialog").done(function (id) {
+            var dlg = Dialogs.showModalDialogUsingTemplate(ewfBrowseDialogTemplate).done(function (id) {
                 if (id === Dialogs.DIALOG_BTN_OK) {
                     handleFontChosen();
                 }
@@ -439,7 +450,7 @@ define(function (require, exports, module) {
             webfont.renderPicker($('.edge-web-fonts-browse-dialog.instance'));
             
             $(webfont).on("ewfFontChosen", function () {
-                Dialogs.cancelModalDialogIfOpen("edge-web-fonts-browse-dialog");
+                dlg.close();
                 handleFontChosen();
                 editor.focus();
             });
@@ -476,7 +487,7 @@ define(function (require, exports, module) {
                 _showHowtoDialog();
             } else {
                 includeString = webfont.createInclude(fontFamilies);
-                Dialogs.showModalDialog("edge-web-fonts-include-dialog");
+                Dialogs.showModalDialogUsingTemplate(ewfIncludeDialogTemplate);
                 $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
             }
         }
@@ -499,19 +510,6 @@ define(function (require, exports, module) {
         menu.addMenuItem(Menus.DIVIDER, null, Menus.BEFORE, COMMAND_BROWSE_FONTS);
         */
 
-        // add dialogs to dom
-        $("body")
-            .append($(Mustache.render(ewfBrowseDialogHtml, Strings)))
-            .append($(Mustache.render(ewfIncludeDialogHtml, Strings)))
-            .append($(Mustache.render(ewfHowtoDialogHtml, {Strings : Strings, Paths : Paths})));
-
-        // work around a URL jQuery URL escaping issue
-        var howtoDiagramURL         = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}", {Strings : Strings, Paths : Paths}),
-            howtoDiagramHiDPIURL    = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}", {Strings : Strings, Paths : Paths});
-        
-        $(".edge-web-fonts-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
-        
-        // add handler to listen to selection in browse dialog
         $(webfont).on("ewfFontSelected", function (event, slug) {
             lastFontSelected = slug;
         });
