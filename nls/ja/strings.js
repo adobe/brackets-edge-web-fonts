@@ -33,7 +33,7 @@ define({
 	"CODEHINT_BROWSE": "Web Fonts を検索...",
 	"GENERATE_INCLUDE_TOOLTIP": "Edge Web Fonts 埋め込みコードを作成",
 	"WEBFONTS_OFFLINE": "Web Fonts サーバーにアクセスできないため、Edge Web Fonts 拡張機能が無効になりました。インターネット接続を確認し、後でもう一度お試しください。",
-	"INCLUDE_INSTRUCTIONS": "!能=[6971796] To ensure the fonts on your site load correctly, add this script tag to the <code>&lt;head&gt;</code> of any HTML files that reference this CSS file._=!",
+	"INCLUDE_INSTRUCTIONS": "サイトのフォントが確実に正しく読み込まれるように、この CSS ファイルを参照しているすべての HTML ファイルの <code>&lt;head&gt;</code> の部分に、このスクリプトタグを追加してください。",
 	"HOWTO_INSTRUCTIONS_1": "Edge Web Fonts があれば、Adobe、Google および世界中のデザイナーの協力によって実現した web フォントの宝庫が使えるようになります。フォントは Typekit に搭載されており、無料で web サイトに使用できます。",
 	"HOWTO_INSTRUCTIONS_2": "CSS ドキュメントでフォントファミリーのプロパティを指定するときに、コードの完成ドロップダウンで「Web Fonts を検索」を選択し、無料のオンライン Web フォントを検索します。",
 	"HOWTO_INSTRUCTIONS_3": "終了したら、右上の <div class='instructions-icon'></div> アイコンをクリックして必要な埋め込みコードを作成します。",

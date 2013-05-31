@@ -33,7 +33,7 @@ define({
 	"CODEHINT_BROWSE": "Parcourir les polices Web...",
 	"GENERATE_INCLUDE_TOOLTIP": "Générer le code d’intégration des polices Edge Web Fonts",
 	"WEBFONTS_OFFLINE": "L’extension Edge Web Fonts est désactivée car le serveur de Web Fonts est inaccessible. Vérifiez votre connexion Internet ou réessayez ultérieurement.",
-	"INCLUDE_INSTRUCTIONS": "[6971796] !é=To ensure the fonts on your site load correctly, add this script tag to the <code>&lt;head&gt;</code> of any HTML files that reference this CSS file.=!",
+	"INCLUDE_INSTRUCTIONS": "Pour garantir que les polices de votre site se chargent correctement, ajoutez ce script dans la balise <code>&lt;head&gt;</code> de tous les fichiers HTML faisant référence à ce fichier CSS.",
 	"HOWTO_INSTRUCTIONS_1": "Edge Web Fonts vous propose une bibliothèque de polices Web constituée par Adobe, Google et des créateurs du monde entier. Ces polices sont fournies par Typekit et peuvent être utilisées gratuitement sur votre site Web.",
 	"HOWTO_INSTRUCTIONS_2": "Lorsque vous définissez une propriété de famille de polices dans un document CSS, sélectionnez l’option Parcourir les polices Web dans la liste déroulante de définition du code afin d’accéder aux polices Web disponibles gratuitement en ligne.",
 	"HOWTO_INSTRUCTIONS_3": "Lorsque vous avez terminé, cliquez sur l’icône <div class='instructions-icon'></div> dans l’angle supérieur droit afin de générer le code d’intégration requis.",
