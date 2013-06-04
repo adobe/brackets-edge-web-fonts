@@ -216,7 +216,8 @@ define(function (require, exports, module) {
     }
     
     function _showHowtoDialog() {
-        Dialogs.showModalDialogUsingTemplate(ewfHowtoDialogTemplate);
+        var dlg = Dialogs.showModalDialogUsingTemplate(ewfHowtoDialogTemplate);
+        dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
         
         $(".edge-web-fonts-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
     }
@@ -441,12 +442,15 @@ define(function (require, exports, module) {
                 $(webfont).off("ewfFontChosen");
             }
             
-            var dlg = Dialogs.showModalDialogUsingTemplate(ewfBrowseDialogTemplate).done(function (id) {
+            var dlg = Dialogs.showModalDialogUsingTemplate(ewfBrowseDialogTemplate);
+            dlg.done(function (id) {
                 if (id === Dialogs.DIALOG_BTN_OK) {
                     handleFontChosen();
                 }
                 editor.focus();
             });
+            dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
+            
             webfont.renderPicker($('.edge-web-fonts-browse-dialog.instance'));
             
             $(webfont).on("ewfFontChosen", function () {
@@ -487,7 +491,8 @@ define(function (require, exports, module) {
                 _showHowtoDialog();
             } else {
                 includeString = webfont.createInclude(fontFamilies);
-                Dialogs.showModalDialogUsingTemplate(ewfIncludeDialogTemplate);
+                var dlg = Dialogs.showModalDialogUsingTemplate(ewfIncludeDialogTemplate);
+                dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
                 $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
             }
         }
