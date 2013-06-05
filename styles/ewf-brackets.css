@@ -34,6 +34,7 @@
 }
 .edge-web-fonts-browse-dialog .modal-body {
   padding: 15px 0 15px 15px;
+  overflow: hidden;
 }
 .edge-web-fonts div {
   -webkit-box-sizing: border-box;
@@ -150,7 +151,7 @@
 }
 .edge-web-fonts .ewf-picker .ewf-results {
   position: absolute;
-  bottom: 63px;
+  bottom: 0px;
   left: 50px;
   width: 485px;
   height: 335px;
@@ -278,6 +279,10 @@
   float: left;
   top: 7px;
   left: 3px;
+}
+.edge-web-fonts-include-dialog code {
+  color: #454545;
+  font-size: smaller;
 }
 .edge-web-fonts-include-dialog textarea {
   width: 550px;
