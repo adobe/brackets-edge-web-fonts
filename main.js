@@ -179,6 +179,12 @@ define(function (require, exports, module) {
                     actualCompletion = " " + actualCompletion;
                 }
                 
+                var charAfterCursor = line.charAt(token.start + 1);
+                if (!whitespaceRegExp.test(charAfterCursor) && charAfterCursor) {
+                    actualCompletion = actualCompletion + ", ";
+                }
+
+                
                 if (modeSupport.isFontNameStringToken(token)) {
                     // Find the *first* comma or semi
                     var match = commaSemiRegExp.exec(token.string);
