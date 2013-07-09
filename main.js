@@ -185,7 +185,33 @@ define(function (require, exports, module) {
                     if (match) {
                         endChar = token.start + match.index;
                     }
-                    
+                }
+
+                var nextCursor,
+                    nextLine;
+                
+                if (token.end === line.length) {
+                    nextCursor = { line: cursor.line + 1, ch: 0 };
+                    nextLine = editor.document.getLine(nextCursor.line);
+                } else {
+                    nextCursor = { line: cursor.line, ch: token.end + 1 };
+                    nextLine = line;
+                }
+                
+                var nextToken = editor._codeMirror.getTokenAt(nextCursor);
+                while (nextToken && !nextToken.string.trim().length) {
+                    nextCursor.ch = nextToken.end + 1;
+                    if (nextCursor.ch > nextLine.length) {
+                        nextCursor.ch = 0;
+                        nextCursor.line++;
+                        nextLine = editor.document.getLine(nextCursor.line);
+                    }
+                    nextToken = editor._codeMirror.getTokenAt(nextCursor);
+                }
+                
+                if (nextToken && nextToken.string !== token.string &&
+                        !commaSemiRegExp.test(nextToken.string)) {
+                    actualCompletion += ",";
                 }
                 
                 // HACK (tracking adobe/brackets#1688): We talk to the private CodeMirror instance
