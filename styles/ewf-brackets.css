@@ -305,11 +305,11 @@
 }
 .edge-web-fonts-howto-dialog .instructions-icon {
     background: no-repeat url("../img/toolbar.svg");
-    background-position: -40px 0px;
+    background-position: 0 -24px; 
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-bottom: -4px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: -7px;
 }
 
 .edge-web-fonts-howto-diagram {
@@ -325,27 +325,16 @@
 #toolbar-ewf {
   background: no-repeat url("../img/toolbar.svg");
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  opacity: 0.70;
+  width: 24px;
+  height: 24px;
 }
-
-#toolbar-ewf:active {
-  opacity: 0.5;
-}
-
 
 #toolbar-ewf.active {
-    opacity: 1.0;
-    background-position: -40px 0px;
-}
-
-#toolbar-ewf.active:active {
-    opacity: 0.5;
+    background-position: 0 -24px;
 }
 
 #toolbar-ewf.disabled {
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 /**
