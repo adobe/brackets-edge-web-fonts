@@ -293,6 +293,8 @@
   font-size: 1.1em;
 }
 .edge-web-fonts-howto-dialog li {
+  color: #000;
+  font-weight: 200;    
   margin-bottom: .4em;
   list-style-position: outside;
 }
