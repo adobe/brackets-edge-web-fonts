@@ -173,10 +173,20 @@ define(function (require, exports, module) {
                 var tokenIsPrefix = ((modeSupport.isFontNameToken(token) || modeSupport.isFontNameStringToken(token)) &&
                                      (actualCompletion.indexOf(prefix) === 0 || completion.indexOf(prefix) === 0));
                 
-                var charBeforeCursor = tokenIsPrefix ? line.charAt(token.start - 1) : line.charAt(token.start);
+                var charBeforeCursor = tokenIsPrefix || prefix === token.string ? line.charAt(token.start - 1) : line.charAt(token.start);
                 
-                if (!whitespaceRegExp.test(charBeforeCursor)) {
+                if (!whitespaceRegExp.test(charBeforeCursor) && !whitespaceRegExp.test(prefix)) {
                     actualCompletion = " " + actualCompletion;
+                }
+                
+                var charAfterCursor = line.charAt(token.start + 1);
+
+                if (!whitespaceRegExp.test(charAfterCursor)
+                        && charAfterCursor !== ","
+                        && charAfterCursor !== ";"
+                        && !(prefix === token.string && !whitespaceRegExp.test(prefix))
+                        ) {
+                    actualCompletion = actualCompletion + ", ";
                 }
                 
                 if (modeSupport.isFontNameStringToken(token)) {
