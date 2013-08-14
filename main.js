@@ -179,13 +179,12 @@ define(function (require, exports, module) {
                     actualCompletion = " " + actualCompletion;
                 }
                 
-                var charAfterCursor = line.charAt(token.start + 1);
+                var charAfterCursor = line.charAt(cursor.ch);
 
-                if (!whitespaceRegExp.test(charAfterCursor)
-                        && charAfterCursor !== ","
-                        && charAfterCursor !== ";"
+                if (charAfterCursor !== ","
+                        && (charAfterCursor !== ";")
                         && !(prefix === token.string && !whitespaceRegExp.test(prefix))
-                        ) {
+                ) {
                     actualCompletion = actualCompletion + ", ";
                 }
                 
