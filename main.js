@@ -181,10 +181,9 @@ define(function (require, exports, module) {
                 
                 var charAfterCursor = line.charAt(cursor.ch);
 
-                if (charAfterCursor !== ","
-                        && (charAfterCursor !== ";")
-                        && !(prefix === token.string && !whitespaceRegExp.test(prefix))
-                ) {
+                if (charAfterCursor !== "," &&
+                        (charAfterCursor !== ";") &&
+                        !(prefix === token.string && !whitespaceRegExp.test(prefix))) {
                     actualCompletion = actualCompletion + ", ";
                 }
                 
