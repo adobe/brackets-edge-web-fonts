@@ -635,7 +635,7 @@ define(function (require, exports, module) {
 
         // set up toolbar icon
         $toolbarIcon = $(Mustache.render(ewfToolbarHtml, Strings));
-        $toolbarIcon.insertAfter("#toolbar-go-live");
+        $toolbarIcon.appendTo("#main-toolbar > .buttons");
         
         // begin as though we are offline, but don't add any online listeners
         handleOffline(false);
