@@ -363,7 +363,7 @@
 
 
 .dropdown.codehint-menu .ewf-fontname .ewf-fontname-bold {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .dropdown.codehint-menu.open .dropdown-menu.has-addition {
