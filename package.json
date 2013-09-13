@@ -2,12 +2,19 @@
     "name": "edge-code-web-fonts",
     "title": "Edge Web Fonts extension for Brackets and Edge Code.",
     "description": "Edge Web Fonts gives you access to a vast web font library made possible by contributions from Adobe, Google, and designers around the world. The fonts are served by Typekit, so you can be sure of high performance and stability. Plus, it's free.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "keywords": [".css", ".html"],
     "homepage": "http://html.adobe.com/edge/webfonts/",
     "bugs": "https://github.com/adobe/brackets-edge-web-fonts/issues",
     "repository" : { 
         "type" : "git",
-         "url" : "https://github.com/adobe/brackets-edge-web-fonts.git"
-    }
+        "url" : "https://github.com/adobe/brackets-edge-web-fonts.git"
+    },
+    "engines": {
+        "brackets": ">=0.30.0"
+    },
+    "keywords": [
+        "css",
+        "html"
+    ]
 }
