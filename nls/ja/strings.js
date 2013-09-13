@@ -40,7 +40,7 @@ define({
 	"HOWTO_INSTRUCTIONS_4": "埋め込みコードを HTML ページにペーストしてフォントを追加します。",
 	"HOWTO_DIAGRAM_IMAGE": "img/ewf-howto-dialog-ja.png",
 	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/ewf-howto-dialog-ja@2x.png",
-	"TERMS_OF_USE": "<a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou_jp\">Edge Web Fonts 利用条件</a>",
+	"TERMS_OF_USE": "<a class=\"clickable-link\" href=\"http://adobe.com/go/edgewebfonts_tou_jp\">Edge Web Fonts 利用条件</a>",
 	"SAMPLE_TEXT": "サンプル",
     
     // Font classifications
