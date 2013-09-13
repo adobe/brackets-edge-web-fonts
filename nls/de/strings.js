@@ -37,7 +37,7 @@ define({
     "HOWTO_INSTRUCTIONS_2"           : "Beim definieren eines font-family Attributs in einem CSS Dokument, bitte 'Web-Fonts durchsuchen' aus dem Autovervollständigungs-Dialog auswählen um die kostenlosen Web-Fonts zu durchsuchen.",
     "HOWTO_INSTRUCTIONS_3"           : "Wenn Sie fertig sind, klicken Sie auf das <div class='instructions-icon'></div> Icon oben rechts um den benötigten Einbettungscode zu generieren.",
     "HOWTO_INSTRUCTIONS_4"           : "Fügen Sie den Einbettungscode in jede HTML-Seite ein um die Schriften zu integrieren.",
-    "TERMS_OF_USE"                   : "<a class=\"clickable-link\" data-href=\"http://adobe.com/go/edgewebfonts_tou\">Edge Web Fonts Nutzungsbedingungen</a>",
+    "TERMS_OF_USE"                   : "<a class=\"clickable-link\" href=\"http://adobe.com/go/edgewebfonts_tou\">Edge Web Fonts Nutzungsbedingungen</a>",
     "SAMPLE_TEXT"                    : "Beispiel",
     
     // Font classifications
