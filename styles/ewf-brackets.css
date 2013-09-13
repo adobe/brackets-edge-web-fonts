@@ -197,6 +197,9 @@
   text-align: left;
   line-height: normal;
   padding-top: 0px;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .edge-web-fonts .ewf-picker .wait {
   top: 250px;
