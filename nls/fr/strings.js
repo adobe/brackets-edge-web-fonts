@@ -40,7 +40,7 @@ define({
 	"HOWTO_INSTRUCTIONS_4": "Collez ce code d’intégration dans une page HTML afin d’inclure les polices.",
 	"HOWTO_DIAGRAM_IMAGE": "img/ewf-howto-dialog-fr.png",
 	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/ewf-howto-dialog-fr@2x.png",
-	"TERMS_OF_USE": "[6550700] !é=<a class=\"clickable-link\" href=\"http://adobe.com/go/edgewebfonts_tou\">Edge Web Fonts Terms of Use</a>=!",
+	"TERMS_OF_USE": "<a class=\"clickable-link\" href=\"http://adobe.com/go/edgewebfonts_tou_fr\">Conditions d’utilisation d’Edge Web Fonts</a>",
 	"SAMPLE_TEXT": "Exemple",
     
     // Font classifications
