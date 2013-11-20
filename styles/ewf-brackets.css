@@ -30,10 +30,8 @@
 
 .edge-web-fonts-browse-dialog .modal-body {
     width: 520px;
-}
-.edge-web-fonts-browse-dialog .modal-body {
-  padding: 15px 0 15px 15px;
-  overflow: hidden;
+    padding: 15px 0 15px 15px;
+    overflow: hidden;
 }
 .edge-web-fonts div {
   -webkit-box-sizing: border-box;
