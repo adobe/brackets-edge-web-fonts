@@ -28,8 +28,7 @@
     line-height: 40px;
 }
 
-.edge-web-fonts-browse-dialog .modal-body,
-.edge-web-fonts-browse-dialog .modal-header {
+.edge-web-fonts-browse-dialog .modal-body {
     width: 520px;
 }
 .edge-web-fonts-browse-dialog .modal-body {
@@ -270,7 +269,7 @@
  *  Brackets-specific Dialog Styling
  */
 .edge-web-fonts-browse-dialog {
-  margin-top: -275px;
+    width: 535px;
 }
 .edge-web-fonts-browse-dialog .modal-footer {
   clear: both;
