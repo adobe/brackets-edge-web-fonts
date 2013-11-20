@@ -28,13 +28,10 @@
     line-height: 40px;
 }
 
-.edge-web-fonts-browse-dialog .modal-body,
-.edge-web-fonts-browse-dialog .modal-header {
-  width: 505px;
-}
 .edge-web-fonts-browse-dialog .modal-body {
-  padding: 15px 0 15px 15px;
-  overflow: hidden;
+    width: 520px;
+    padding: 15px 0 15px 15px;
+    overflow: hidden;
 }
 .edge-web-fonts div {
   -webkit-box-sizing: border-box;
@@ -270,7 +267,7 @@
  *  Brackets-specific Dialog Styling
  */
 .edge-web-fonts-browse-dialog {
-  margin-top: -275px;
+    width: 535px;
 }
 .edge-web-fonts-browse-dialog .modal-footer {
   clear: both;
