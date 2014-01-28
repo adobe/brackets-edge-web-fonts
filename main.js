@@ -505,7 +505,7 @@ define(function (require, exports, module) {
         
         // install autocomplete handler
         var fontHints = new FontHints();
-        CodeHintManager.registerHintProvider(fontHints, ["css", "less"], 1);
+        CodeHintManager.registerHintProvider(fontHints, ["css", "less", "scss"], 1);
         
         // load blank font
         ExtensionUtils.loadStyleSheet(module, "styles/adobe-blank.css");
