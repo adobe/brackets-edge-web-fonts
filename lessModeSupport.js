@@ -46,12 +46,11 @@ define(function (require, exports, module) {
     }
     
     function inRuleBody(t) {
-        var stateStack = t.state.stack || t.state.localState.stack;
+        var context = t.state.context || t.state.localState.context;
         
         return t.className !== "variable" &&
             t.className !== "variable error" &&
-            stateStack.length > 0 &&
-            stateStack[stateStack.length - 1] === "rule";
+            context.type === "rule";
     }
     
     exports.isFontFamilyToken = isFontFamilyToken;
