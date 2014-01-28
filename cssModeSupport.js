@@ -35,7 +35,7 @@ define(function (require, exports, module) {
     }
     
     function isFontNameToken(t) {
-        return t.className === "variable-2" || t.className === "string-2";
+        return t.className === "variable" || t.className === "variable-2" || t.className === "string-2";
     }
     
     function isFontNameStringToken(t) {
