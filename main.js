@@ -32,7 +32,6 @@ define(function (require, exports, module) {
     var webfont                 = require("webfont"),
         FontParser              = require("fontParser"),
         cssModeSupport          = require("cssModeSupport"),
-        lessModeSupport         = require("lessModeSupport"),
         ewfBrowseDialogHtml     = require("text!htmlContent/ewf-browse-dialog.html"),
         ewfIncludeDialogHtml    = require("text!htmlContent/ewf-include-dialog.html"),
         ewfHowtoDialogHtml      = require("text!htmlContent/ewf-howto-dialog.html"),
@@ -64,9 +63,8 @@ define(function (require, exports, module) {
     var PREFERENCES_CLIENT_ID = "com.adobe.edgewebfonts";
     var PREFERENCES_FONT_HISTORY_KEY = "ewf-font-history";
 
-    // Font parsers    
-    var cssParser   = new FontParser(cssModeSupport),
-        lessParser  = new FontParser(lessModeSupport);
+    // Font parser
+    var cssParser   = new FontParser(cssModeSupport);
     
     // Local variables
     var lastFontSelected = null;
@@ -92,7 +90,7 @@ define(function (require, exports, module) {
     function _supportedLanguage(language) {
         var name = language.getName();
             
-        return (name === "CSS" || name === "LESS");
+        return (name === "CSS" || name === "LESS" || name === "SCSS");
     }
     
     function _supportedDocument(doc) {
@@ -109,9 +107,9 @@ define(function (require, exports, module) {
         
         switch (name) {
         case "CSS":
-            return cssParser;
         case "LESS":
-            return lessParser;
+        case "SCSS":
+            return cssParser;
         default:
             throw new Error("Unsupported language: " + name);
         }
@@ -123,9 +121,9 @@ define(function (require, exports, module) {
         
         switch (name) {
         case "CSS":
-            return cssModeSupport;
         case "LESS":
-            return lessModeSupport;
+        case "SCSS":
+            return cssModeSupport;
         default:
             throw new Error("Unsupported language: " + name);
         }
