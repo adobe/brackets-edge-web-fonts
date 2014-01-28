@@ -47,7 +47,7 @@ define(function (require, exports, module) {
         
         return t.className !== "property" &&
             t.className !== "property error" &&
-            context.type === "propertyValue";
+            context.type === "prop";
     }
     
     exports.isFontFamilyToken = isFontFamilyToken;
