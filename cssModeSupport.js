@@ -35,7 +35,7 @@ define(function (require, exports, module) {
     }
     
     function isFontNameToken(t) {
-        return t.className === "variable-2" || t.className === "string-2";
+        return t.className === "variable" || t.className === "variable-2" || t.className === "string-2";
     }
     
     function isFontNameStringToken(t) {
@@ -43,12 +43,11 @@ define(function (require, exports, module) {
     }
     
     function inRuleBody(t) {
-        var stateStack = t.state.stack || t.state.localState.stack;
+        var context = t.state.context || t.state.localState.context;
         
         return t.className !== "property" &&
             t.className !== "property error" &&
-            stateStack.length > 0 &&
-            stateStack[stateStack.length - 1] === "propertyValue";
+            context.type === "prop";
     }
     
     exports.isFontFamilyToken = isFontFamilyToken;
