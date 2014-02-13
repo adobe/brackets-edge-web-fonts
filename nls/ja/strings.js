@@ -28,6 +28,7 @@ define({
 	"PRODUCT_NAME": "Edge Web Fonts",
 
 	"DIALOG_DONE": "完了",
+	"CANCEL": "キャンセル",
 	"SEARCH_PLACEHOLDER": "検索",
 	"BROWSE_FONTS_INSTRUCTIONS": "Web プロジェクトに追加する Web フォントを探して選択してください。",
 	"CODEHINT_BROWSE": "Web Fonts を検索...",

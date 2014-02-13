@@ -28,6 +28,7 @@ define({
     "PRODUCT_NAME"                   : "Adobe Edge Web Fonts",
 
     "DIALOG_DONE"                    : "Fertig",
+    "CANCEL"                         : "Abbrechen",
     "SEARCH_PLACEHOLDER"             : "Suchen",
     "BROWSE_FONTS_INSTRUCTIONS"      : "Suchen und wählen Sie die Schrift, die Sie in ihrem Webprojekt integrieren möchten.",
     "CODEHINT_BROWSE"                : "Web-Fonts durchsuchen...", // Needs to be short to fit in popup, but not sure about acronym
