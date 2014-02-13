@@ -223,7 +223,7 @@ define(function (require, exports, module) {
     
     function _showHowtoDialog() {
         var dlg = Dialogs.showModalDialogUsingTemplate(ewfHowtoDialogTemplate);
-        dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
+        dlg.getElement().find('.dialog-button[data-button-id="ok"]').on("click", dlg.close.bind(dlg));
         
         $(".edge-web-fonts-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
     }
@@ -455,7 +455,7 @@ define(function (require, exports, module) {
                 }
                 editor.focus();
             });
-            dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
+            dlg.getElement().find('.dialog-button[data-button-id="ok"]').on("click", dlg.close.bind(dlg));
             
             webfont.renderPicker($('.edge-web-fonts-browse-dialog.instance'));
             
@@ -498,7 +498,7 @@ define(function (require, exports, module) {
             } else {
                 includeString = webfont.createInclude(fontFamilies);
                 var dlg = Dialogs.showModalDialogUsingTemplate(ewfIncludeDialogTemplate);
-                dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
+                dlg.getElement().find('.dialog-button[data-button-id="ok"]').on("click", dlg.close.bind(dlg));
                 $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
             }
         }
