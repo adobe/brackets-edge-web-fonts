@@ -28,6 +28,7 @@ define({
     "PRODUCT_NAME"                   : "Edge Web Fonts",
 
     "DIALOG_DONE"                    : "Done",
+    "CANCEL"                         : "Cancel",
     "SEARCH_PLACEHOLDER"             : "Search",
     "BROWSE_FONTS_INSTRUCTIONS"      : "Browse for and select the web font you wish to include in your web project.",
     "CODEHINT_BROWSE"                : "Browse Web Fonts...", // Needs to be short to fit in popup, but not sure about acronym

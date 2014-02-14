@@ -28,6 +28,7 @@ define({
 	"PRODUCT_NAME": "Edge Web Fonts",
 
 	"DIALOG_DONE": "Terminé",
+	"CANCEL": "Annuler",
 	"SEARCH_PLACEHOLDER": "Rechercher",
 	"BROWSE_FONTS_INSTRUCTIONS": "Recherchez et sélectionnez la police Web que vous souhaitez inclure dans votre projet Web.",
 	"CODEHINT_BROWSE": "Parcourir les polices Web...",
