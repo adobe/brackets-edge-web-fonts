@@ -455,7 +455,7 @@ define(function (require, exports, module) {
                 }
                 editor.focus();
             });
-            dlg.getElement().find('.dialog-button[data-button-id="ok"]').on("click", dlg.close.bind(dlg));
+            dlg.getElement().find('.dialog-button[data-button-id="cancel"]').on("click", dlg.close.bind(dlg));
             
             webfont.renderPicker($('.edge-web-fonts-browse-dialog.instance'));
             
