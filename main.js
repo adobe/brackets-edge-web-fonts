@@ -219,7 +219,7 @@ define(function (require, exports, module) {
             lastTwentyFonts.splice(20, lastTwentyFonts.length - 20);
         }
         prefs.set(PREFERENCES_FONT_HISTORY_KEY, lastTwentyFonts);
-	prefs.save();
+        prefs.save();
     }
     
     function _showHowtoDialog() {
