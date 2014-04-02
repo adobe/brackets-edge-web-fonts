@@ -525,6 +525,7 @@ define(function (require, exports, module) {
         
         // setup preferences
         prefs = PreferencesManager.getExtensionPrefs(PREFERENCES_CLIENT_ID);
+        PreferencesManager.convertPreferences(module, { "ewf-font-history": "user com.adobe.edgewebfonts.ewf-font-history" });
         lastTwentyFonts = prefs.get(PREFERENCES_FONT_HISTORY_KEY);
         if (!lastTwentyFonts) {
             lastTwentyFonts = [];
