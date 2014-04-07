@@ -69,7 +69,7 @@ define(function (require, exports, module) {
     // Local variables
     var lastFontSelected = null;
     var lastTwentyFonts = [];
-    var prefs = {};
+    var prefs;
     var whitespaceRegExp = /\s/;
     var commaSemiRegExp = /([;,])/;
     var fontnameStartRegExp = /[\w"',]/;
@@ -218,7 +218,8 @@ define(function (require, exports, module) {
         if (lastTwentyFonts.length > 20) {
             lastTwentyFonts.splice(20, lastTwentyFonts.length - 20);
         }
-        prefs.setValue(PREFERENCES_FONT_HISTORY_KEY, lastTwentyFonts);
+        prefs.set(PREFERENCES_FONT_HISTORY_KEY, lastTwentyFonts);
+        prefs.save();
     }
     
     function _showHowtoDialog() {
@@ -523,8 +524,9 @@ define(function (require, exports, module) {
         });
         
         // setup preferences
-        prefs = PreferencesManager.getPreferenceStorage(PREFERENCES_CLIENT_ID);
-        lastTwentyFonts = prefs.getValue(PREFERENCES_FONT_HISTORY_KEY);
+        prefs = PreferencesManager.getExtensionPrefs("edgewebfonts");
+        PreferencesManager.convertPreferences("com.adobe.edgewebfonts", { "ewf-font-history": "user edgewebfonts.ewf-font-history" });
+        lastTwentyFonts = prefs.get(PREFERENCES_FONT_HISTORY_KEY);
         if (!lastTwentyFonts) {
             lastTwentyFonts = [];
         }
