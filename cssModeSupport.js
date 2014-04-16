@@ -30,23 +30,23 @@ define(function (require, exports, module) {
 
     function isFontFamilyToken(t) {
         return t.string.toLowerCase() === "font-family" &&
-            (t.className === "property" || t.className === "property error");
+            (t.type === "property" || t.type === "property error");
                     
     }
     
     function isFontNameToken(t) {
-        return t.className === "variable" || t.className === "variable-2" || t.className === "string-2";
+        return t.type === "variable" || t.type === "variable-2" || t.type === "string-2";
     }
     
     function isFontNameStringToken(t) {
-        return t.className === "string";
+        return t.type === "string";
     }
     
     function inRuleBody(t) {
         var context = t.state.context || t.state.localState.context;
         
-        return t.className !== "property" &&
-            t.className !== "property error" &&
+        return t.type !== "property" &&
+            t.type !== "property error" &&
             context.type === "prop";
     }
     
