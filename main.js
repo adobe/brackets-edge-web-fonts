@@ -40,7 +40,6 @@ define(function (require, exports, module) {
 
     var AppInit                 = brackets.getModule("utils/AppInit"),
         ExtensionUtils          = brackets.getModule("utils/ExtensionUtils"),
-        StringUtils             = brackets.getModule("utils/StringUtils"),
         DocumentManager         = brackets.getModule("document/DocumentManager"),
         EditorManager           = brackets.getModule("editor/EditorManager"),
         PreferencesManager      = brackets.getModule("preferences/PreferencesManager"),
@@ -48,7 +47,8 @@ define(function (require, exports, module) {
         CommandManager          = brackets.getModule("command/CommandManager"),
         Commands                = brackets.getModule("command/Commands"),
         Dialogs                 = brackets.getModule("widgets/Dialogs"),
-        Menus                   = brackets.getModule("command/Menus");
+        Menus                   = brackets.getModule("command/Menus"),
+        _                       = brackets.getModule("thirdparty/lodash");
     
     // DOM elements and HTML
     var $toolbarIcon = null;
@@ -497,7 +497,7 @@ define(function (require, exports, module) {
             } else {
                 includeString = webfont.createInclude(fontFamilies);
                 var dlg = Dialogs.showModalDialogUsingTemplate(ewfIncludeDialogTemplate);
-                $('.instance .ewf-include-string').html(StringUtils.htmlEscape(includeString)).focus().select();
+                $('.instance .ewf-include-string').html(_.escape(includeString)).focus().select();
             }
         }
         
